@@ -8,7 +8,15 @@
 !/.config/
 !/.config/**
 
+## etc
+!/.bin/
+!/.bin/**
+
 !/README.md
 !/LICENCE
 !.gitignore
 !.gitkeep
+!/install.sh
+!/.github/
+!/.github/**
+
