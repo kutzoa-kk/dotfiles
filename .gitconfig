@@ -1,0 +1,9 @@
+[user]
+	name = kakutani-user
+	email = dealus0609@gmail.com
+[core]
+	excludesfile = /Users/kkmac/.gitignore_global
+[pull]
+	rebase = false
+[init]
+	defaultBranch = main

@@ -1,0 +1,14 @@
+/*
+/.**
+
+!/.zshrc
+!/.vimrc
+!/.gitignore_global
+!/.gitconfig
+!/.config/
+!/.config/**
+
+!/README.md
+!/LICENCE
+!.gitignore
+!.gitkeep
