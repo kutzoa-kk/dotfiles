@@ -12,9 +12,9 @@ export PATH="/usr/local/opt/openjdk@11/bin:$PATH"
 export CPPFLAGS="-I/usr/local/opt/openjdk@11/include"
 
 # Homebrew
-export PATH=$HOME/.nodebrew/current/bin:$PATH
-export PATH="/usr/local/sbin:$PATH"
-alias brew="PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin brew"
+# export PATH=$HOME/.nodebrew/current/bin:$PATH
+# export PATH="/usr/local/sbin:$PATH"
+# alias brew="PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin brew"
 
 # alias
 alias get_idf='. $HOME/code/esp/esp-idf/export.sh'

@@ -2,11 +2,13 @@
 /.**
 
 !/.zshrc
+!/.zprofile
 !/.vimrc
 !/.gitignore_global
 !/.gitconfig
 !/.config/
 !/.config/**
+!/.Brewfile
 
 ## etc
 !/.bin/
@@ -17,6 +19,7 @@
 !.gitignore
 !.gitkeep
 !/install.sh
+!/install_brew.sh
 !/.github/
 !/.github/**
 

@@ -15,15 +15,21 @@ link_to_homedir() {
 
   local script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
   local dotdir=$(dirname ${script_dir})
-  if [[ "$HOME" != "$dotdir" ]];then
-    for f in $dotdir/.??*; do
+  command echo ${script_dir}
+  if [[ "$HOME" != "$script_dir" ]];then
+    for f in $script_dir/.??*; do
+      # skip file
       [[ `basename $f` == ".git" ]] && continue
+      [[ `basename $f` == ".DS_Store" ]] && continue
+      # If the file is symbolic, delete if.
       if [[ -L "$HOME/`basename $f`" ]];then
         command rm -f "$HOME/`basename $f`"
       fi
+      # If the file exists, back up it.
       if [[ -e "$HOME/`basename $f`" ]];then
-        command mv "$HOME/`basename $f`" "$HOME/.dotbackup"
+        command mv "$HOME/`basename $f`" "$script_dir/.dotbackup"
       fi
+      # copy dotfile to home
       command ln -snf $f $HOME
     done
   else
