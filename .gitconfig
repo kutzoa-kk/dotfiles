@@ -2,10 +2,12 @@
 	name = kutzoa-kk
 	email = dealus0609@gmail.com
 [core]
-	excludesfile = /Users/kkmac/.gitignore_global
+	excludesfile = $HOME/.config/git/ignore
 [pull]
 	rebase = false
 [init]
 	defaultBranch = main
 [include]
 	path = ~/.gitconfig_shared
+[commit]
+	template = /Users/kutzoa/.commit_template

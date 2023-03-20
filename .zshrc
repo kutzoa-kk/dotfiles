@@ -16,6 +16,19 @@ export CPPFLAGS="-I/usr/local/opt/openjdk@11/include"
 # export PATH="/usr/local/sbin:$PATH"
 # alias brew="PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin brew"
 
+#zplug
+export ZPLUG_HOME=/opt/homebrew/opt/zplug
+source $ZPLUG_HOME/init.zsh
+
+zplug "zsh-users/zsh-autosuggestions"
+
+# 「ユーザ名/リポジトリ名」で記述し、ダブルクォートで見やすく括る（括らなくてもいい）
+zplug "zsh-users/zsh-syntax-highlighting", defer:2
+zplug "zsh-users/zsh-history-substring-search"
+zplug "plugins/git", from:oh-my-zsh
+zplug "mafredri/zsh-async", from:github
+zplug "sindresorhus/pure", use:pure.zsh, from:github, as:theme
+
 # alias
 alias get_idf='. $HOME/code/esp/esp-idf/export.sh'
 
@@ -30,7 +43,7 @@ compinit -u
 ##### zsh の設定 #####
  
 # すっきりしたプロンプト表示 (不要ならコメントアウト)
-PROMPT='%~ %# '
+# PROMPT='%~ %# '
 
 # 色を使用出来るようにする
 autoload -Uz colors
@@ -72,3 +85,15 @@ setopt hist_reduce_blanks
 
 LDFLAGS="-L/usr/local/opt/bzip2/lib"
 CPPFLAGS="-I/usr/local/opt/bzip2/include"
+
+if ! zplug check --verbose; then
+  printf "Install? [y/N]: "
+  if read -q; then
+    echo; zplug install
+  fi
+fi
+# zplugのプラグイン読み込み
+zplug load
+
+
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
