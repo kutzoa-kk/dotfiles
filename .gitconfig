@@ -1,0 +1,13 @@
+[user]
+	name = kutzoa-kk
+	email = dealus0609@gmail.com
+[core]
+	excludesfile = $HOME/.config/git/ignore
+[pull]
+	rebase = false
+[init]
+	defaultBranch = main
+[include]
+	path = ~/.gitconfig_shared
+[commit]
+	template = $HOME/.config/git/commit_template
