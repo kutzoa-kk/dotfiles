@@ -1,3 +1,9 @@
+# ==== Commit Messages ====
+
+# ==== Commit Messages(Template) ====
+# :emoji: #Issue番号 変更内容
+# 例) :+1: #438 コメント追加
+#       👍 #438 コメント追加
 # ==== Prefix ====
 # fix:      A bug fix
 # feat:     A new feature
