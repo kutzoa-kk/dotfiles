@@ -11,6 +11,10 @@
 - **Git**: `.gitconfig`（ユーザー名、メールアドレス）
 - **SSH**: `.ssh/config`（SSH接続設定）
 - **Cursor**: `.cursor/`（エディタ設定、MCP設定）
+- **Codex**: `.codex/`（Codex設定、ユーザースキル）
+- **ClaudeCode**: `.claude/`（ClaudeCode設定）
+- **Gemini**: `.gemini/`（Gemini設定）
+- **npm**: `.npm-global-packages.txt`（グローバルパッケージリスト）
 
 ## セットアップ方法
 
@@ -39,18 +43,20 @@ make all
 - `make brew` - Homebrewパッケージのインストール
 - `make macos_setup` - macOSシステム設定の適用
 - `make iterm2` - iTerm2設定の適用
+- `make npm` - npmグローバルパッケージのインストール
 - `make github` - GitHub SSH設定（オプション）
 
 ## ファイル構成
 
 ```
-dotfiles2/
+dotfiles/
 ├── .bin/              # セットアップスクリプト
 │   ├── init.sh        # Homebrewのインストール
 │   ├── link.sh        # dotfileのリンク作成
 │   ├── brew.sh        # Homebrew Bundleの実行
 │   ├── macos_setup.sh # macOS設定
 │   ├── iterm2_setup.sh # iTerm2設定
+│   ├── npm_install.sh  # npmグローバルパッケージのインストール
 │   ├── github.sh      # GitHub SSH設定
 │   └── setup.sh       # 新規PC移行用スクリプト
 ├── iterm2/            # iTerm2設定ファイル
@@ -63,9 +69,17 @@ dotfiles2/
 ├── .cursor/           # Cursorエディタ設定
 │   ├── argv.json      # エディタ起動設定
 │   └── mcp.json       # MCPサーバー設定
+├── .codex/            # Codex設定
+│   ├── README.md      # 設定ディレクトリの説明
+│   ├── config.json    # Codex設定ファイル（存在する場合）
+│   └── skills/        # Codexユーザー定義スキル（存在する場合）
+├── .claude/           # ClaudeCode設定
+├── .gemini/           # Gemini設定
 ├── .config/           # アプリケーション設定
 │   └── git/           # Git設定
-│       └── ignore     # Gitグローバルignoreファイル
+│       ├── ignore     # Gitグローバルignoreファイル
+│       └── commit_template  # Gitコミットテンプレート
+├── .npm-global-packages.txt  # npmグローバルパッケージリスト
 ├── .Brewfile          # Homebrewパッケージリスト
 └── Makefile           # メイクターゲット
 
@@ -79,4 +93,13 @@ dotfiles2/
 ### Cursor設定について
 - `.cursor/`ディレクトリ内の設定ファイルのみをリンクします
 - 拡張機能やプロジェクト情報などの個人固有のファイルは含まれません
+
+### Codex設定について
+- `.codex/`ディレクトリ内の設定ファイル（`config.json`など）をリンクします
+- `.codex/skills/`ディレクトリ内のユーザー定義スキルをリンクします（システムスキルは除外）
+- 既存の`~/.codex`ディレクトリがある場合、設定ファイルのみをマージしてリンクします
+
+### ClaudeCode設定について
+- `.claude/`ディレクトリ内の設定ファイルをリンクします
+- 設定ファイルを追加すると、自動的にリンクされます
 

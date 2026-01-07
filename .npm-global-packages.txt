@@ -1,0 +1,2 @@
+@marp-team/marp-cli@4.2.3
+@openai/codex@0.77.0

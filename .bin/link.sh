@@ -11,6 +11,9 @@ for dotfile in "${REPO_ROOT}"/.??* ; do
     [[ "$dotfile" == "${REPO_ROOT}/.ssh" ]] && continue  # Handle .ssh separately
     [[ "$dotfile" == "${REPO_ROOT}/.cursor" ]] && continue  # Handle .cursor separately
     [[ "$dotfile" == "${REPO_ROOT}/.config" ]] && continue  # Handle .config separately
+    [[ "$dotfile" == "${REPO_ROOT}/.codex" ]] && continue  # Handle .codex separately
+    [[ "$dotfile" == "${REPO_ROOT}/.claude" ]] && continue  # Handle .claude separately
+    [[ "$dotfile" == "${REPO_ROOT}/.gemini" ]] && continue  # Handle .gemini separately
     [[ "$dotfile" == "${REPO_ROOT}/.bin" ]] && continue  # Skip .bin directory (scripts)
     
     # Only link files, not directories
@@ -34,21 +37,6 @@ if [ -d "${REPO_ROOT}/.ssh" ]; then
     done
 fi
 
-# Link .cursor directory (merge approach: link files only, preserve existing directory)
-if [ -d "${REPO_ROOT}/.cursor" ]; then
-    echo "Linking .cursor configuration files..."
-    if [ ! -d "$HOME/.cursor" ]; then
-        mkdir -p "$HOME/.cursor"
-    fi
-    
-    for cursorfile in "${REPO_ROOT}"/.cursor/* ; do
-        [[ ! -e "$cursorfile" ]] && continue
-        [[ -d "$cursorfile" ]] && continue  # Skip directories
-        filename=$(basename "$cursorfile")
-        ln -fnsv "$cursorfile" "$HOME/.cursor/$filename"
-    done
-fi
-
 # Link .config/git directory (merge approach: link files only, preserve existing directory)
 if [ -d "${REPO_ROOT}/.config/git" ]; then
     echo "Linking .config/git configuration files..."
@@ -63,3 +51,161 @@ if [ -d "${REPO_ROOT}/.config/git" ]; then
         ln -fnsv "$gitfile" "$HOME/.config/git/$filename"
     done
 fi
+
+# Link .cursor directory (merge approach: link files only, preserve existing directory)
+if [ -d "${REPO_ROOT}/.cursor" ]; then
+    echo "Linking .cursor configuration files..."
+    if [ ! -d "$HOME/.cursor" ]; then
+        mkdir -p "$HOME/.cursor"
+    fi
+    
+    # Directories to link (list of directory names to link instead of skip)
+    LINK_DIRECTORIES=()
+    EXCLUDE_FILES=("README.md" "cursor-extensions.txt" "User")
+
+    for cursorfile in "${REPO_ROOT}"/.cursor/* ; do
+        [[ ! -e "$cursorfile" ]] && continue
+        filename=$(basename "$cursorfile")
+
+        # ファイルがEXCLUDE_FILESに含まれていたらリンクしない
+        should_exclude=false
+        for exfile in "${EXCLUDE_FILES[@]}"; do
+            if [[ "$filename" == "$exfile" ]]; then
+                should_exclude=true
+                break
+            fi
+        done
+        [[ "$should_exclude" == true ]] && continue
+
+        if [[ -d "$cursorfile" ]]; then
+            # Check if this directory should be linked
+            should_link=false
+            for link_dir in "${LINK_DIRECTORIES[@]}"; do
+                if [[ "$filename" == "$link_dir" ]]; then
+                    should_link=true
+                    break
+                fi
+            done
+
+            if [[ "$should_link" == true ]]; then
+                # Link directory
+                ln -fnsv "$cursorfile" "$HOME/.cursor/$filename"
+            fi
+            # 他のディレクトリはスキップ（必要ならLINK_DIRECTORIESへ追加）
+        else
+            # 対象外でなければリンク
+            ln -fnsv "$cursorfile" "$HOME/.cursor/$filename"
+        fi
+    done
+fi
+
+# Link Cursor User directory (settings.json, keybindings.json, snippets)
+CURSOR_USER_DIR="${HOME}/Library/Application Support/Cursor/User"
+if [ -d "${REPO_ROOT}/.cursor/User" ]; then
+    echo "Linking Cursor User configuration files..."
+    if [ ! -d "$CURSOR_USER_DIR" ]; then
+        mkdir -p "$CURSOR_USER_DIR"
+    fi
+    
+    # Link settings.json
+    if [ -f "${REPO_ROOT}/.cursor/User/settings.json" ]; then
+        ln -fnsv "${REPO_ROOT}/.cursor/User/settings.json" "${CURSOR_USER_DIR}/settings.json"
+    fi
+    
+    # Link keybindings.json
+    if [ -f "${REPO_ROOT}/.cursor/User/keybindings.json" ]; then
+        ln -fnsv "${REPO_ROOT}/.cursor/User/keybindings.json" "${CURSOR_USER_DIR}/keybindings.json"
+    fi
+    
+    # Link snippets directory
+    if [ -d "${REPO_ROOT}/.cursor/User/snippets" ]; then
+        ln -fnsv "${REPO_ROOT}/.cursor/User/snippets" "${CURSOR_USER_DIR}/snippets"
+    fi
+fi
+
+# Link .codex directory (Codex configuration)
+# This will link configuration files when they exist in the dotfiles repository
+if [ -d "${REPO_ROOT}/.codex" ]; then
+    echo "Linking .codex configuration files..."
+    if [ ! -d "$HOME/.codex" ]; then
+        mkdir -p "$HOME/.codex"
+    fi
+    
+    for codexfile in "${REPO_ROOT}"/.codex/* ; do
+        [[ ! -e "$codexfile" ]] && continue
+        [[ -d "$codexfile" ]] && continue  # Skip directories (like skills)
+        [[ "$codexfile" == "${REPO_ROOT}/.codex/README.md" ]] && continue  # Skip README
+        filename=$(basename "$codexfile")
+        ln -fnsv "$codexfile" "$HOME/.codex/$filename"
+    done
+    
+    # Link .codex/skills directory if it exists (user-installed skills)
+    if [ -d "${REPO_ROOT}/.codex/skills" ]; then
+        if [ ! -d "$HOME/.codex/skills" ]; then
+            mkdir -p "$HOME/.codex/skills"
+        fi
+        
+        # Link only user skills, not system skills
+        for skilldir in "${REPO_ROOT}"/.codex/skills/* ; do
+            [[ ! -e "$skilldir" ]] && continue
+            [[ ! -d "$skilldir" ]] && continue
+            skillname=$(basename "$skilldir")
+            # Skip system skills (they start with .system or are system-managed)
+            [[ "$skillname" =~ ^\. ]] && continue
+            ln -fnsv "$skilldir" "$HOME/.codex/skills/$skillname"
+        done
+    fi
+fi
+
+# Link .claude directory (ClaudeCode configuration)
+if [ -d "${REPO_ROOT}/.claude" ]; then
+    echo "Linking .claude configuration files..."
+    if [ ! -d "$HOME/.claude" ]; then
+        mkdir -p "$HOME/.claude"
+    fi
+    
+    # Directories to link (list of directory names to link instead of skip)
+    LINK_DIRECTORIES=("commands" "agents" "scripts" "assets")
+    
+    for claudefile in "${REPO_ROOT}"/.claude/* ; do
+        [[ ! -e "$claudefile" ]] && continue
+        filename=$(basename "$claudefile")
+        
+        if [[ -d "$claudefile" ]]; then
+            # Check if this directory should be linked
+            should_link=false
+            for link_dir in "${LINK_DIRECTORIES[@]}"; do
+                if [[ "$filename" == "$link_dir" ]]; then
+                    should_link=true
+                    break
+                fi
+            done
+            
+            if [[ "$should_link" == true ]]; then
+                # Link directory
+                ln -fnsv "$claudefile" "$HOME/.claude/$filename"
+            fi
+            # Other directories are skipped (can be added to LINK_DIRECTORIES if needed)
+        else
+            # Link files
+            ln -fnsv "$claudefile" "$HOME/.claude/$filename"
+        fi
+    done
+fi
+
+# Link .gemini directory (Gemini configuration)
+if [ -d "${REPO_ROOT}/.gemini" ]; then
+    echo "Linking .gemini configuration files..."
+    if [ ! -d "$HOME/.gemini" ]; then
+        mkdir -p "$HOME/.gemini"
+    fi
+    
+    for geminifile in "${REPO_ROOT}"/.gemini/* ; do
+        [[ ! -e "$geminifile" ]] && continue
+        [[ -d "$geminifile" ]] && continue  # Skip directories
+        [[ "$geminifile" == "${REPO_ROOT}/.gemini/README.md" ]] && continue  # Skip README
+        filename=$(basename "$geminifile")
+        ln -fnsv "$geminifile" "$HOME/.gemini/$filename"
+    done
+fi
+

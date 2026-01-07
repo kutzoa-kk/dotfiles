@@ -77,15 +77,25 @@ if [ $? -ne 0 ]; then
     echo -e "${YELLOW}Warning: Some packages may not have been installed.${NC}"
 fi
 
-# Step 4: Apply macOS system preferences
-echo -e "${YELLOW}Step 4: Applying macOS system preferences...${NC}"
+# Step 4: Install npm global packages (if Node.js is available)
+echo -e "${YELLOW}Step 4: Installing npm global packages...${NC}"
+if command -v npm &> /dev/null; then
+    run_script "npm_install.sh" "npm global packages installation"
+else
+    echo -e "${YELLOW}Skipping npm packages installation (npm not found).${NC}"
+    echo -e "${YELLOW}Please install Node.js (via nvm or Homebrew) and run 'make npm' later.${NC}"
+    echo ""
+fi
+
+# Step 5: Apply macOS system preferences
+echo -e "${YELLOW}Step 5: Applying macOS system preferences...${NC}"
 run_script "macos_setup.sh" "macOS system preferences"
 if [ $? -ne 0 ]; then
     echo -e "${YELLOW}Warning: Some system preferences may not have been applied.${NC}"
 fi
 
-# Step 5: Apply iTerm2 preferences (if iTerm2 is installed)
-echo -e "${YELLOW}Step 5: Applying iTerm2 preferences...${NC}"
+# Step 6: Apply iTerm2 preferences (if iTerm2 is installed)
+echo -e "${YELLOW}Step 6: Applying iTerm2 preferences...${NC}"
 if [ -d "/Applications/iTerm.app" ] || brew list --cask iterm2 &>/dev/null; then
     run_script "iterm2_setup.sh" "iTerm2 preferences"
 else
@@ -94,8 +104,21 @@ else
     echo ""
 fi
 
-# Step 6: GitHub setup (optional)
-echo -e "${YELLOW}Step 6: GitHub SSH setup (optional)...${NC}"
+# Step 7: Install Cursor extensions (if Cursor is available)
+echo -e "${YELLOW}Step 7: Installing Cursor extensions...${NC}"
+if command -v cursor &> /dev/null; then
+    run_script "cursor_setup.sh" "Cursor extensions installation"
+    if [ $? -ne 0 ]; then
+        echo -e "${YELLOW}Warning: Some Cursor extensions may not have been installed.${NC}"
+    fi
+else
+    echo -e "${YELLOW}Skipping Cursor extensions installation (Cursor not found).${NC}"
+    echo -e "${YELLOW}Please install Cursor and run 'make cursor' later.${NC}"
+    echo ""
+fi
+
+# Step 8: GitHub setup (optional)
+echo -e "${YELLOW}Step 8: GitHub SSH setup (optional)...${NC}"
 echo -e "${BLUE}Do you want to set up GitHub SSH keys? [y/N]${NC}"
 read -r response
 if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
@@ -114,6 +137,7 @@ echo ""
 echo -e "${BLUE}Next steps:${NC}"
 echo -e "1. Restart your terminal or run: ${YELLOW}source ~/.zshrc${NC}"
 echo -e "2. If you skipped iTerm2 setup, run: ${YELLOW}make iterm2${NC}"
-echo -e "3. If you skipped GitHub setup, run: ${YELLOW}make github${NC}"
+echo -e "3. If you skipped Cursor extensions, run: ${YELLOW}make cursor${NC}"
+echo -e "4. If you skipped GitHub setup, run: ${YELLOW}make github${NC}"
 echo ""
 
