@@ -9,7 +9,7 @@
   "includeCoAuthoredBy": false,
   "permissions": {
     "allow": [
-      "Bash(*)",
+      "Bash",
       "Edit(**)",
       "Glob(**)",
       "GlobTool(**)",
@@ -18,10 +18,9 @@
       "LS(**)",
       "MultiEdit(**)",
       "Read(**)",
-      "TodoRead()",
+      "TodoRead",
       "TodoWrite(**)",
       "WebFetch(domain:*)",
-      "WebSearch(**)",
       "Write(**)"
     ],
     "deny": [
@@ -158,6 +157,6 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "~/.claude/scripts/statusline.sh"
+    "command": "bash ~/.claude/scripts/statusline.sh"
   }
 }
