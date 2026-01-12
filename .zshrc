@@ -1,5 +1,4 @@
 # zsh configuration file
-# This file is managed by dotfiles repository
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
@@ -106,6 +105,9 @@ fi
 
 # Powerlevel10k configuration
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+ZSH_THEME="ys"
+
 
 # pyenv
 export PYENV_ROOT="$HOME/.pyenv"
