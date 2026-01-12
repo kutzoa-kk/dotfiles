@@ -158,5 +158,23 @@
   "statusLine": {
     "type": "command",
     "command": "bash ~/.claude/scripts/statusline.sh"
+  },
+  "enabledPlugins": {
+    "claude-delegator@jarrodwatts-claude-delegator": true,
+    "code-simplifier@claude-plugins-official": true
+  },
+  "pluginConfigs": {
+    "claude-delegator@jarrodwatts-claude-delegator": {
+      "mcpServers": {
+        "codex": {
+          "command": "codex",
+          "args": [
+            "-m",
+            "gpt-5.2-codex",
+            "mcp-server"
+          ]
+        }
+      }
+    }
   }
 }
