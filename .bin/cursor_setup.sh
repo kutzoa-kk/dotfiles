@@ -12,7 +12,7 @@ NC='\033[0m' # No Color
 
 # Get the directory where this script is located
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+REPO_ROOT="$(cd "${SCRIPT_DIR}/../dotdir" && pwd)"
 EXTENSIONS_FILE="${REPO_ROOT}/.cursor/cursor-extensions.txt"
 
 # Check if cursor command is available

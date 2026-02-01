@@ -1,0 +1,17 @@
+{
+    "[python]": {
+        "editor.formatOnType": true
+    },
+    "jupyter.askForKernelRestart": false,
+    "C_Cpp.dimInactiveRegions": false,
+    "git.enableSmartCommit": true,
+    "workbench.colorTheme": "GitHub Dark Default",
+    "liveServer.settings.donotShowInfoMsg": true,
+    "explorer.confirmDragAndDrop": false,
+    "cursor.cpp.disabledLanguages": [
+        "plaintext"
+    ],
+    "geminicodeassist.inlineSuggestions.enableAuto": false,
+    "geminicodeassist.displayInlineContextHint": false,
+    "markdown.marp.html": "all"
+}

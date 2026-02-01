@@ -2,18 +2,14 @@
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+DOTDIR_ROOT="$(cd "${SCRIPT_DIR}/../dotdir" && pwd)"
 
 # Link dotfiles from repository root (files only, directories are handled separately)
 for dotfile in "${REPO_ROOT}"/.??* ; do
     [[ "$dotfile" == "${REPO_ROOT}/.git" ]] && continue
     [[ "$dotfile" == "${REPO_ROOT}/.github" ]] && continue
     [[ "$dotfile" == "${REPO_ROOT}/.DS_Store" ]] && continue
-    [[ "$dotfile" == "${REPO_ROOT}/.ssh" ]] && continue  # Handle .ssh separately
-    [[ "$dotfile" == "${REPO_ROOT}/.cursor" ]] && continue  # Handle .cursor separately
-    [[ "$dotfile" == "${REPO_ROOT}/.config" ]] && continue  # Handle .config separately
-    [[ "$dotfile" == "${REPO_ROOT}/.codex" ]] && continue  # Handle .codex separately
-    [[ "$dotfile" == "${REPO_ROOT}/.claude" ]] && continue  # Handle .claude separately
-    [[ "$dotfile" == "${REPO_ROOT}/.gemini" ]] && continue  # Handle .gemini separately
+    [[ "$dotfile" == "${REPO_ROOT}/.claude" ]] && continue
     [[ "$dotfile" == "${REPO_ROOT}/.bin" ]] && continue  # Skip .bin directory (scripts)
     
     # Only link files, not directories
@@ -23,14 +19,14 @@ for dotfile in "${REPO_ROOT}"/.??* ; do
 done
 
 # Link .ssh directory (if exists)
-if [ -d "${REPO_ROOT}/.ssh" ]; then
+if [ -d "${DOTDIR_ROOT}/.ssh" ]; then
     echo "Linking .ssh directory..."
     if [ ! -d "$HOME/.ssh" ]; then
         mkdir -p "$HOME/.ssh"
         chmod 700 "$HOME/.ssh"
     fi
     
-    for sshfile in "${REPO_ROOT}"/.ssh/* ; do
+    for sshfile in "${DOTDIR_ROOT}"/.ssh/* ; do
         [[ ! -e "$sshfile" ]] && continue
         filename=$(basename "$sshfile")
         ln -fnsv "$sshfile" "$HOME/.ssh/$filename"
@@ -38,13 +34,13 @@ if [ -d "${REPO_ROOT}/.ssh" ]; then
 fi
 
 # Link .config/git directory (merge approach: link files only, preserve existing directory)
-if [ -d "${REPO_ROOT}/.config/git" ]; then
+if [ -d "${DOTDIR_ROOT}/.config/git" ]; then
     echo "Linking .config/git configuration files..."
     if [ ! -d "$HOME/.config/git" ]; then
         mkdir -p "$HOME/.config/git"
     fi
     
-    for gitfile in "${REPO_ROOT}"/.config/git/* ; do
+    for gitfile in "${DOTDIR_ROOT}"/.config/git/* ; do
         [[ ! -e "$gitfile" ]] && continue
         [[ -d "$gitfile" ]] && continue  # Skip directories
         filename=$(basename "$gitfile")
@@ -53,7 +49,7 @@ if [ -d "${REPO_ROOT}/.config/git" ]; then
 fi
 
 # Link .cursor directory (merge approach: link files only, preserve existing directory)
-if [ -d "${REPO_ROOT}/.cursor" ]; then
+if [ -d "${DOTDIR_ROOT}/.cursor" ]; then
     echo "Linking .cursor configuration files..."
     if [ ! -d "$HOME/.cursor" ]; then
         mkdir -p "$HOME/.cursor"
@@ -63,7 +59,7 @@ if [ -d "${REPO_ROOT}/.cursor" ]; then
     LINK_DIRECTORIES=()
     EXCLUDE_FILES=("README.md" "cursor-extensions.txt" "User")
 
-    for cursorfile in "${REPO_ROOT}"/.cursor/* ; do
+    for cursorfile in "${DOTDIR_ROOT}"/.cursor/* ; do
         [[ ! -e "$cursorfile" ]] && continue
         filename=$(basename "$cursorfile")
 
@@ -101,52 +97,52 @@ fi
 
 # Link Cursor User directory (settings.json, keybindings.json, snippets)
 CURSOR_USER_DIR="${HOME}/Library/Application Support/Cursor/User"
-if [ -d "${REPO_ROOT}/.cursor/User" ]; then
+if [ -d "${DOTDIR_ROOT}/.cursor/User" ]; then
     echo "Linking Cursor User configuration files..."
     if [ ! -d "$CURSOR_USER_DIR" ]; then
         mkdir -p "$CURSOR_USER_DIR"
     fi
     
     # Link settings.json
-    if [ -f "${REPO_ROOT}/.cursor/User/settings.json" ]; then
-        ln -fnsv "${REPO_ROOT}/.cursor/User/settings.json" "${CURSOR_USER_DIR}/settings.json"
+    if [ -f "${DOTDIR_ROOT}/.cursor/User/settings.json" ]; then
+        ln -fnsv "${DOTDIR_ROOT}/.cursor/User/settings.json" "${CURSOR_USER_DIR}/settings.json"
     fi
     
     # Link keybindings.json
-    if [ -f "${REPO_ROOT}/.cursor/User/keybindings.json" ]; then
-        ln -fnsv "${REPO_ROOT}/.cursor/User/keybindings.json" "${CURSOR_USER_DIR}/keybindings.json"
+    if [ -f "${DOTDIR_ROOT}/.cursor/User/keybindings.json" ]; then
+        ln -fnsv "${DOTDIR_ROOT}/.cursor/User/keybindings.json" "${CURSOR_USER_DIR}/keybindings.json"
     fi
     
     # Link snippets directory
-    if [ -d "${REPO_ROOT}/.cursor/User/snippets" ]; then
-        ln -fnsv "${REPO_ROOT}/.cursor/User/snippets" "${CURSOR_USER_DIR}/snippets"
+    if [ -d "${DOTDIR_ROOT}/.cursor/User/snippets" ]; then
+        ln -fnsv "${DOTDIR_ROOT}/.cursor/User/snippets" "${CURSOR_USER_DIR}/snippets"
     fi
 fi
 
 # Link .codex directory (Codex configuration)
 # This will link configuration files when they exist in the dotfiles repository
-if [ -d "${REPO_ROOT}/.codex" ]; then
+if [ -d "${DOTDIR_ROOT}/.codex" ]; then
     echo "Linking .codex configuration files..."
     if [ ! -d "$HOME/.codex" ]; then
         mkdir -p "$HOME/.codex"
     fi
     
-    for codexfile in "${REPO_ROOT}"/.codex/* ; do
+    for codexfile in "${DOTDIR_ROOT}"/.codex/* ; do
         [[ ! -e "$codexfile" ]] && continue
         [[ -d "$codexfile" ]] && continue  # Skip directories (like skills)
-        [[ "$codexfile" == "${REPO_ROOT}/.codex/README.md" ]] && continue  # Skip README
+        [[ "$codexfile" == "${DOTDIR_ROOT}/.codex/README.md" ]] && continue  # Skip README
         filename=$(basename "$codexfile")
         ln -fnsv "$codexfile" "$HOME/.codex/$filename"
     done
     
     # Link .codex/skills directory if it exists (user-installed skills)
-    if [ -d "${REPO_ROOT}/.codex/skills" ]; then
+    if [ -d "${DOTDIR_ROOT}/.codex/skills" ]; then
         if [ ! -d "$HOME/.codex/skills" ]; then
             mkdir -p "$HOME/.codex/skills"
         fi
         
         # Link only user skills, not system skills
-        for skilldir in "${REPO_ROOT}"/.codex/skills/* ; do
+        for skilldir in "${DOTDIR_ROOT}"/.codex/skills/* ; do
             [[ ! -e "$skilldir" ]] && continue
             [[ ! -d "$skilldir" ]] && continue
             skillname=$(basename "$skilldir")
@@ -158,16 +154,16 @@ if [ -d "${REPO_ROOT}/.codex" ]; then
 fi
 
 # Link .claude directory (ClaudeCode configuration)
-if [ -d "${REPO_ROOT}/.claude" ]; then
+if [ -d "${DOTDIR_ROOT}/.claude" ]; then
     echo "Linking .claude configuration files..."
     if [ ! -d "$HOME/.claude" ]; then
         mkdir -p "$HOME/.claude"
     fi
     
     # Directories to link (list of directory names to link instead of skip)
-    LINK_DIRECTORIES=("commands" "agents" "scripts" "assets")
+    LINK_DIRECTORIES=("commands" "agents" "scripts" "assets" "skills")
     
-    for claudefile in "${REPO_ROOT}"/.claude/* ; do
+    for claudefile in "${DOTDIR_ROOT}"/.claude/* ; do
         [[ ! -e "$claudefile" ]] && continue
         filename=$(basename "$claudefile")
         
@@ -194,16 +190,16 @@ if [ -d "${REPO_ROOT}/.claude" ]; then
 fi
 
 # Link .gemini directory (Gemini configuration)
-if [ -d "${REPO_ROOT}/.gemini" ]; then
+if [ -d "${DOTDIR_ROOT}/.gemini" ]; then
     echo "Linking .gemini configuration files..."
     if [ ! -d "$HOME/.gemini" ]; then
         mkdir -p "$HOME/.gemini"
     fi
     
-    for geminifile in "${REPO_ROOT}"/.gemini/* ; do
+    for geminifile in "${DOTDIR_ROOT}"/.gemini/* ; do
         [[ ! -e "$geminifile" ]] && continue
         [[ -d "$geminifile" ]] && continue  # Skip directories
-        [[ "$geminifile" == "${REPO_ROOT}/.gemini/README.md" ]] && continue  # Skip README
+        [[ "$geminifile" == "${DOTDIR_ROOT}/.gemini/README.md" ]] && continue  # Skip README
         filename=$(basename "$geminifile")
         ln -fnsv "$geminifile" "$HOME/.gemini/$filename"
     done
