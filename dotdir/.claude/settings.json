@@ -182,7 +182,9 @@
     "machine-learning-ops@claude-code-workflows": true,
     "code-documentation@claude-code-workflows": true,
     "debugging-toolkit@claude-code-workflows": true,
-    "agent-orchestration@claude-code-workflows": true
+    "agent-orchestration@claude-code-workflows": true,
+    "everything-claude-code@everything-claude-code": true,
+    "swift-lsp@claude-plugins-official": true
   },
   "pluginConfigs": {
     "claude-delegator@jarrodwatts-claude-delegator": {

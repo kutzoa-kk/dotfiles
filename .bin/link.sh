@@ -161,7 +161,7 @@ if [ -d "${DOTDIR_ROOT}/.claude" ]; then
     fi
     
     # Directories to link (list of directory names to link instead of skip)
-    LINK_DIRECTORIES=("commands" "agents" "scripts" "assets" "skills")
+    LINK_DIRECTORIES=("commands" "agents" "scripts" "assets" "skills" "rules")
     
     for claudefile in "${DOTDIR_ROOT}"/.claude/* ; do
         [[ ! -e "$claudefile" ]] && continue
