@@ -1,4 +1,11 @@
 personality = "pragmatic"
+model = "gpt-5.3-codex"
 [mcp_servers.context7]
 command = "npx"
 args = ["-y", "@upstash/context7-mcp"]
+
+[projects."/Users/kkmac/dotfiles2"]
+trust_level = "trusted"
+
+[notice.model_migrations]
+"gpt-5.2-codex" = "gpt-5.3-codex"

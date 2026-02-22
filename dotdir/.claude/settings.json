@@ -95,6 +95,14 @@
           {
             "type": "command",
             "command": "~/.claude/scripts/check-ai-commit.sh"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/scripts/sdd-pre-train-hook.sh"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/scripts/sdd-holdout-hook.sh"
           }
         ]
       },
@@ -115,6 +123,15 @@
           {
             "type": "command",
             "command": "~/.claude/scripts/auto-comment.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/scripts/sdd-spec-drift-hook.sh"
           }
         ]
       },
@@ -157,6 +174,15 @@
           {
             "type": "command",
             "command": "osascript -e 'display notification \"Task completed\" with title \"Claude Code\"' && afplay -v 0.3 /System/Library/Sounds/Glass.aiff"
+          }
+        ]
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/scripts/sdd-session-audit-hook.sh"
           }
         ]
       }
