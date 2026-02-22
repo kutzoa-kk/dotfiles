@@ -126,3 +126,5 @@ eval "$(uvx --generate-shell-completion zsh)" 2>/dev/null || true
 # pipx
 export PATH="$PATH:$HOME/.local/bin"
 export DOCKER_HOST="unix://$HOME/.colima/default/docker.sock"
+
+export NANOBANANA_MODEL=gemini-3-pro-image-preview

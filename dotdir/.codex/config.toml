@@ -13,3 +13,9 @@ trust_level = "trusted"
 
 [projects."/Users/kkmclab/code"]
 trust_level = "trusted"
+
+[projects."/Users/kkmac/dotfiles2"]
+trust_level = "trusted"
+
+[notice.model_migrations]
+"gpt-5.2-codex" = "gpt-5.3-codex"
