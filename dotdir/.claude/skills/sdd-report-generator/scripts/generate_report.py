@@ -460,8 +460,40 @@ def generate_report(
     lines.append("---")
     lines.append("")
 
-    # Section 6: Anti-Sycophancy Declaration
-    lines.append("## 6. Anti-Sycophancy Declaration (R8)")
+    # Section 6: Experiment Insights
+    lines.append("## 6. Experiment Insights")
+    lines.append("")
+    experiment_logs = _collect_experiment_insights(project_dir, runs)
+    if experiment_logs:
+        lines.append("### Per-Run Observations")
+        lines.append("")
+        lines.append("| Run Name | Phase | Key Finding |")
+        lines.append("|----------|-------|-------------|")
+        for log in experiment_logs:
+            lines.append(
+                f"| [{log['run_name']}](experiments/{log['run_name']}.md) | "
+                f"{log['phase']} | {log['finding']} |"
+            )
+        lines.append("")
+        comparison_path = project_dir / "docs" / "experiments" / "COMPARISON.md"
+        if comparison_path.exists():
+            lines.append(
+                "Full comparison matrix: "
+                "[COMPARISON.md](experiments/COMPARISON.md)"
+            )
+            lines.append("")
+    else:
+        lines.append(
+            "*No experiment logs found in docs/experiments/. "
+            "Run sdd-experiment-logger to generate them.*"
+        )
+        lines.append("")
+
+    lines.append("---")
+    lines.append("")
+
+    # Section 7: Anti-Sycophancy Declaration
+    lines.append("## 7. Anti-Sycophancy Declaration (R8)")
     lines.append("")
     lines.append("> This report includes ALL experiment results, including:")
     lines.append("> - Runs that did not meet gate conditions")
@@ -476,8 +508,8 @@ def generate_report(
     lines.append("---")
     lines.append("")
 
-    # Section 7: Reproducibility
-    lines.append("## 7. Reproducibility")
+    # Section 8: Reproducibility
+    lines.append("## 8. Reproducibility")
     lines.append("")
     lines.append(f"- **Report generated**: {datetime.now().isoformat()}")
     lines.append(f"- **Total runs in dataset**: {len(runs)}")
@@ -486,6 +518,50 @@ def generate_report(
     lines.append("")
 
     return "\n".join(lines)
+
+
+def _collect_experiment_insights(
+    project_dir: Path,
+    runs: list[dict],
+) -> list[dict[str, str]]:
+    """Collect insights from experiment log files in docs/experiments/."""
+    experiments_dir = project_dir / "docs" / "experiments"
+    if not experiments_dir.exists():
+        return []
+
+    insights: list[dict[str, str]] = []
+    for r in runs:
+        run_name = r.get("run_name", r.get("run_id", "")[:8])
+        log_path = experiments_dir / f"{run_name}.md"
+        if not log_path.exists():
+            continue
+
+        text = log_path.read_text()
+        phase = r.get("phase", "cv")
+
+        # Extract first non-comment line from Observations section
+        finding = ""
+        obs_match = re.search(
+            r'## Observations(.*?)(?=\n## |\Z)',
+            text, re.DOTALL,
+        )
+        if obs_match:
+            for line in obs_match.group(1).splitlines():
+                line = line.strip()
+                if line and not line.startswith("#") and not line.startswith("<!--"):
+                    finding = line[:80]
+                    break
+
+        if not finding:
+            finding = "No observations recorded"
+
+        insights.append({
+            "run_name": run_name,
+            "phase": phase,
+            "finding": finding,
+        })
+
+    return insights
 
 
 def _find_best_metric(

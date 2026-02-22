@@ -14,6 +14,7 @@ from pathlib import Path
 
 DIRS = [
     "docs/specs",
+    "docs/experiments",
     "src/schema",
     "src/features",
     "src/models",

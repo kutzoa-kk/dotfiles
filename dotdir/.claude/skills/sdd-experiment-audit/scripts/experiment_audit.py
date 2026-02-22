@@ -46,6 +46,7 @@ class RunInfo:
     def __init__(
         self,
         run_id: str,
+        run_name: str,
         status: str,
         start_time: str,
         end_time: Optional[str],
@@ -54,6 +55,7 @@ class RunInfo:
         is_deleted: bool,
     ):
         self.run_id = run_id
+        self.run_name = run_name
         self.status = status
         self.start_time = start_time
         self.end_time = end_time
@@ -113,12 +115,15 @@ def load_runs_mlflow(
     for run in all_runs:
         start_ms = run.info.start_time
         end_ms = run.info.end_time
+        tags = dict(run.data.tags)
+        run_name = tags.get("mlflow.runName", run.info.run_id[:8])
         results.append(RunInfo(
             run_id=run.info.run_id,
+            run_name=run_name,
             status=run.info.status,
             start_time=datetime.fromtimestamp(start_ms / 1000).isoformat() if start_ms else "",
             end_time=datetime.fromtimestamp(end_ms / 1000).isoformat() if end_ms else None,
-            tags=dict(run.data.tags),
+            tags=tags,
             metrics=dict(run.data.metrics),
             is_deleted=(run.info.lifecycle_stage == "deleted"),
         ))
@@ -145,6 +150,7 @@ def load_runs_wandb(
         tags_dict["wandb_tags"] = ",".join(run.tags) if run.tags else ""
         results.append(RunInfo(
             run_id=run.id,
+            run_name=run.name or run.id,
             status=run.state,
             start_time=run.created_at or "",
             end_time=run.heartbeat_at,
@@ -164,8 +170,10 @@ def load_runs_local(runs_dir: Path) -> list[RunInfo]:
     for f in sorted(runs_dir.glob("*.json")):
         try:
             data = json.loads(f.read_text())
+            run_id = data.get("run_id", f.stem)
             results.append(RunInfo(
-                run_id=data.get("run_id", f.stem),
+                run_id=run_id,
+                run_name=data.get("run_name", f.stem),
                 status=data.get("status", "unknown"),
                 start_time=data.get("start_time", ""),
                 end_time=data.get("end_time"),

@@ -29,6 +29,7 @@ class RunRecord:
     def __init__(
         self,
         run_id: str,
+        run_name: str,
         status: str,
         start_time: str,
         end_time: Optional[str],
@@ -39,6 +40,7 @@ class RunRecord:
         phase: str,
     ):
         self.run_id = run_id
+        self.run_name = run_name
         self.status = status
         self.start_time = start_time
         self.end_time = end_time
@@ -52,6 +54,7 @@ class RunRecord:
         """Convert to serializable dictionary."""
         return {
             "run_id": self.run_id,
+            "run_name": self.run_name,
             "status": self.status,
             "start_time": self.start_time,
             "end_time": self.end_time,
@@ -108,8 +111,10 @@ def collect_from_mlflow(
         tags = dict(run.data.tags)
         start_ms = run.info.start_time
         end_ms = run.info.end_time
+        run_name = tags.get("mlflow.runName", run.info.run_id[:8])
         records.append(RunRecord(
             run_id=run.info.run_id,
+            run_name=run_name,
             status=run.info.status,
             start_time=datetime.fromtimestamp(start_ms / 1000).isoformat() if start_ms else "",
             end_time=datetime.fromtimestamp(end_ms / 1000).isoformat() if end_ms else None,
@@ -142,6 +147,7 @@ def collect_from_wandb(
         tags_dict["wandb_tags"] = ",".join(run.tags) if run.tags else ""
         records.append(RunRecord(
             run_id=run.id,
+            run_name=run.name or run.id,
             status=run.state,
             start_time=run.created_at or "",
             end_time=run.heartbeat_at,
@@ -164,8 +170,10 @@ def collect_from_local(runs_dir: Path) -> list[RunRecord]:
         try:
             data = json.loads(f.read_text())
             tags = data.get("tags", {})
+            run_id = data.get("run_id", f.stem)
             records.append(RunRecord(
-                run_id=data.get("run_id", f.stem),
+                run_id=run_id,
+                run_name=data.get("run_name", f.stem),
                 status=data.get("status", "unknown"),
                 start_time=data.get("start_time", ""),
                 end_time=data.get("end_time"),
