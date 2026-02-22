@@ -81,3 +81,6 @@ networksetup -setdnsservers Wi-Fi 2001:4860:4860::8844 2001:4860:4860::8888 8.8.
 defaults write NSGlobalDomain NSAutomaticCapitalizationEnabled -bool "false"
 ## スペルの訂正を無効にする
 defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool "false"
+
+# Finderの表示言語をに日本語から英語にする
+rm -f /Applications/.localized && rm -f ~/Documents/.localized && rm -f ~/Downloads/.localized && rm -f ~/Desktop/.localized && rm -f ~/Public/.localized && rm -f ~/Pictures/.localized && rm -f ~/Music/.localized && rm -f ~/Movies/.localized && rm -f ~/Library/.localized && killall Finder

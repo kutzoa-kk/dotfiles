@@ -1,4 +1,15 @@
 personality = "pragmatic"
+model = "gpt-5.3-codex"
+model_reasoning_effort = "xhigh"
 [mcp_servers.context7]
 command = "npx"
 args = ["-y", "@upstash/context7-mcp"]
+
+[projects."/Users/kkmclab/dotfiles"]
+trust_level = "trusted"
+
+[projects."/Users/kkmclab/code/insole-data-store"]
+trust_level = "trusted"
+
+[projects."/Users/kkmclab/code"]
+trust_level = "trusted"

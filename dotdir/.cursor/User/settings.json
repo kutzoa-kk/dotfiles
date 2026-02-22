@@ -13,5 +13,25 @@
     ],
     "geminicodeassist.inlineSuggestions.enableAuto": false,
     "geminicodeassist.displayInlineContextHint": false,
-    "markdown.marp.html": "all"
+    "markdown.marp.html": "all",
+    "claudeCode.preferredLocation": "sidebar",
+    "[markdown]": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
+    },
+    "markdownlint.focusMode": false,
+    "markdownlint.config": {
+        "MD024": false
+    },
+    // R
+    "r.rterm.windows": "/opt/homebrew/bin/R",
+    "r.sessionWatcher": true,
+    "r.plot.useHttpgd": true,
+    "r.workspaceViewer.showObjectSize": true,
+    "r.workspaceViewer.removeHiddenItems": false,
+    "r.rmarkdown.knit.openOutputFile": true,
+    "remote.SSH.remotePlatform": {
+        "ai-dev": "linux"
+    },
+    "editor.accessibilitySupport": "off"
 }
