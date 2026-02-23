@@ -210,7 +210,9 @@
     "debugging-toolkit@claude-code-workflows": true,
     "agent-orchestration@claude-code-workflows": true,
     "everything-claude-code@everything-claude-code": true,
-    "swift-lsp@claude-plugins-official": true
+    "swift-lsp@claude-plugins-official": true,
+    "claude-octopus@nyldn-plugins": true,
+    "hookify@claude-plugins-official": true
   },
   "pluginConfigs": {
     "claude-delegator@jarrodwatts-claude-delegator": {
