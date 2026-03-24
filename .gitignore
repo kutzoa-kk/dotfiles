@@ -1,0 +1,2 @@
+# SSH config (contains IPs and hostnames)
+dotdir/.ssh/config
