@@ -1,0 +1,63 @@
+{
+  "skill_name": "sdd-ml-experiment",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "インソール歩行データからサルコペニアリスクを予測する新しい実験環境を作成してください。3-phase構成、LightGBM、ゲート条件 Phase A: Spearman ρ ≥ 0.5、Phase B: Spearman ρ ≥ 0.3。",
+      "expected_output": "3-phase experiment directory with CLAUDE.md, phase scripts, model templates, test infrastructure, feature_availability.yaml, and Hydra config",
+      "files": [],
+      "assertions": [
+        {"id": "A1", "text": "CLAUDE.md contains all 10 prime directives including Anti-Sycophancy, Pre-Registration, Full Reporting", "type": "keyword_search"},
+        {"id": "A2", "text": "feature_availability.yaml exists with inference_available and inference_unavailable sections", "type": "file_structure"},
+        {"id": "A3", "text": "Exactly 3 phase scripts exist (run_phase_a.py, run_phase_b.py, run_phase_c.py)", "type": "file_count"},
+        {"id": "A4", "text": "Test files exist for each src module", "type": "file_count"},
+        {"id": "A5", "text": "conftest.py and pytest.ini exist", "type": "file_exists"},
+        {"id": "A6", "text": "Hydra config.yaml contains gates section with thresholds", "type": "yaml_parse"},
+        {"id": "A7", "text": "00_HYPOTHESES.md contains pre-registration sections", "type": "keyword_search"},
+        {"id": "A8", "text": "02_METRICS.md contains Spearman rho gate thresholds", "type": "keyword_search"},
+        {"id": "A9", "text": "leakage_check.py exists in src/schema/", "type": "file_exists"},
+        {"id": "S1", "text": "Gate conditions mention Spearman correlation", "type": "keyword_search"}
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "膝関節角度の時系列データからOA進行度を予測する実験。medical コンプライアンス、side グルーピング、temporal holdout。",
+      "expected_output": "3-phase directory with medical compliance doc, side grouping in split policy, temporal holdout",
+      "files": [],
+      "assertions": [
+        {"id": "A1", "text": "CLAUDE.md contains 10 prime directives", "type": "keyword_search"},
+        {"id": "A2", "text": "feature_availability.yaml exists", "type": "file_exists"},
+        {"id": "A3", "text": "3 phase scripts exist", "type": "file_count"},
+        {"id": "A4", "text": "Test files exist for each src module", "type": "file_count"},
+        {"id": "A5", "text": "conftest.py and pytest.ini exist", "type": "file_exists"},
+        {"id": "A6", "text": "Hydra config.yaml contains gates", "type": "yaml_parse"},
+        {"id": "A7", "text": "00_HYPOTHESES.md exists", "type": "file_exists"},
+        {"id": "A8", "text": "02_METRICS.md contains gate thresholds", "type": "keyword_search"},
+        {"id": "A9", "text": "leakage_check.py exists", "type": "file_exists"},
+        {"id": "M1", "text": "04_COMPLIANCE.md exists with medical/GDPR content", "type": "keyword_search"},
+        {"id": "M2", "text": "05_SPLIT_POLICY.md mentions side L/R co-location", "type": "keyword_search"},
+        {"id": "M3", "text": "Temporal holdout documented", "type": "keyword_search"}
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "ECG特徴量からAFを分類する2-phase実験。Phase A不要、PR-AUC ≥ 0.70/0.65、研究コンプライアンス。",
+      "expected_output": "2-phase directory (no Phase A), classification metrics, research compliance",
+      "files": [],
+      "assertions": [
+        {"id": "A1", "text": "CLAUDE.md contains prime directives", "type": "keyword_search"},
+        {"id": "A2", "text": "feature_availability.yaml exists", "type": "file_exists"},
+        {"id": "A3", "text": "Only 2 phase scripts (no run_phase_a.py)", "type": "file_count"},
+        {"id": "A4", "text": "Test files exist", "type": "file_count"},
+        {"id": "A5", "text": "conftest.py and pytest.ini exist", "type": "file_exists"},
+        {"id": "A6", "text": "config.yaml contains gates", "type": "yaml_parse"},
+        {"id": "A7", "text": "00_HYPOTHESES.md exists", "type": "file_exists"},
+        {"id": "A8", "text": "02_METRICS.md contains PR-AUC thresholds", "type": "keyword_search"},
+        {"id": "A9", "text": "leakage_check.py exists", "type": "file_exists"},
+        {"id": "C1", "text": "No Phase A evaluator exists", "type": "file_absent"},
+        {"id": "C2", "text": "Classification metrics in METRICS.md", "type": "keyword_search"},
+        {"id": "C3", "text": "04_COMPLIANCE.md exists with research content", "type": "keyword_search"}
+      ]
+    }
+  ]
+}

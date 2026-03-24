@@ -1,0 +1,39 @@
+# Feature Availability Schema — sarcopenia-risk-prediction
+#
+# This schema defines which features are available at inference time
+# and which MUST NOT be used as training features (leakage candidates).
+#
+# Subject ID field: username
+
+features:
+  # Features that ARE available at inference time
+  inference_available:
+    - gender
+    # walk_features: 830 columns (prefix: walk_features or domain-specific names)
+    # step_features: 259 columns (prefix: step_features or domain-specific names)
+    # NOTE: The actual column names should be populated after inspecting
+    # the raw data files. Use wildcard patterns in code to match prefixes.
+
+  # Features that MUST NOT be used as training features
+  # These are either identity columns, target-related, or only available
+  # during data collection (not at inference time).
+  inference_unavailable:
+    - uuid
+    - username
+    - test_date_time
+    - height
+    - weight
+    - age
+    - bmi
+    - smi
+    - vfl
+    - sarcopenia_risk_score  # target variable — never use as feature
+
+  # Auxiliary targets for analysis (not primary prediction target)
+  auxiliary_targets: []
+
+metadata:
+  subject_id: username
+  target: sarcopenia_risk_score
+  task_type: regression
+  updated: "2026-03-03"

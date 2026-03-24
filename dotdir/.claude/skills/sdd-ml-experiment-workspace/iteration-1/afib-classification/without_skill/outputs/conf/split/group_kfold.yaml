@@ -1,0 +1,14 @@
+# Split configuration for AFib Classification
+cv:
+  method: StratifiedGroupKFold
+  n_splits: 5
+  group_col: record_id
+  stratify_col: af_label
+  seed: 42
+
+holdout:
+  method: StratifiedShuffleSplit
+  test_size: 0.2
+  group_col: record_id
+  stratify_col: af_label
+  seed: 123

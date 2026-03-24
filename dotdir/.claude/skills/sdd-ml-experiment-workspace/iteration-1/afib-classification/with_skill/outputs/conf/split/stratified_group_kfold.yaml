@@ -1,0 +1,5 @@
+name: stratified_group_kfold
+method: StratifiedGroupKFold
+n_splits: 5
+group_key: record_id
+stratify_by: af_label

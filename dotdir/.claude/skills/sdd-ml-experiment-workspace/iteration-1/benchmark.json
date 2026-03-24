@@ -1,0 +1,210 @@
+{
+  "metadata": {
+    "skill_name": "sdd-ml-experiment",
+    "skill_path": "/Users/kkmclab/.claude/skills/sdd-ml-experiment",
+    "executor_model": "claude-opus-4-6",
+    "analyzer_model": "claude-opus-4-6",
+    "timestamp": "2026-03-03T06:00:00Z",
+    "evals_run": ["sarcopenia-risk", "knee-oa", "afib-classification"],
+    "runs_per_configuration": 1
+  },
+  "runs": [
+    {
+      "eval_id": 1,
+      "eval_name": "sarcopenia-risk",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 10,
+        "failed": 0,
+        "total": 10,
+        "time_seconds": 587.7,
+        "tokens": 98254,
+        "errors": 0
+      },
+      "expectations": [
+        {"text": "CLAUDE.md contains Anti-Sycophancy, Pre-Registration, Full Reporting directives", "passed": true, "evidence": "All key directives found"},
+        {"text": "feature_availability.yaml with inference_available/unavailable", "passed": true, "evidence": "available=True, unavailable=True"},
+        {"text": "conftest.py and pytest.ini exist", "passed": true, "evidence": "conftest.py=True, pytest.ini=True"},
+        {"text": "Hydra config.yaml contains gates section", "passed": true, "evidence": "Gates section found"},
+        {"text": "00_HYPOTHESES.md with pre-registration content", "passed": true, "evidence": "Hypothesis content found"},
+        {"text": "leakage_check.py exists in src/schema/", "passed": true, "evidence": "Found"},
+        {"text": "Test files exist for src modules", "passed": true, "evidence": "src modules=9, test files=9"},
+        {"text": "Exactly 3 phase scripts (A, B, C)", "passed": true, "evidence": "Found 3 phase scripts"},
+        {"text": "02_METRICS.md contains Spearman gate thresholds (0.5, 0.3)", "passed": true, "evidence": "Thresholds found"},
+        {"text": "Gate conditions mention Spearman correlation", "passed": true, "evidence": "Spearman reference found"}
+      ]
+    },
+    {
+      "eval_id": 1,
+      "eval_name": "sarcopenia-risk",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 10,
+        "failed": 0,
+        "total": 10,
+        "time_seconds": 728.0,
+        "tokens": 117870,
+        "errors": 0
+      },
+      "expectations": [
+        {"text": "CLAUDE.md contains Anti-Sycophancy, Pre-Registration, Full Reporting directives", "passed": true, "evidence": "All key directives found"},
+        {"text": "feature_availability.yaml with inference_available/unavailable", "passed": true, "evidence": "available=True, unavailable=True"},
+        {"text": "conftest.py and pytest.ini exist", "passed": true, "evidence": "conftest.py=True, pytest.ini=True"},
+        {"text": "Hydra config.yaml contains gates section", "passed": true, "evidence": "Gates section found"},
+        {"text": "00_HYPOTHESES.md with pre-registration content", "passed": true, "evidence": "Hypothesis content found"},
+        {"text": "leakage_check.py exists in src/schema/", "passed": true, "evidence": "Found"},
+        {"text": "Test files exist for src modules", "passed": true, "evidence": "src modules=12, test files=9"},
+        {"text": "Exactly 3 phase scripts (A, B, C)", "passed": true, "evidence": "Found 3 phase scripts"},
+        {"text": "02_METRICS.md contains Spearman gate thresholds (0.5, 0.3)", "passed": true, "evidence": "Thresholds found"},
+        {"text": "Gate conditions mention Spearman correlation", "passed": true, "evidence": "Spearman reference found"}
+      ]
+    },
+    {
+      "eval_id": 2,
+      "eval_name": "knee-oa",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 12,
+        "failed": 0,
+        "total": 12,
+        "time_seconds": 590.7,
+        "tokens": 96194,
+        "errors": 0
+      },
+      "expectations": [
+        {"text": "CLAUDE.md contains Anti-Sycophancy, Pre-Registration, Full Reporting directives", "passed": true, "evidence": "All key directives found"},
+        {"text": "feature_availability.yaml with inference_available/unavailable", "passed": true, "evidence": "available=True, unavailable=True"},
+        {"text": "conftest.py and pytest.ini exist", "passed": true, "evidence": "conftest.py=True, pytest.ini=True"},
+        {"text": "Hydra config.yaml contains gates section", "passed": true, "evidence": "Gates section found"},
+        {"text": "00_HYPOTHESES.md with pre-registration content", "passed": true, "evidence": "Hypothesis content found"},
+        {"text": "leakage_check.py exists in src/schema/", "passed": true, "evidence": "Found"},
+        {"text": "Test files exist for src modules", "passed": true, "evidence": "src modules=10, test files=10"},
+        {"text": "Exactly 3 phase scripts (A, B, C)", "passed": true, "evidence": "Found 3 phase scripts"},
+        {"text": "02_METRICS.md contains rho >= 0.4 and RMSE thresholds", "passed": true, "evidence": "rho_threshold=True, rmse_mentioned=True"},
+        {"text": "04_COMPLIANCE.md exists with medical content", "passed": true, "evidence": "Medical compliance doc found"},
+        {"text": "Split policy mentions side (L/R) co-location", "passed": true, "evidence": "Side co-location documented"},
+        {"text": "Temporal holdout strategy documented", "passed": true, "evidence": "Temporal holdout found"}
+      ]
+    },
+    {
+      "eval_id": 2,
+      "eval_name": "knee-oa",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.75,
+        "passed": 9,
+        "failed": 3,
+        "total": 12,
+        "time_seconds": 816.2,
+        "tokens": 125270,
+        "errors": 0
+      },
+      "expectations": [
+        {"text": "CLAUDE.md contains Anti-Sycophancy, Pre-Registration, Full Reporting directives", "passed": true, "evidence": "All key directives found"},
+        {"text": "feature_availability.yaml with inference_available/unavailable", "passed": true, "evidence": "available=True, unavailable=True"},
+        {"text": "conftest.py and pytest.ini exist", "passed": false, "evidence": "conftest.py=True, pytest.ini=False"},
+        {"text": "Hydra config.yaml contains gates section", "passed": true, "evidence": "Gates section found"},
+        {"text": "00_HYPOTHESES.md with pre-registration content", "passed": false, "evidence": "Missing hypothesis content"},
+        {"text": "leakage_check.py exists in src/schema/", "passed": true, "evidence": "Found"},
+        {"text": "Test files exist for src modules", "passed": true, "evidence": "src modules=11, test files=7"},
+        {"text": "Exactly 3 phase scripts (A, B, C)", "passed": true, "evidence": "Found 3 phase scripts"},
+        {"text": "02_METRICS.md contains rho >= 0.4 and RMSE thresholds", "passed": true, "evidence": "rho_threshold=True, rmse_mentioned=True"},
+        {"text": "04_COMPLIANCE.md exists with medical content", "passed": false, "evidence": "File not found"},
+        {"text": "Split policy mentions side (L/R) co-location", "passed": true, "evidence": "Side co-location documented"},
+        {"text": "Temporal holdout strategy documented", "passed": true, "evidence": "Temporal holdout found"}
+      ]
+    },
+    {
+      "eval_id": 3,
+      "eval_name": "afib-classification",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.917,
+        "passed": 11,
+        "failed": 1,
+        "total": 12,
+        "time_seconds": 473.5,
+        "tokens": 79916,
+        "errors": 0
+      },
+      "expectations": [
+        {"text": "CLAUDE.md contains Anti-Sycophancy, Pre-Registration, Full Reporting directives", "passed": true, "evidence": "All key directives found"},
+        {"text": "feature_availability.yaml with inference_available/unavailable", "passed": true, "evidence": "available=True, unavailable=True"},
+        {"text": "conftest.py and pytest.ini exist", "passed": true, "evidence": "conftest.py=True, pytest.ini=True"},
+        {"text": "Hydra config.yaml contains gates section", "passed": true, "evidence": "Gates section found"},
+        {"text": "00_HYPOTHESES.md with pre-registration content", "passed": false, "evidence": "Missing hypothesis content"},
+        {"text": "leakage_check.py exists in src/schema/", "passed": true, "evidence": "Found"},
+        {"text": "Test files exist for src modules", "passed": true, "evidence": "src modules=9, test files=9"},
+        {"text": "Only 2 phase scripts (B, C) — no Phase A", "passed": true, "evidence": "phase_a=False, phase_b=True, phase_c=True"},
+        {"text": "02_METRICS.md contains PR-AUC thresholds", "passed": true, "evidence": "PR-AUC thresholds found"},
+        {"text": "No Phase A evaluator exists", "passed": true, "evidence": "Correctly absent"},
+        {"text": "Classification metrics in METRICS.md", "passed": true, "evidence": "Classification metrics found"},
+        {"text": "04_COMPLIANCE.md exists with research content", "passed": true, "evidence": "Found"}
+      ]
+    },
+    {
+      "eval_id": 3,
+      "eval_name": "afib-classification",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.917,
+        "passed": 11,
+        "failed": 1,
+        "total": 12,
+        "time_seconds": 588.2,
+        "tokens": 116006,
+        "errors": 0
+      },
+      "expectations": [
+        {"text": "CLAUDE.md contains Anti-Sycophancy, Pre-Registration, Full Reporting directives", "passed": true, "evidence": "All key directives found"},
+        {"text": "feature_availability.yaml with inference_available/unavailable", "passed": true, "evidence": "available=True, unavailable=True"},
+        {"text": "conftest.py and pytest.ini exist", "passed": true, "evidence": "conftest.py=True, pytest.ini=True"},
+        {"text": "Hydra config.yaml contains gates section", "passed": false, "evidence": "Missing: ['gate']"},
+        {"text": "00_HYPOTHESES.md with pre-registration content", "passed": true, "evidence": "Hypothesis content found"},
+        {"text": "leakage_check.py exists in src/schema/", "passed": true, "evidence": "Found"},
+        {"text": "Test files exist for src modules", "passed": true, "evidence": "src modules=8, test files=7"},
+        {"text": "Only 2 phase scripts (B, C) — no Phase A", "passed": true, "evidence": "phase_a=False, phase_b=True, phase_c=True"},
+        {"text": "02_METRICS.md contains PR-AUC thresholds", "passed": true, "evidence": "PR-AUC thresholds found"},
+        {"text": "No Phase A evaluator exists", "passed": true, "evidence": "Correctly absent"},
+        {"text": "Classification metrics in METRICS.md", "passed": true, "evidence": "Classification metrics found"},
+        {"text": "04_COMPLIANCE.md exists with research content", "passed": true, "evidence": "Found"}
+      ]
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {"mean": 0.972, "stddev": 0.048, "min": 0.917, "max": 1.0},
+      "time_seconds": {"mean": 550.6, "stddev": 54.6, "min": 473.5, "max": 590.7},
+      "tokens": {"mean": 91455, "stddev": 8203, "min": 79916, "max": 98254}
+    },
+    "without_skill": {
+      "pass_rate": {"mean": 0.889, "stddev": 0.104, "min": 0.75, "max": 1.0},
+      "time_seconds": {"mean": 710.8, "stddev": 93.9, "min": 588.2, "max": 816.2},
+      "tokens": {"mean": 119715, "stddev": 4050, "min": 116006, "max": 125270}
+    },
+    "delta": {
+      "pass_rate": "+0.083",
+      "time_seconds": "-160.2",
+      "tokens": "-28260"
+    }
+  },
+  "notes": [
+    "with_skill achieves 97.2% pass rate vs 88.9% without_skill (+8.3pp improvement)",
+    "with_skill is 23% faster on average (550.6s vs 710.8s), saving ~160 seconds per run",
+    "with_skill uses 24% fewer tokens on average (91K vs 120K), saving ~28K tokens per run",
+    "Knee OA shows the largest skill advantage: 100% vs 75% pass rate — without_skill missed pytest.ini, hypothesis content, and 04_COMPLIANCE.md",
+    "Sarcopenia shows no quality difference (both 10/10), but with_skill is 19% faster and uses 17% fewer tokens",
+    "AFib with_skill missed 'hypothesis' keyword in 00_HYPOTHESES.md (likely phrasing/capitalization) — consider making assertion more flexible or improving skill template",
+    "Common assertions (CLAUDE.md directives, feature_availability.yaml, leakage_check.py) pass 100% across both configurations — these may not differentiate skill value",
+    "without_skill shows higher variance in pass rate (stddev 0.104 vs 0.048), suggesting less consistent output quality"
+  ]
+}

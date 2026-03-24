@@ -1,0 +1,7 @@
+name: group_kfold
+method: GroupKFold
+n_splits: 5
+group_key: patient_id
+side_colocation: side
+holdout_method: temporal
+holdout_cutoff_year: 2024

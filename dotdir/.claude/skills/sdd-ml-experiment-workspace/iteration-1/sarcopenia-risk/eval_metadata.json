@@ -1,0 +1,17 @@
+{
+  "eval_id": 1,
+  "eval_name": "sarcopenia-risk-3phase",
+  "prompt": "インソール歩行データからサルコペニアリスクを予測する新しい実験環境を作成してください。3-phase構成、LightGBM、ゲート条件 Phase A: Spearman ρ ≥ 0.5、Phase B: Spearman ρ ≥ 0.3。",
+  "assertions": [
+    {"id": "A1", "text": "CLAUDE.md contains all 10 prime directives including Anti-Sycophancy, Pre-Registration, Full Reporting"},
+    {"id": "A2", "text": "feature_availability.yaml exists with inference_available and inference_unavailable sections"},
+    {"id": "A3", "text": "Exactly 3 phase scripts exist (run_phase_a.py, run_phase_b.py, run_phase_c.py)"},
+    {"id": "A4", "text": "Test files exist for each src module (tests/test_*.py count >= src module count)"},
+    {"id": "A5", "text": "conftest.py and pytest.ini exist"},
+    {"id": "A6", "text": "Hydra config.yaml contains gates section with phase_a and phase_b thresholds"},
+    {"id": "A7", "text": "00_HYPOTHESES.md contains pre-registration and exploratory vs confirmatory sections"},
+    {"id": "A8", "text": "02_METRICS.md contains Spearman rho >= 0.5 and >= 0.3 gate thresholds"},
+    {"id": "A9", "text": "leakage_check.py exists in src/schema/"},
+    {"id": "S1", "text": "Gate conditions mention Spearman correlation specifically"}
+  ]
+}

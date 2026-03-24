@@ -1,0 +1,19 @@
+{
+  "eval_id": 2,
+  "eval_name": "knee-oa-medical-compliance",
+  "prompt": "膝関節角度の時系列データからOA進行度を予測する実験。medical コンプライアンス、side グルーピング、temporal holdout。",
+  "assertions": [
+    {"id": "A1", "text": "CLAUDE.md contains all 10 prime directives including Anti-Sycophancy, Pre-Registration, Full Reporting"},
+    {"id": "A2", "text": "feature_availability.yaml exists with inference_available and inference_unavailable sections"},
+    {"id": "A3", "text": "Exactly 3 phase scripts exist (run_phase_a.py, run_phase_b.py, run_phase_c.py)"},
+    {"id": "A4", "text": "Test files exist for each src module"},
+    {"id": "A5", "text": "conftest.py and pytest.ini exist"},
+    {"id": "A6", "text": "Hydra config.yaml contains gates section"},
+    {"id": "A7", "text": "00_HYPOTHESES.md contains pre-registration sections"},
+    {"id": "A8", "text": "02_METRICS.md contains gate thresholds (rho >= 0.4, RMSE <= 1.0)"},
+    {"id": "A9", "text": "leakage_check.py exists in src/schema/"},
+    {"id": "M1", "text": "04_COMPLIANCE.md exists with medical/GDPR content"},
+    {"id": "M2", "text": "05_SPLIT_POLICY.md mentions side (L/R) co-location with patient_id"},
+    {"id": "M3", "text": "Temporal holdout strategy documented (train < 2024, test >= 2024)"}
+  ]
+}

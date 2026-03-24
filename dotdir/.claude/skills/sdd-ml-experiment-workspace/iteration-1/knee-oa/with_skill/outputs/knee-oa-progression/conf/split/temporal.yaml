@@ -1,0 +1,6 @@
+name: temporal
+method: temporal_holdout
+group_key: patient_id
+cutoff_date: "2024-01-01"
+# All data before cutoff -> train, after -> test
+# Ensures no temporal leakage: model never sees future data during training

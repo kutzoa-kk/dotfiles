@@ -1,0 +1,53 @@
+# Feature configuration for AFib Classification
+feature_groups:
+  rr_intervals:
+    - rr_mean
+    - rr_std
+    - rr_rmssd
+    - rr_pnn50
+    - rr_median
+    - rr_iqr
+    - rr_cv
+    - rr_min
+    - rr_max
+    - rr_range
+    - rr_skewness
+    - rr_kurtosis
+
+  p_wave:
+    - p_wave_amplitude
+    - p_wave_duration
+    - p_wave_area
+    - p_wave_symmetry
+    - p_wave_peak_time
+
+  qrs_complex:
+    - qrs_duration
+    - qrs_amplitude
+    - qrs_axis
+    - qrs_area
+    - qrs_peak_time
+
+  hrv:
+    - hrv_sdnn
+    - hrv_rmssd
+    - hrv_pnn50
+    - hrv_lf_power
+    - hrv_hf_power
+    - hrv_lf_hf_ratio
+    - hrv_total_power
+    - hrv_vlf_power
+    - hrv_sample_entropy
+    - hrv_approximate_entropy
+
+  heart_rate:
+    - heart_rate_mean
+    - heart_rate_std
+    - heart_rate_min
+    - heart_rate_max
+
+excluded:
+  - record_id
+  - diagnosis_date
+  - af_label
+  - cardiologist_notes

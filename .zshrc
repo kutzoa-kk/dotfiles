@@ -103,6 +103,9 @@ elif [ -f /usr/local/bin/brew ]; then
     eval "$(/usr/local/bin/brew shellenv)"
 fi
 
+# rig: prefer rig-managed R over homebrew R
+export PATH="/usr/local/bin:$PATH"
+
 # Powerlevel10k configuration
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 

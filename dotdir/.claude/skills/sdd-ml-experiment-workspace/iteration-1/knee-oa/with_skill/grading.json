@@ -1,0 +1,71 @@
+{
+  "eval_name": "knee-oa",
+  "variant": "with_skill",
+  "expectations": [
+    {
+      "text": "CLAUDE.md contains Anti-Sycophancy, Pre-Registration, Full Reporting directives",
+      "passed": true,
+      "evidence": "All key directives found"
+    },
+    {
+      "text": "feature_availability.yaml with inference_available/unavailable",
+      "passed": true,
+      "evidence": "available=True, unavailable=True"
+    },
+    {
+      "text": "conftest.py and pytest.ini exist",
+      "passed": true,
+      "evidence": "conftest.py=True, pytest.ini=True"
+    },
+    {
+      "text": "Hydra config.yaml contains gates section",
+      "passed": true,
+      "evidence": "Gates section found"
+    },
+    {
+      "text": "00_HYPOTHESES.md with pre-registration content",
+      "passed": true,
+      "evidence": "Hypothesis content found"
+    },
+    {
+      "text": "leakage_check.py exists in src/schema/",
+      "passed": true,
+      "evidence": "Found"
+    },
+    {
+      "text": "Test files exist for src modules",
+      "passed": true,
+      "evidence": "src modules=10, test files=10"
+    },
+    {
+      "text": "Exactly 3 phase scripts (A, B, C)",
+      "passed": true,
+      "evidence": "Found 3 phase scripts"
+    },
+    {
+      "text": "02_METRICS.md contains rho >= 0.4 and RMSE thresholds",
+      "passed": true,
+      "evidence": "rho_threshold=True, rmse_mentioned=True"
+    },
+    {
+      "text": "04_COMPLIANCE.md exists with medical content",
+      "passed": true,
+      "evidence": "Medical compliance doc found"
+    },
+    {
+      "text": "Split policy mentions side (L/R) co-location",
+      "passed": true,
+      "evidence": "Side co-location documented"
+    },
+    {
+      "text": "Temporal holdout strategy documented",
+      "passed": true,
+      "evidence": "Temporal holdout found"
+    }
+  ],
+  "summary": {
+    "passed": 12,
+    "total": 12,
+    "pass_rate": 1.0
+  }
+}

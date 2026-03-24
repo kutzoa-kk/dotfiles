@@ -1,0 +1,35 @@
+name: default
+description: "All available knee angle and gait cycle features with demographics"
+
+# Feature groups
+groups:
+  demographic:
+    - age
+    - sex
+  knee_angle:
+    - knee_flex_max
+    - knee_flex_min
+    - knee_rom
+    - knee_angle_at_heel_strike
+    - knee_angle_at_toe_off
+    - knee_flex_peak_swing
+    - knee_flex_peak_stance
+    - knee_angular_velocity_max
+    - knee_angular_velocity_min
+    - knee_angular_velocity_mean
+    - knee_angular_velocity_std
+    - knee_angle_cv
+    - knee_angle_std
+    - knee_angle_iqr
+  gait_cycle:
+    - stance_phase_pct
+    - swing_phase_pct
+    - double_support_pct
+    - single_support_pct
+    - cadence
+    - stride_length
+    - gait_speed
+    - step_width
+    - step_length_asymmetry
+    - gait_cycle_duration
+    - gait_cycle_variability

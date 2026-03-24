@@ -1,0 +1,6 @@
+name: group_kfold
+method: GroupKFold
+n_splits: 5
+group_key: patient_id
+# side (L/R) co-located with patient_id automatically
+# because GroupKFold groups by patient_id and both sides share the same patient_id

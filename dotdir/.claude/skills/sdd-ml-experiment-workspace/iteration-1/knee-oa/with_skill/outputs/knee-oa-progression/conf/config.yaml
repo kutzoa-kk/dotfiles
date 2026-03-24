@@ -1,0 +1,49 @@
+defaults:
+  - model: lightgbm
+  - features: default
+  - split: group_kfold
+  - _self_
+
+project_name: muscle-prediction
+experiment_name: knee-oa-progression
+seed: 42
+run_name: ${model.name}_${features.name}_${split.name}_seed${seed}
+
+mlflow:
+  tracking_uri: mlruns
+  experiment_name: ${project_name}_${experiment_name}
+
+data:
+  raw_dir: data/raw
+  processed_dir: data/processed
+  schema_path: src/schema/feature_availability.yaml
+  joint_angles_path: data/raw/joint_angles.h5
+  clinical_metadata_path: data/raw/clinical_metadata.csv
+  join_keys:
+    - patient_id
+    - side
+  sampling_rate_hz: 100
+  target_column: kl_grade
+  subject_id_field: patient_id
+  side_column: side
+
+gates:
+  phase_a:
+    min_spearman_rho: 0.4
+  phase_b:
+    max_rmse: 1.0
+  phase_c:
+    max_rmse: 1.2  # relaxed threshold for holdout
+
+holdout:
+  method: temporal
+  cutoff_date: "2024-01-01"
+  train_filter: "visit_date < '2024-01-01'"
+  test_filter: "visit_date >= '2024-01-01'"
+
+hydra:
+  run:
+    dir: outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}_${run_name}
+  sweep:
+    dir: outputs/sweeps/${now:%Y-%m-%d}
+    subdir: ${run_name}

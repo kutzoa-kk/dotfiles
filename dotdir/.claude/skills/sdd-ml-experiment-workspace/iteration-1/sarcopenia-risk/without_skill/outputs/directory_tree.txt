@@ -1,0 +1,69 @@
+sarcopenia-risk-prediction/
+├── conf/
+│   ├── features/
+│   │   └── default.yaml
+│   ├── model/
+│   │   └── baseline.yaml
+│   ├── split/
+│   │   └── group_kfold.yaml
+│   └── config.yaml
+├── data/
+│   ├── processed/
+│   │   └── .gitkeep
+│   └── raw/
+│       └── .gitkeep
+├── docs/
+│   ├── experiments/
+│   │   └── .gitkeep
+│   └── specs/
+│       ├── 00_HYPOTHESES.md
+│       ├── 01_DATA_DICTIONARY.md
+│       ├── 02_METRICS.md
+│       └── 05_SPLIT_POLICY.md
+├── notebooks/
+│   └── .gitkeep
+├── scripts/
+│   ├── run_phase_a.py
+│   ├── run_phase_b.py
+│   └── run_phase_c.py
+├── src/
+│   ├── analysis/
+│   │   └── __init__.py
+│   ├── features/
+│   │   ├── __init__.py
+│   │   ├── feature_matrix_builder.py
+│   │   ├── sarcopenia_score_builder.py
+│   │   └── step_aggregator.py
+│   ├── models/
+│   │   ├── __init__.py
+│   │   ├── holdout_trainer.py
+│   │   ├── phase_a_evaluator.py
+│   │   ├── phase_b_evaluator.py
+│   │   ├── phase_c_evaluator.py
+│   │   └── sarcopenia_trainer.py
+│   ├── schema/
+│   │   ├── __init__.py
+│   │   ├── data_validation.py
+│   │   ├── feature_availability.yaml
+│   │   └── leakage_check.py
+│   ├── __init__.py
+│   ├── data_access.py
+│   └── split_generator.py
+├── tests/
+│   ├── __init__.py
+│   ├── test_data_validation.py
+│   ├── test_leakage_check.py
+│   ├── test_phase_a_evaluator.py
+│   ├── test_phase_b_evaluator.py
+│   ├── test_phase_c_evaluator.py
+│   ├── test_sarcopenia_score_builder.py
+│   ├── test_sarcopenia_trainer.py
+│   ├── test_split_generator.py
+│   └── test_step_aggregator.py
+├── CLAUDE.md
+├── conftest.py
+└── pytest.ini
+
+19 directories, 42 files
+
+Test Results: 53 passed, 0 failed (3.26s)

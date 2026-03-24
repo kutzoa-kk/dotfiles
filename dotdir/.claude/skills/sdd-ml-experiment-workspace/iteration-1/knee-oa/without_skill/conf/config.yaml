@@ -1,0 +1,68 @@
+defaults:
+  - model: lightgbm
+  - features: default
+  - split: group_kfold
+  - _self_
+
+project_name: knee-oa-progression
+seed: 42
+run_name: ${model.name}_${features.name}_${split.name}_seed${seed}
+
+mlflow:
+  tracking_uri: mlruns
+  experiment_name: ${project_name}
+
+data:
+  raw_dir: data/raw
+  processed_dir: data/processed
+  schema_path: src/schema/feature_availability.yaml
+  # Clinical metadata
+  metadata_path: data/raw/clinical_metadata.csv
+  # Time-series data
+  angles_dir: data/raw/knee_angles
+  # Join keys
+  join_keys:
+    - patient_id
+    - side
+    - visit_date
+  # Sampling rate
+  sampling_rate_hz: 100
+
+target:
+  column: kl_grade
+  type: ordinal
+  n_classes: 5  # KL 0-4
+  label_names:
+    - "KL-0 (Normal)"
+    - "KL-1 (Doubtful)"
+    - "KL-2 (Mild)"
+    - "KL-3 (Moderate)"
+    - "KL-4 (Severe)"
+
+split:
+  group_key: patient_id
+  side_col: side   # co-locate L/R
+  cv_folds: 5
+  holdout_cutoff_year: 2024
+
+gates:
+  phase_a:
+    min_spearman_rho: 0.4  # feature-target correlation
+  phase_b:
+    max_rmse: 1.0  # CV RMSE
+  phase_c:
+    max_rmse: 1.0
+    min_spearman_rho: 0.5
+
+compliance:
+  level: medical
+  require_confidence_intervals: true
+  require_calibration: true
+  require_bootstrap_n: 1000
+
+hydra:
+  run:
+    dir: outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}_${run_name}
+  sweep:
+    dir: outputs/sweeps/${now:%Y-%m-%d}
+    subdir: ${run_name}

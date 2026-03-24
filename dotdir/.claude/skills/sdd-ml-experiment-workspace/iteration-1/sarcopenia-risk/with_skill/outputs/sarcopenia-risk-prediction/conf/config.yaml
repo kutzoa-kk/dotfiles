@@ -1,0 +1,44 @@
+defaults:
+  - model: baseline
+  - features: default
+  - split: group_kfold
+  - _self_
+
+project_name: muscle-prediction
+experiment_name: sarcopenia-risk-prediction
+seed: 42
+run_name: ${model.name}_${features.name}_${split.name}_seed${seed}
+
+mlflow:
+  tracking_uri: mlruns
+  experiment_name: ${project_name}_${experiment_name}
+
+data:
+  raw_dir: data/raw
+  processed_dir: data/processed
+  schema_path: src/schema/feature_availability.yaml
+  inbody_path: ${data.raw_dir}/inbody.csv
+  gait_features_path: ${data.raw_dir}/gait_features.parquet
+  subject_id: username
+  target_column: sarcopenia_risk_score
+
+gates:
+  phase_a:
+    min_spearman_rho: 0.5
+  phase_b:
+    min_spearman_rho: 0.3
+  phase_c:
+    # One-shot — report only, no strict gate
+    min_spearman_rho: 0.0
+
+holdout:
+  method: random
+  test_ratio: 0.2
+  random_state: ${seed}
+
+hydra:
+  run:
+    dir: outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}_${run_name}
+  sweep:
+    dir: outputs/sweeps/${now:%Y-%m-%d}
+    subdir: ${run_name}

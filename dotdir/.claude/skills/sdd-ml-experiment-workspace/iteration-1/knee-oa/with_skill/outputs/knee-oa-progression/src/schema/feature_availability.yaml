@@ -1,0 +1,53 @@
+features:
+  inference_available:
+    # Knee angle features (derived from 100 Hz time-series)
+    - knee_flexion_mean
+    - knee_flexion_std
+    - knee_flexion_range
+    - knee_flexion_max
+    - knee_flexion_min
+    - knee_extension_mean
+    - knee_extension_std
+    - knee_varus_valgus_mean
+    - knee_varus_valgus_std
+    - knee_varus_valgus_range
+    - knee_rotation_mean
+    - knee_rotation_std
+    - knee_rotation_range
+
+    # Gait cycle features
+    - stance_duration_mean
+    - stance_duration_std
+    - swing_duration_mean
+    - swing_duration_std
+    - stride_length_mean
+    - stride_length_std
+    - cadence_mean
+    - cadence_std
+    - gait_speed_mean
+    - gait_speed_std
+    - double_support_time_mean
+    - double_support_time_std
+
+    # Demographic features
+    - age
+    - sex
+    - bmi
+
+  inference_unavailable:
+    # These MUST NEVER be used as training features
+    - patient_id       # Subject identifier — leakage risk
+    - visit_date       # Temporal information — leakage risk
+    - kl_grade         # Prediction target
+    - radiograph_score # Derived from same assessment as KL grade — leakage risk
+    - side             # Used for grouping only, not as feature
+
+  auxiliary_targets: []
+
+zero_semantics:
+  description: "Zero values in joint angle features represent non-contact / valid zero readings, not missing data."
+  treatment: "Zeros are valid measurements and should NOT be imputed or removed."
+
+sampling_rate:
+  value: 100
+  unit: Hz

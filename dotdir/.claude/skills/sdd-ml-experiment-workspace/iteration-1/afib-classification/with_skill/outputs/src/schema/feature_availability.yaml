@@ -1,0 +1,40 @@
+features:
+  inference_available:
+    # RR interval features
+    - rr_mean
+    - rr_std
+    - rr_median
+    - rr_iqr
+    - rr_rmssd
+    - rr_pnn50
+    # P-wave features
+    - p_wave_duration
+    - p_wave_amplitude
+    - p_wave_area
+    - p_wave_morphology_score
+    # QRS features
+    - qrs_duration
+    - qrs_amplitude
+    - qrs_area
+    # Heart rate variability features
+    - hrv_sdnn
+    - hrv_sdsd
+    - hrv_lf_power
+    - hrv_hf_power
+    - hrv_lf_hf_ratio
+    - hrv_sample_entropy
+    - hrv_approximate_entropy
+    # Heart rate features
+    - heart_rate_mean
+    - heart_rate_std
+    - heart_rate_min
+    - heart_rate_max
+
+  inference_unavailable:
+    # Identifiers and labels -- MUST NOT be used as features
+    - record_id
+    - diagnosis_date
+    - af_label
+    - cardiologist_notes
+
+  auxiliary_targets: []

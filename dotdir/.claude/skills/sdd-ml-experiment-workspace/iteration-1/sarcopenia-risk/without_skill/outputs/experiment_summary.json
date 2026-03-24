@@ -1,0 +1,50 @@
+{
+  "experiment_name": "sarcopenia-risk-prediction",
+  "target": "Sarcopenia risk score (continuous regression)",
+  "model": "LightGBM",
+  "cv_strategy": "GroupKFold 5-fold (group_key=username, stratify=gender)",
+  "subject_id": "username",
+  "features": {
+    "available": ["gender", "walk_features (830 cols)", "step_features (259 cols)"],
+    "unavailable": ["uuid", "username", "test_date_time", "height", "weight", "age", "bmi", "smi", "vfl"]
+  },
+  "phases": {
+    "A": {
+      "name": "Score Validation",
+      "description": "Construct sarcopenia risk score from InBody SMI data, validate via hypothesis testing",
+      "gate": "Spearman rho >= 0.5 (construct validity) AND batch effect p > 0.05",
+      "script": "scripts/run_phase_a.py"
+    },
+    "B": {
+      "name": "Prediction CV",
+      "description": "Train LightGBM on gait features to predict sarcopenia risk, 5-fold GroupKFold CV",
+      "gate": "Pooled Spearman rho >= 0.3",
+      "script": "scripts/run_phase_b.py"
+    },
+    "C": {
+      "name": "Holdout ONE-SHOT",
+      "description": "80/20 holdout evaluation, no iteration allowed",
+      "gate": "Spearman rho >= 0.25 AND MAE improved vs mean predictor",
+      "script": "scripts/run_phase_c.py"
+    }
+  },
+  "score_definition": {
+    "formula": "sarcopenia_risk_score = -z_smi (inverted z-standardized SMI)",
+    "standardize_by": ["gender", "measurement_month"],
+    "direction": "higher = more sarcopenic"
+  },
+  "test_results": {
+    "total": 53,
+    "passed": 53,
+    "failed": 0,
+    "duration_seconds": 3.26
+  },
+  "file_counts": {
+    "source_files": 12,
+    "test_files": 9,
+    "config_files": 4,
+    "doc_files": 5,
+    "script_files": 3,
+    "total_files": 42
+  }
+}

@@ -1,0 +1,72 @@
+# Feature Availability Schema — Knee OA Progression
+# Variables classified by inference-time availability.
+# AI agents MUST NOT use inference_unavailable features for model training.
+
+features:
+  # Features available at inference time — safe to use as model inputs
+  inference_available:
+    # Demographic features
+    - age          # Patient age at measurement
+    - sex          # Biological sex (M/F)
+
+    # Knee angle time-series features (extracted from HDF5, 100 Hz)
+    # Categories: ROM, peak angles, angular velocity, symmetry indices
+    # knee_angle_features:
+    #   - knee_flex_max, knee_flex_min, knee_rom
+    #   - knee_ext_peak, knee_flex_peak_swing, knee_flex_peak_stance
+    #   - knee_angle_at_heel_strike, knee_angle_at_toe_off
+    #   - knee_angular_velocity_max, knee_angular_velocity_min
+    #   - knee_flex_moment_peak, knee_ext_moment_peak
+    #   - knee_varus_angle_max, knee_valgus_angle_max
+    #   - knee_rotation_rom
+    # NOTE: Full feature list in data/processed/knee_angle_feature_list.csv
+
+    # Gait cycle features (derived from time-series)
+    # gait_cycle_features:
+    #   - stance_phase_pct, swing_phase_pct
+    #   - double_support_pct, single_support_pct
+    #   - cadence, stride_length, gait_speed
+    #   - step_width, step_length_asymmetry
+    #   - gait_cycle_duration, gait_cycle_variability
+    # NOTE: Full feature list in data/processed/gait_cycle_feature_list.csv
+
+  # Features NOT available at inference time — PROHIBITED as training features
+  # Using these causes target leakage and invalidates the model.
+  inference_unavailable:
+    # Identity / metadata (CRITICAL: these leak subject identity)
+    - patient_id      # Primary subject identifier
+    - visit_date      # Date of clinical visit
+    - visit_id        # Visit identifier
+    - site_id         # Clinical site identifier
+    - side            # L/R knee (grouping variable, not a feature)
+
+    # Target variable (CRITICAL: this IS what we predict)
+    - kl_grade         # Kellgren-Lawrence grade (0-4) — THE TARGET
+    - radiograph_score # Radiographic OA score — derived from target
+
+    # Clinical scores that require imaging (not available without X-ray)
+    - oarsi_grade       # OARSI histological grade
+    - joint_space_width # JSW from X-ray
+    - osteophyte_score  # Osteophyte severity from X-ray
+    - sclerosis_score   # Subchondral sclerosis from X-ray
+
+    # Future clinical outcomes (temporal leakage)
+    - kl_grade_followup   # Future KL grade
+    - total_knee_replacement  # Future TKR status
+    - progression_flag    # Whether OA progressed
+
+  # Auxiliary targets for multi-task learning — NOT usable as input features
+  auxiliary_targets:
+    - kl_grade            # The primary ordinal target (0-4)
+    - pain_score          # VAS pain score (if available for multi-task)
+    - womac_total         # WOMAC total score (if available for multi-task)
+
+# Column name mapping: raw -> cleaned
+column_mapping:
+  "Patient ID": patient_id
+  "Visit Date": visit_date
+  "KL Grade": kl_grade
+  "Age": age
+  "Sex": sex
+  "Side": side
+  "Radiograph Score": radiograph_score

@@ -1,0 +1,42 @@
+defaults:
+  - model: lightgbm
+  - features: default
+  - split: stratified_group_kfold
+  - _self_
+
+project_name: muscle-prediction
+experiment_name: afib-classification
+seed: 42
+run_name: ${model.name}_${features.name}_${split.name}_seed${seed}
+
+mlflow:
+  tracking_uri: mlruns
+  experiment_name: ${project_name}_${experiment_name}
+
+data:
+  raw_dir: data/raw
+  processed_dir: data/processed
+  schema_path: src/schema/feature_availability.yaml
+  ecg_features_path: data/raw/ecg_features.parquet
+  clinical_labels_path: data/raw/clinical_labels.csv
+  join_key: record_id
+  target_column: af_label
+  subject_id_field: record_id
+
+gates:
+  phase_b:
+    pr_auc: 0.70
+  phase_c:
+    pr_auc: 0.65
+
+holdout:
+  method: random
+  test_size: 0.20
+  random_state: ${seed}
+
+hydra:
+  run:
+    dir: outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}_${run_name}
+  sweep:
+    dir: outputs/sweeps/${now:%Y-%m-%d}
+    subdir: ${run_name}

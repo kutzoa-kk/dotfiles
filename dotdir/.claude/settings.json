@@ -193,7 +193,6 @@
     "command": "bash ~/.claude/scripts/statusline.sh"
   },
   "enabledPlugins": {
-    "claude-delegator@jarrodwatts-claude-delegator": true,
     "code-simplifier@claude-plugins-official": true,
     "context7@claude-plugins-official": true,
     "playwright@claude-plugins-official": true,
@@ -209,23 +208,22 @@
     "code-documentation@claude-code-workflows": true,
     "debugging-toolkit@claude-code-workflows": true,
     "agent-orchestration@claude-code-workflows": true,
-    "everything-claude-code@everything-claude-code": true,
     "swift-lsp@claude-plugins-official": true,
-    "claude-octopus@nyldn-plugins": true,
-    "hookify@claude-plugins-official": true
+    "hookify@claude-plugins-official": true,
+    "everything-claude-code@everything-claude-code": true,
+    "frontend-design@claude-plugins-official": true,
+    "superpowers@claude-plugins-official": true,
+    "claude-md-management@claude-plugins-official": true,
+    "octo@nyldn-plugins": true
   },
-  "pluginConfigs": {
-    "claude-delegator@jarrodwatts-claude-delegator": {
-      "mcpServers": {
-        "codex": {
-          "command": "codex",
-          "args": [
-            "-m",
-            "gpt-5.2-codex",
-            "mcp-server"
-          ]
-        }
-      }
+  "extraKnownMarketplaces": {
+    "nyldn-plugins": {
+      "source": {
+        "source": "git",
+        "url": "https://github.com/nyldn/claude-octopus.git"
+      },
+      "autoUpdate": true
     }
-  }
+  },
+  "pluginConfigs": {}
 }

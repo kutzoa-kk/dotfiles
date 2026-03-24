@@ -1,0 +1,12 @@
+name: default
+source: src/schema/feature_availability.yaml
+subset: inference_available
+groups:
+  demographic:
+    - gender
+  gait:
+    prefix: walk_features
+    description: "830 walk-level gait feature columns"
+  step:
+    prefix: step_features
+    description: "259 step-level feature columns"

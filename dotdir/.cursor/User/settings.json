@@ -31,7 +31,8 @@
     "r.workspaceViewer.removeHiddenItems": false,
     "r.rmarkdown.knit.openOutputFile": true,
     "remote.SSH.remotePlatform": {
-        "ai-dev": "linux"
+        "ai-dev": "linux",
+        "workstation": "linux"
     },
     "editor.accessibilitySupport": "off"
 }

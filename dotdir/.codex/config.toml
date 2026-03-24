@@ -1,5 +1,5 @@
 personality = "pragmatic"
-model = "gpt-5.3-codex"
+model = "gpt-5.4"
 model_reasoning_effort = "xhigh"
 [mcp_servers.context7]
 command = "npx"
@@ -17,5 +17,15 @@ trust_level = "trusted"
 [projects."/Users/kkmac/dotfiles2"]
 trust_level = "trusted"
 
+[projects."/Users/kkmclab/code/scoremap/muscle-prediction"]
+trust_level = "trusted"
+
+[projects."/Users/kkmclab/code/scoremap/age-prediction"]
+trust_level = "trusted"
+
+[projects."/Users/kkmclab/code/scoremap/scoremap-prediction"]
+trust_level = "trusted"
+
 [notice.model_migrations]
 "gpt-5.2-codex" = "gpt-5.3-codex"
+"gpt-5.3-codex" = "gpt-5.4"

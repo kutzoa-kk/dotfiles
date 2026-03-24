@@ -1,0 +1,36 @@
+name: default
+source: src/schema/feature_availability.yaml
+subset: inference_available
+
+groups:
+  knee_angle:
+    - knee_flexion_mean
+    - knee_flexion_std
+    - knee_flexion_range
+    - knee_flexion_max
+    - knee_flexion_min
+    - knee_extension_mean
+    - knee_extension_std
+    - knee_varus_valgus_mean
+    - knee_varus_valgus_std
+    - knee_varus_valgus_range
+    - knee_rotation_mean
+    - knee_rotation_std
+    - knee_rotation_range
+  gait_cycle:
+    - stance_duration_mean
+    - stance_duration_std
+    - swing_duration_mean
+    - swing_duration_std
+    - stride_length_mean
+    - stride_length_std
+    - cadence_mean
+    - cadence_std
+    - gait_speed_mean
+    - gait_speed_std
+    - double_support_time_mean
+    - double_support_time_std
+  demographic:
+    - age
+    - sex
+    - bmi

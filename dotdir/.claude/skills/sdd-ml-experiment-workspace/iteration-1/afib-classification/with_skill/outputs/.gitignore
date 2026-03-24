@@ -1,0 +1,20 @@
+# Data directories
+data/raw/
+data/processed/
+
+# Experiment outputs
+outputs/
+mlruns/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store

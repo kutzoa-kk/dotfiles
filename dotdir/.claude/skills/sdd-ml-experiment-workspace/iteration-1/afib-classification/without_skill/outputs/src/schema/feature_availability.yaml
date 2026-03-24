@@ -1,0 +1,63 @@
+# Feature Availability Schema -- AFib Classification
+# Variables classified by inference-time availability.
+# AI agents MUST NOT use inference_unavailable features for model training.
+
+features:
+  # Features available at inference time -- safe to use as model inputs
+  inference_available:
+    # RR interval features
+    - rr_mean
+    - rr_std
+    - rr_rmssd
+    - rr_pnn50
+    - rr_median
+    - rr_iqr
+    - rr_cv
+    - rr_min
+    - rr_max
+    - rr_range
+    - rr_skewness
+    - rr_kurtosis
+    # P-wave morphology features
+    - p_wave_amplitude
+    - p_wave_duration
+    - p_wave_area
+    - p_wave_symmetry
+    - p_wave_peak_time
+    # QRS complex features
+    - qrs_duration
+    - qrs_amplitude
+    - qrs_axis
+    - qrs_area
+    - qrs_peak_time
+    # Heart rate variability (HRV) features
+    - hrv_sdnn
+    - hrv_rmssd
+    - hrv_pnn50
+    - hrv_lf_power
+    - hrv_hf_power
+    - hrv_lf_hf_ratio
+    - hrv_total_power
+    - hrv_vlf_power
+    - hrv_sample_entropy
+    - hrv_approximate_entropy
+    # Heart rate features
+    - heart_rate_mean
+    - heart_rate_std
+    - heart_rate_min
+    - heart_rate_max
+
+  # Features NOT available at inference time -- PROHIBITED as training features
+  # Using these causes target leakage and invalidates the model.
+  inference_unavailable:
+    # Identity / metadata
+    - record_id          # subject identifier -- group leakage
+    - diagnosis_date     # temporal information -- leakage
+    - cardiologist_notes # text label data -- direct leakage
+
+    # Target variable
+    - af_label           # the prediction target itself
+
+  # Auxiliary targets -- NOT usable as input features
+  auxiliary_targets:
+    - af_label           # binary AF classification target (0/1)

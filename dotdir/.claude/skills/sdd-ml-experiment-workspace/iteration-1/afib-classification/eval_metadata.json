@@ -1,0 +1,19 @@
+{
+  "eval_id": 3,
+  "eval_name": "afib-2phase-classification",
+  "prompt": "ECG特徴量からAFを分類する2-phase実験。Phase A不要、PR-AUC ≥ 0.70/0.65、研究コンプライアンス。",
+  "assertions": [
+    {"id": "A1", "text": "CLAUDE.md contains prime directives including Anti-Sycophancy, Pre-Registration, Full Reporting"},
+    {"id": "A2", "text": "feature_availability.yaml exists with inference_available and inference_unavailable sections"},
+    {"id": "A3", "text": "Only 2 phase scripts exist (run_phase_b.py, run_phase_c.py) — NO run_phase_a.py"},
+    {"id": "A4", "text": "Test files exist for each src module"},
+    {"id": "A5", "text": "conftest.py and pytest.ini exist"},
+    {"id": "A6", "text": "Hydra config.yaml contains gates section with phase_b threshold"},
+    {"id": "A7", "text": "00_HYPOTHESES.md contains pre-registration sections"},
+    {"id": "A8", "text": "02_METRICS.md contains PR-AUC >= 0.70 and >= 0.65 thresholds"},
+    {"id": "A9", "text": "leakage_check.py exists in src/schema/"},
+    {"id": "C1", "text": "No Phase A evaluator exists (no phase_a_evaluator.py)"},
+    {"id": "C2", "text": "Classification metrics (PR-AUC, ROC-AUC, F1) mentioned in METRICS.md"},
+    {"id": "C3", "text": "04_COMPLIANCE.md exists with research-level content (not medical)"}
+  ]
+}

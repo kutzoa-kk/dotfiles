@@ -1,0 +1,16 @@
+# AFib Classification Experiment Config
+experiment:
+  name: afib-classification
+  target: af_label
+  task: binary_classification
+  phases: [B, C]  # Phase A skipped
+
+data:
+  ecg_features: data/raw/ecg_features.parquet
+  clinical_labels: data/raw/clinical_labels.csv
+  join_key: record_id
+
+defaults:
+  - features: default
+  - split: group_kfold
+  - model: baseline

@@ -1,0 +1,27 @@
+# Model configuration for AFib Classification
+
+lightgbm:
+  n_estimators: 100
+  learning_rate: 0.1
+  max_depth: 6
+  num_leaves: 31
+  random_state: 42
+  objective: binary
+  metric: average_precision
+  verbosity: -1
+  is_unbalance: true
+
+logistic_regression:
+  C: 1.0
+  penalty: l2
+  solver: lbfgs
+  max_iter: 1000
+  random_state: 42
+
+gates:
+  phase_b:
+    metric: pr_auc
+    threshold: 0.70
+  phase_c:
+    metric: pr_auc
+    threshold: 0.65

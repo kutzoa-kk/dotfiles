@@ -1,0 +1,33 @@
+name: default
+source: src/schema/feature_availability.yaml
+subset: inference_available
+groups:
+  rr_interval:
+    - rr_mean
+    - rr_std
+    - rr_median
+    - rr_iqr
+    - rr_rmssd
+    - rr_pnn50
+  p_wave:
+    - p_wave_duration
+    - p_wave_amplitude
+    - p_wave_area
+    - p_wave_morphology_score
+  qrs:
+    - qrs_duration
+    - qrs_amplitude
+    - qrs_area
+  hrv:
+    - hrv_sdnn
+    - hrv_sdsd
+    - hrv_lf_power
+    - hrv_hf_power
+    - hrv_lf_hf_ratio
+    - hrv_sample_entropy
+    - hrv_approximate_entropy
+  heart_rate:
+    - heart_rate_mean
+    - heart_rate_std
+    - heart_rate_min
+    - heart_rate_max

@@ -205,10 +205,81 @@
 
 ---
 
+## テーブル幅不足（Marp固有）
+
+### 症状
+- テーブルがスライド幅の50-60%程度にしかならない
+- `w-full` や `width: 100%` を付けても効かない
+- テーブルヘッダーとボディの幅が一致しない
+
+### 原因
+Marpは全テーブル要素に `display: block` を設定する：
+- `<table>` → `display: block`
+- `<thead>` → `display: block`
+- `<tbody>` → `display: block`
+- `<tr>` → `display: block`
+- `<th>`, `<td>` → `display: block`
+
+これにより `width: 100%` を設定しても、内部要素がblock要素として積み重なるだけで、テーブルレイアウトにならない。
+
+### 修正方法
+
+frontmatter `style:` に以下のCSS上書きを追加：
+
+```css
+section table { display: table !important; width: 100% !important; table-layout: auto; border-collapse: collapse; }
+section table thead { display: table-header-group !important; }
+section table tbody { display: table-row-group !important; }
+section table tr { display: table-row !important; }
+section table th, section table td { display: table-cell !important; }
+```
+
+**注意**: `!important` は必須。Marpのデフォルトスタイルを上書きするため。
+
+---
+
+## CSSクラスが効かない（Marp固有）
+
+### 症状
+- 色が付かない（全て黒テキスト）
+- グリッドレイアウトが効かない（全て縦積み）
+- 背景色が付かない
+- Marpプレビューでは崩れるが、ビルドHTMLでは正常
+
+### 原因
+Tailwind CDN等の `<script>` タグを使っていた場合、Marpがストリップするため動作しない。
+HTMLビルド時にNode.jsで `<head>` に注入していた場合は、ビルドHTMLのみ正常に見える。
+
+### 修正方法
+
+1. **`<script>` タグを全て削除**
+2. **frontmatter `style:` にCSSを直接定義**
+
+```yaml
+---
+marp: true
+theme: default
+paginate: true
+style: |
+  .text-navy { color: #1B4565; }
+  .grid { display: grid; }
+  .grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+  /* ... 必要なクラスを全て定義 ... */
+---
+```
+
+### チェックリスト
+- [ ] `<script>` タグが `.md` ファイルに含まれていないこと
+- [ ] 使用している全CSSクラスが `style:` に定義されていること
+- [ ] Marpプレビュー（VS Code拡張）で正しく表示されること
+
+---
+
 ## 複合パターン
 
 複数の問題が同時に発生する場合、以下の優先順位で修正:
 
-1. **構造変更**: カラム数の変更、レイアウト再設計
-2. **サイズ調整**: フォントサイズ、padding/margin
-3. **コンテンツ削減**: 項目数削減、テキスト簡略化
+1. **CSS基盤確認**: `<script>` → `style:` 移行、テーブルdisplay上書き
+2. **構造変更**: カラム数の変更、レイアウト再設計
+3. **サイズ調整**: フォントサイズ、padding/margin
+4. **コンテンツ削減**: 項目数削減、テキスト簡略化

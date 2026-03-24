@@ -1,0 +1,4 @@
+name: group_kfold
+method: GroupKFold
+n_splits: 5
+group_key: username
