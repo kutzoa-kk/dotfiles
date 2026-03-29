@@ -1,0 +1,11 @@
+{
+    "[python]": {
+        "editor.formatOnType": true
+    },
+    "jupyter.askForKernelRestart": false,
+    "workbench.iconTheme": "vscode-icons",
+    // defineのグレーアウトを無効
+    "C_Cpp.dimInactiveRegions": false,
+    "git.enableSmartCommit": true,
+    "workbench.colorTheme": "Kanagawa"
+}

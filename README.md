@@ -9,7 +9,9 @@
 - **iTerm2**: ターミナル設定
 - **macOS**: システム設定
 - **Git**: `.gitconfig`（ユーザー名、メールアドレス）
+- **GitHub CLI**: `.config/gh/config.yml`（エイリアス、プロトコル設定）
 - **SSH**: `.ssh/config`（SSH接続設定）
+- **VSCode**: `.vscode/`（エディタ設定、キーバインド、スニペット）
 - **Cursor**: `.cursor/`（エディタ設定、MCP設定）
 - **Codex**: `.codex/`（Codex設定、ユーザースキル）
 - **ClaudeCode**: `.claude/`（ClaudeCode設定）
@@ -66,6 +68,11 @@ dotfiles/
 ├── .gitconfig         # Git設定
 ├── .ssh/              # SSH設定（configファイルのみ）
 │   └── config
+├── .vscode/           # VSCodeエディタ設定
+│   └── User/
+│       ├── settings.json     # エディタ設定
+│       ├── keybindings.json  # キーバインド設定
+│       └── snippets/         # スニペット
 ├── .cursor/           # Cursorエディタ設定
 │   ├── argv.json      # エディタ起動設定
 │   └── mcp.json       # MCPサーバー設定
@@ -76,9 +83,11 @@ dotfiles/
 ├── .claude/           # ClaudeCode設定
 ├── .gemini/           # Gemini設定
 ├── .config/           # アプリケーション設定
-│   └── git/           # Git設定
-│       ├── ignore     # Gitグローバルignoreファイル
-│       └── commit_template  # Gitコミットテンプレート
+│   ├── git/           # Git設定
+│   │   ├── ignore     # Gitグローバルignoreファイル
+│   │   └── commit_template  # Gitコミットテンプレート
+│   └── gh/            # GitHub CLI設定
+│       └── config.yml # エイリアス、プロトコル設定
 ├── .npm-global-packages.txt  # npmグローバルパッケージリスト
 ├── .Brewfile          # Homebrewパッケージリスト
 └── Makefile           # メイクターゲット
@@ -89,6 +98,14 @@ dotfiles/
 - `.ssh/config`のみを管理します
 - **秘密鍵は含まれません**。新しいPCに移行する際は、秘密鍵を別途コピーしてください
 - `make link`実行時、`~/.ssh`ディレクトリが存在しない場合は自動的に作成されます
+
+### GitHub CLI設定について
+- `.config/gh/config.yml`のみを管理します
+- **`hosts.yml`は認証トークンを含むためリンク対象外**です
+
+### VSCode設定について
+- `dotdir/.vscode/User/`内の設定ファイル（`settings.json`、`keybindings.json`、`snippets/`）を`~/Library/Application Support/Code/User/`にリンクします
+- 拡張機能やワークスペース設定は含まれません
 
 ### Cursor設定について
 - `.cursor/`ディレクトリ内の設定ファイルのみをリンクします

@@ -201,20 +201,16 @@
     "code-review@claude-plugins-official": true,
     "feature-dev@claude-plugins-official": true,
     "ralph-loop@claude-plugins-official": true,
-    "code-refactoring@claude-code-workflows": true,
-    "error-debugging@claude-code-workflows": true,
-    "context-management@claude-code-workflows": true,
-    "machine-learning-ops@claude-code-workflows": true,
-    "code-documentation@claude-code-workflows": true,
-    "debugging-toolkit@claude-code-workflows": true,
-    "agent-orchestration@claude-code-workflows": true,
     "swift-lsp@claude-plugins-official": true,
     "hookify@claude-plugins-official": true,
     "everything-claude-code@everything-claude-code": true,
     "frontend-design@claude-plugins-official": true,
     "superpowers@claude-plugins-official": true,
     "claude-md-management@claude-plugins-official": true,
-    "octo@nyldn-plugins": true
+    "octo@nyldn-plugins": true,
+    "skill-creator@claude-plugins-official": true,
+    "chrome-devtools-mcp@claude-plugins-official": true,
+    "aws-serverless@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "nyldn-plugins": {

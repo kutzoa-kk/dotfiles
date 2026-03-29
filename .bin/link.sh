@@ -48,6 +48,18 @@ if [ -d "${DOTDIR_ROOT}/.config/git" ]; then
     done
 fi
 
+# Link .config/gh directory (config.yml only, exclude hosts.yml which contains auth tokens)
+if [ -d "${DOTDIR_ROOT}/.config/gh" ]; then
+    echo "Linking .config/gh configuration files..."
+    if [ ! -d "$HOME/.config/gh" ]; then
+        mkdir -p "$HOME/.config/gh"
+    fi
+
+    if [ -f "${DOTDIR_ROOT}/.config/gh/config.yml" ]; then
+        ln -fnsv "${DOTDIR_ROOT}/.config/gh/config.yml" "$HOME/.config/gh/config.yml"
+    fi
+fi
+
 # Link .cursor directory (merge approach: link files only, preserve existing directory)
 if [ -d "${DOTDIR_ROOT}/.cursor" ]; then
     echo "Linking .cursor configuration files..."
@@ -116,6 +128,33 @@ if [ -d "${DOTDIR_ROOT}/.cursor/User" ]; then
     # Link snippets directory
     if [ -d "${DOTDIR_ROOT}/.cursor/User/snippets" ]; then
         ln -fnsv "${DOTDIR_ROOT}/.cursor/User/snippets" "${CURSOR_USER_DIR}/snippets"
+    fi
+fi
+
+# Link VSCode User directory (settings.json, keybindings.json, snippets)
+VSCODE_USER_DIR="${HOME}/Library/Application Support/Code/User"
+if [ -d "${DOTDIR_ROOT}/.vscode/User" ]; then
+    echo "Linking VSCode User configuration files..."
+    if [ ! -d "$VSCODE_USER_DIR" ]; then
+        mkdir -p "$VSCODE_USER_DIR"
+    fi
+
+    # Link settings.json
+    if [ -f "${DOTDIR_ROOT}/.vscode/User/settings.json" ]; then
+        ln -fnsv "${DOTDIR_ROOT}/.vscode/User/settings.json" "${VSCODE_USER_DIR}/settings.json"
+    fi
+
+    # Link keybindings.json
+    if [ -f "${DOTDIR_ROOT}/.vscode/User/keybindings.json" ]; then
+        ln -fnsv "${DOTDIR_ROOT}/.vscode/User/keybindings.json" "${VSCODE_USER_DIR}/keybindings.json"
+    fi
+
+    # Link snippets directory (remove existing dir first to replace with symlink)
+    if [ -d "${DOTDIR_ROOT}/.vscode/User/snippets" ]; then
+        if [ -d "${VSCODE_USER_DIR}/snippets" ] && [ ! -L "${VSCODE_USER_DIR}/snippets" ]; then
+            rm -rf "${VSCODE_USER_DIR}/snippets"
+        fi
+        ln -fnsv "${DOTDIR_ROOT}/.vscode/User/snippets" "${VSCODE_USER_DIR}/snippets"
     fi
 fi
 
