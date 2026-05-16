@@ -1,6 +1,6 @@
 [user]
-	name = kutzoa-kk
-	email = dealus0609@gmail.com
+	name = Kakutani.Kazuto
+	email = mclabkakutanikazuto@gmail.com
 [core]
 	excludesfile = ~/.config/git/ignore
 	editor = vim -c \"set fenc=utf-8\"

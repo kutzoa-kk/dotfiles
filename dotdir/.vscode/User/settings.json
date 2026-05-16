@@ -7,5 +7,7 @@
     // defineのグレーアウトを無効
     "C_Cpp.dimInactiveRegions": false,
     "git.enableSmartCommit": true,
-    "workbench.colorTheme": "Kanagawa"
+    "workbench.colorTheme": "Kanagawa",
+    "claudeCode.preferredLocation": "panel",
+    "markdown.marp.html": "all"
 }

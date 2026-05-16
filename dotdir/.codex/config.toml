@@ -1,31 +1,159 @@
-personality = "pragmatic"
-model = "gpt-5.4"
+model = "gpt-5.5"
 model_reasoning_effort = "xhigh"
+personality = "pragmatic"
+
+[marketplaces.openai-bundled]
+last_updated = "2026-05-14T07:10:04Z"
+source_type = "local"
+source = "/Users/kkmclab/.codex/.tmp/bundled-marketplaces/openai-bundled"
+
+[marketplaces.claude-plugins-official]
+last_updated = "2026-05-16T11:05:12Z"
+last_revision = "5dbfa0fade3058791bf8134b2bd441cb9d5f9a10"
+source_type = "git"
+source = "https://github.com/anthropics/claude-plugins-official.git"
+
+[marketplaces.openai-primary-runtime]
+last_updated = "2026-05-14T07:54:02Z"
+source_type = "local"
+source = "/Users/kkmclab/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
+
+[marketplaces.nyldn-plugins]
+last_updated = "2026-05-16T11:05:15Z"
+last_revision = "788a06c999751a605bf3124d2e3fc0640a1c7c9e"
+source_type = "git"
+source = "https://github.com/nyldn/claude-octopus.git"
+
+[marketplaces.openai-codex]
+last_updated = "2026-05-16T11:05:16Z"
+last_revision = "807e03ac9d5aa23bc395fdec8c3767500a86b3cf"
+source_type = "git"
+source = "https://github.com/openai/codex-plugin-cc.git"
+
+[mcp_servers.codex]
+args = [
+    "-m",
+    "gpt-5.5",
+    "mcp-server",
+]
+command = "codex"
+
 [mcp_servers.context7]
+args = [
+    "-y",
+    "@upstash/context7-mcp",
+]
 command = "npx"
-args = ["-y", "@upstash/context7-mcp"]
 
-[projects."/Users/kkmclab/dotfiles"]
-trust_level = "trusted"
+[notice.model_migrations]
+"gpt-5.2-codex" = "gpt-5.5"
+"gpt-5.3-codex" = "gpt-5.5"
+"gpt-5.4" = "gpt-5.5"
 
-[projects."/Users/kkmclab/code/insole-data-store"]
+[plugins."aws-serverless@claude-plugins-official"]
+enabled = true
+
+[plugins."documents@openai-primary-runtime"]
+enabled = true
+
+[plugins."spreadsheets@openai-primary-runtime"]
+enabled = true
+
+[plugins."presentations@openai-primary-runtime"]
+enabled = true
+
+[plugins."claude-md-management@claude-plugins-official"]
+enabled = true
+
+[plugins."code-review@claude-plugins-official"]
+enabled = true
+
+[plugins."code-simplifier@claude-plugins-official"]
+enabled = true
+
+[plugins."commit-commands@claude-plugins-official"]
+enabled = true
+
+[plugins."context7@claude-plugins-official"]
+enabled = true
+
+[plugins."feature-dev@claude-plugins-official"]
+enabled = true
+
+[plugins."frontend-design@claude-plugins-official"]
+enabled = true
+
+[plugins."hookify@claude-plugins-official"]
+enabled = true
+
+[plugins."playwright@claude-plugins-official"]
+enabled = true
+
+[plugins."ralph-loop@claude-plugins-official"]
+enabled = true
+
+[plugins."skill-creator@claude-plugins-official"]
+enabled = true
+
+[plugins."superpowers@claude-plugins-official"]
+enabled = true
+
+[plugins."codex@openai-codex"]
+enabled = true
+
+[plugins."browser-use@openai-bundled"]
+enabled = true
+
+[projects."/Users/kkmac/dotfiles2"]
 trust_level = "trusted"
 
 [projects."/Users/kkmclab/code"]
 trust_level = "trusted"
 
-[projects."/Users/kkmac/dotfiles2"]
+[projects."/Users/kkmclab/code/body-ruler-ios"]
 trust_level = "trusted"
 
-[projects."/Users/kkmclab/code/scoremap/muscle-prediction"]
+[projects."/Users/kkmclab/code/insole-data-store"]
 trust_level = "trusted"
 
 [projects."/Users/kkmclab/code/scoremap/age-prediction"]
 trust_level = "trusted"
 
+[projects."/Users/kkmclab/code/scoremap/muscle-prediction"]
+trust_level = "trusted"
+
+[projects."/Users/kkmclab/code/scoremap/physical-function-score"]
+trust_level = "trusted"
+
 [projects."/Users/kkmclab/code/scoremap/scoremap-prediction"]
 trust_level = "trusted"
 
-[notice.model_migrations]
-"gpt-5.2-codex" = "gpt-5.3-codex"
-"gpt-5.3-codex" = "gpt-5.4"
+[projects."/Users/kkmclab/dotfiles"]
+trust_level = "trusted"
+
+[projects."/private/tmp/codex-review"]
+trust_level = "trusted"
+
+[projects."/Users/kkmclab/Documents/Codex/2026-05-06/skill-installer-hatch-pet"]
+trust_level = "trusted"
+
+[projects."/Users/kkmclab/Documents/Codex/2026-05-06/hello"]
+trust_level = "trusted"
+
+[projects."/Users/kkmclab/code/gunma-mirai-trial"]
+trust_level = "trusted"
+
+[projects."/Users/kkmclab/code/repo/walk-features"]
+trust_level = "trusted"
+
+[shell_environment_policy]
+inherit = "core"
+
+[shell_environment_policy.set]
+BASH_DEFAULT_TIMEOUT_MS = "600000"
+BASH_MAX_TIMEOUT_MS = "600000"
+CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR = "true"
+SHELL = "/opt/homebrew/bin/zsh"
+
+[tui.model_availability_nux]
+"gpt-5.5" = 1
