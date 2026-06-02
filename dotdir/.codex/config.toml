@@ -8,8 +8,8 @@ source_type = "local"
 source = "/Users/kkmclab/.codex/.tmp/bundled-marketplaces/openai-bundled"
 
 [marketplaces.claude-plugins-official]
-last_updated = "2026-05-16T11:05:12Z"
-last_revision = "5dbfa0fade3058791bf8134b2bd441cb9d5f9a10"
+last_updated = "2026-06-02T04:16:53Z"
+last_revision = "bf7e85273119dc0bdca41c81dbb1289e6efb3a60"
 source_type = "git"
 source = "https://github.com/anthropics/claude-plugins-official.git"
 
@@ -19,13 +19,13 @@ source_type = "local"
 source = "/Users/kkmclab/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
 
 [marketplaces.nyldn-plugins]
-last_updated = "2026-05-16T11:05:15Z"
-last_revision = "788a06c999751a605bf3124d2e3fc0640a1c7c9e"
+last_updated = "2026-06-01T00:47:58Z"
+last_revision = "ad4b2c4bc6beb441c8d1dbf6d128d40bce5c8606"
 source_type = "git"
 source = "https://github.com/nyldn/claude-octopus.git"
 
 [marketplaces.openai-codex]
-last_updated = "2026-05-16T11:05:16Z"
+last_updated = "2026-05-29T04:11:19Z"
 last_revision = "807e03ac9d5aa23bc395fdec8c3767500a86b3cf"
 source_type = "git"
 source = "https://github.com/openai/codex-plugin-cc.git"
@@ -146,6 +146,18 @@ trust_level = "trusted"
 [projects."/Users/kkmclab/code/repo/walk-features"]
 trust_level = "trusted"
 
+[projects."/Users/kkmclab/code/HealthcareInsoleApp-iOS"]
+trust_level = "trusted"
+
+[projects."/Users/kkmclab/code/HealthcareInsoleApp"]
+trust_level = "trusted"
+
+[projects."/private/var/folders/76/21krsgv14318h2941zyy1d1h0000gn/T/tmp.hqG9DXpZRb"]
+trust_level = "trusted"
+
+[projects."/Users/kkmclab/code/scoremap/scoremap-frontend"]
+trust_level = "trusted"
+
 [shell_environment_policy]
 inherit = "core"
 
@@ -156,4 +168,4 @@ CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR = "true"
 SHELL = "/opt/homebrew/bin/zsh"
 
 [tui.model_availability_nux]
-"gpt-5.5" = 1
+"gpt-5.5" = 2

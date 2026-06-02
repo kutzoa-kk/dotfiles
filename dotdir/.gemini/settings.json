@@ -65,6 +65,26 @@
           }
         ]
       }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/kkmclab/.superset/hooks/gemini-hook.sh"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/kkmclab/.superset/hooks/gemini-hook.sh"
+          }
+        ]
+      }
     ]
   }
 }
