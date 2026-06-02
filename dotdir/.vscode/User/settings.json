@@ -9,5 +9,7 @@
     "git.enableSmartCommit": true,
     "workbench.colorTheme": "Kanagawa",
     "claudeCode.preferredLocation": "panel",
-    "markdown.marp.html": "all"
+    "markdown.marp.html": "all",
+    "hediet.vscode-drawio.resizeImages": null,
+    "markdown.marp.pptx.editable": "on"
 }
