@@ -25,8 +25,8 @@
 |--------|------|
 | gog CLI | Gmail・Calendar・Drive操作 |
 | gh CLI | Issue管理・コード管理 |
-| Codex CLI | セカンドオピニオン・レビュアー・実装・調査 |
-| Gemini CLI | セカンドオピニオン・レビュアー・実装・調査 |
+| Codex CLI | セカンドオピニオン・レビュアー・実装・調査 codex|
+| Antigravity CLI | セカンドオピニオン・レビュアー・実装・調査 agy |
 
 ## 行動原則
 

@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="ja" data-theme="auto">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Report Title — Subtitle</title>
+  <meta name="description" content="One-sentence summary of what this report is about.">
+  <meta name="generator" content="html-report-generator">
+
+  <!--
+    Tailwind CSS v4 — browser build. Scans the document for utility classes
+    (grid, flex, p-4, text-sm, max-w-…, etc.) and injects them at runtime.
+    No build step. Design tokens (color, font, radii) live in the <style>
+    block below as plain CSS custom properties so they work without needing
+    Tailwind to process @theme inline — which the browser build does NOT
+    fully support today (confirmed empirically; see references/interactivity.md).
+  -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+  <!-- Charts & diagrams. Drop any you don't use. -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js" defer></script>
+
+  <style>
+    /* =========================================================================
+       Design tokens. Plain CSS custom properties — referenced from component
+       classes as var(--color-…). See references/design-system.md.
+       ========================================================================= */
+    :root {
+      --color-bg:            oklch(99% 0 0);
+      --color-surface:       oklch(100% 0 0);
+      --color-surface-2:     oklch(97.5% 0 0);
+      --color-border:        oklch(92% 0 0);
+      --color-border-strong: oklch(85% 0 0);
+      --color-ink:           oklch(18% 0 0);
+      --color-muted:         oklch(45% 0 0);
+      --color-faint:         oklch(60% 0 0);
+      --color-accent:        oklch(55% 0.18 255);
+      --color-accent-2:      oklch(62% 0.14 195);
+      --color-success:       oklch(58% 0.15 145);
+      --color-warning:       oklch(72% 0.16 75);
+      --color-danger:        oklch(58% 0.20 25);
+      --color-info:          oklch(60% 0.13 245);
+
+      --color-series-1: oklch(55% 0.18 255);
+      --color-series-2: oklch(62% 0.14 195);
+      --color-series-3: oklch(70% 0.17 75);
+      --color-series-4: oklch(58% 0.20 25);
+      --color-series-5: oklch(50% 0.17 295);
+      --color-series-6: oklch(65% 0.13 145);
+
+      --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text",
+                   "Hiragino Sans", "Noto Sans JP", "Segoe UI",
+                   Helvetica, Arial, sans-serif;
+      --font-mono: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+    }
+
+    :where(.is-dark) {
+      --color-bg:            oklch(14% 0 0);
+      --color-surface:       oklch(17% 0 0);
+      --color-surface-2:     oklch(20% 0 0);
+      --color-border:        oklch(28% 0 0);
+      --color-border-strong: oklch(38% 0 0);
+      --color-ink:           oklch(96% 0 0);
+      --color-muted:         oklch(72% 0 0);
+      --color-faint:         oklch(55% 0 0);
+      --color-accent:        oklch(72% 0.16 255);
+      --color-accent-2:      oklch(75% 0.13 195);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* =========================================================================
+       Base
+       ========================================================================= */
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 1.65;
+      color: var(--color-ink);
+      background: var(--color-bg);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    a {
+      color: var(--color-accent);
+      text-decoration: none;
+      border-bottom: 1px solid color-mix(in oklch, var(--color-accent), transparent 70%);
+      transition: border-color 120ms ease;
+    }
+    a:hover { border-bottom-color: var(--color-accent); }
+    h1, h2, h3, h4 { font-weight: 600; letter-spacing: -0.02em; line-height: 1.2; margin: 0; }
+    h1 { font-size: clamp(2rem, 1.5rem + 1.6vw, 2.75rem); }
+    h2 {
+      font-size: 1.625rem;
+      margin-top: clamp(3rem, 4rem + 2vw, 6rem);
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--color-border);
+      scroll-margin-top: 1rem;
+    }
+    h3 { font-size: 1.25rem; margin-top: 2.5rem; scroll-margin-top: 1rem; }
+    p, ul, ol { margin: 0 0 1rem; }
+    ul, ol { padding-left: 1.25em; }
+    li + li { margin-top: 0.5rem; }
+    hr { border: 0; border-top: 1px solid var(--color-border); margin: 2rem 0; }
+    code, pre, kbd, samp { font-family: var(--font-mono); font-size: 0.9em; }
+    code:not(pre code) {
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      padding: 0.1em 0.35em;
+      border-radius: 4px;
+    }
+    pre {
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      padding: 1rem 1.5rem;
+      overflow-x: auto;
+      line-height: 1.4;
+    }
+    :focus-visible {
+      outline: 2px solid var(--color-accent);
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+
+    /* =========================================================================
+       Shell
+       ========================================================================= */
+    .report-shell {
+      display: grid;
+      grid-template-columns: 240px minmax(0, 1fr);
+      max-width: calc(240px + 880px + 8rem);
+      margin: 0 auto;
+      padding: 0 1.25rem;
+      gap: 4rem;
+    }
+    @media (max-width: 900px) {
+      .report-shell { grid-template-columns: 1fr; gap: 0; }
+      .toc { position: static !important; height: auto !important; padding-top: 1rem; }
+    }
+
+    main { padding: 3rem 0 6rem; min-width: 0; max-width: 880px; }
+
+    /* =========================================================================
+       TOC
+       ========================================================================= */
+    .toc {
+      position: sticky;
+      top: 0;
+      align-self: start;
+      height: 100vh;
+      padding: 2rem 0 1.25rem;
+      overflow-y: auto;
+      border-right: 1px solid var(--color-border);
+      font-size: 0.8125rem;
+    }
+    .toc__heading {
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-faint);
+      margin: 0 0 0.75rem;
+      padding-right: 1rem;
+    }
+    .toc__list { list-style: none; padding: 0; margin: 0; }
+    .toc__link {
+      display: block;
+      padding: 0.25rem 0.75rem 0.25rem 1rem;
+      color: var(--color-muted);
+      border-bottom: 0;
+      border-left: 2px solid transparent;
+      margin-left: -2px;
+      transition: color 120ms ease, border-color 120ms ease;
+    }
+    .toc__link:hover { color: var(--color-ink); }
+    .toc__link.is-active {
+      color: var(--color-ink);
+      border-left-color: var(--color-accent);
+      font-weight: 500;
+    }
+
+    /* =========================================================================
+       Type helpers
+       ========================================================================= */
+    .lead    { font-size: 1.125rem; color: var(--color-muted); }
+    .caption { font-size: 0.8125rem; color: var(--color-faint); }
+    .eyebrow {
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-faint);
+      margin: 0 0 0.75rem;
+    }
+
+    /* =========================================================================
+       Report header
+       ========================================================================= */
+    .report-header { padding-bottom: 1.5rem; border-bottom: 1px solid var(--color-border); margin-bottom: 1.5rem; }
+    .report-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1.5rem;
+      color: var(--color-muted);
+      font-size: 0.8125rem;
+      margin: 1rem 0 0;
+    }
+    .report-meta dt { display: inline; font-weight: 500; color: var(--color-faint); }
+    .report-meta dd { display: inline; margin: 0 0 0 0.25em; }
+
+    /* =========================================================================
+       Theme toggle
+       ========================================================================= */
+    .theme-toggle {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 999px;
+      color: var(--color-muted);
+      font: inherit;
+      font-size: 0.8125rem;
+      cursor: pointer;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 1px 1px rgba(0,0,0,0.03);
+      z-index: 10;
+    }
+    .theme-toggle:hover { color: var(--color-ink); }
+
+    /* =========================================================================
+       KPI cards
+       ========================================================================= */
+    .grid-kpi {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      margin: 1.5rem 0 2rem;
+    }
+    .kpi {
+      padding: 1rem 1.5rem;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+    }
+    .kpi__label { font-size: 0.8125rem; color: var(--color-muted); margin: 0 0 0.5rem; }
+    .kpi__value { font-size: 1.75rem; font-weight: 600; line-height: 1; letter-spacing: -0.02em; }
+    .kpi__delta { display: inline-flex; align-items: center; gap: 0.2em; margin-top: 0.5rem; font-size: 0.8125rem; }
+    .kpi__delta--up   { color: var(--color-success); }
+    .kpi__delta--down { color: var(--color-danger); }
+    .kpi__delta--flat { color: var(--color-faint); }
+
+    /* =========================================================================
+       Card / chart-card
+       ========================================================================= */
+    .card, .chart-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+    }
+    .chart-card__header {
+      display: flex; align-items: baseline; justify-content: space-between;
+      gap: 0.75rem; margin-bottom: 1rem;
+    }
+    .chart-card__title { font-size: 1rem; font-weight: 600; margin: 0; }
+    .chart-card__meta { font-size: 0.8125rem; color: var(--color-faint); }
+    .chart-wrap { position: relative; height: 320px; }
+
+    /* =========================================================================
+       Table
+       ========================================================================= */
+    .table-wrap { margin: 1.5rem 0; }
+    .table-toolbar {
+      display: flex; gap: 0.75rem; align-items: center;
+      margin-bottom: 0.75rem; flex-wrap: wrap;
+    }
+    .table-toolbar input[type="search"],
+    .table-toolbar select {
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      background: var(--color-surface);
+      color: var(--color-ink);
+      font: inherit;
+      font-size: 0.8125rem;
+    }
+    .table-toolbar input[type="search"] { flex: 1 1 220px; max-width: 320px; }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8125rem;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .data-table thead th {
+      background: var(--color-surface-2);
+      text-align: left;
+      font-weight: 600;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--color-border);
+      cursor: pointer;
+      user-select: none;
+      position: sticky;
+      top: 0;
+    }
+    .data-table thead th[data-sort]:hover { color: var(--color-accent); }
+    .data-table thead th .sort-indicator { opacity: 0.4; margin-left: 0.25em; font-size: 0.85em; }
+    .data-table thead th.is-sorted .sort-indicator { opacity: 1; color: var(--color-accent); }
+    .data-table tbody td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--color-border); }
+    .data-table tbody tr:last-child td { border-bottom: 0; }
+    .data-table tbody tr:hover td { background: var(--color-surface-2); }
+    .num { text-align: right; font-variant-numeric: tabular-nums; }
+
+    /* =========================================================================
+       Tabs
+       ========================================================================= */
+    .tabs { margin: 1.5rem 0; }
+    .tabs__list {
+      display: flex; gap: 0;
+      border-bottom: 1px solid var(--color-border);
+      padding: 0; margin: 0 0 1rem; list-style: none; flex-wrap: wrap;
+    }
+    .tabs__trigger {
+      padding: 0.75rem 1rem;
+      background: none; border: 0;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      color: var(--color-muted);
+      font: inherit;
+      font-weight: 500;
+      cursor: pointer;
+      transition: color 120ms ease;
+    }
+    .tabs__trigger[aria-selected="true"] {
+      color: var(--color-ink);
+      border-bottom-color: var(--color-accent);
+    }
+    .tabs__trigger:hover { color: var(--color-ink); }
+    .tabs__panel { display: none; }
+    .tabs__panel[aria-hidden="false"] { display: block; }
+
+    /* =========================================================================
+       Accordion
+       ========================================================================= */
+    .accordion details {
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      margin-bottom: 0.75rem;
+      background: var(--color-surface);
+      overflow: hidden;
+    }
+    .accordion summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 0.75rem 1.5rem;
+      font-weight: 500;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .accordion summary::-webkit-details-marker { display: none; }
+    .accordion summary::after {
+      content: "+";
+      font-size: 1.25em;
+      color: var(--color-faint);
+      transition: transform 120ms ease;
+    }
+    .accordion details[open] summary::after { content: "−"; }
+    .accordion__body { padding: 0 1.5rem 1.5rem; }
+
+    /* =========================================================================
+       Badges & pips
+       ========================================================================= */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35em;
+      padding: 0.15em 0.6em;
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      border-radius: 999px;
+      border: 1px solid;
+      white-space: nowrap;
+    }
+    .badge--critical { color: var(--color-danger);  border-color: color-mix(in oklch, var(--color-danger), transparent 60%);  background: color-mix(in oklch, var(--color-danger), transparent 90%); }
+    .badge--high     { color: var(--color-warning); border-color: color-mix(in oklch, var(--color-warning), transparent 60%); background: color-mix(in oklch, var(--color-warning), transparent 90%); }
+    .badge--medium   { color: var(--color-info);    border-color: color-mix(in oklch, var(--color-info), transparent 60%);    background: color-mix(in oklch, var(--color-info), transparent 90%); }
+    .badge--low      { color: var(--color-muted); border-color: var(--color-border); background: var(--color-surface-2); }
+    .badge--success  { color: var(--color-success); border-color: color-mix(in oklch, var(--color-success), transparent 60%); background: color-mix(in oklch, var(--color-success), transparent 90%); }
+
+    .pip { display:inline-block; width:.5rem; height:.5rem; border-radius:50%; vertical-align: middle; }
+    .pip--success { background: var(--color-success); }
+    .pip--warning { background: var(--color-warning); }
+    .pip--danger  { background: var(--color-danger);  }
+    .pip--info    { background: var(--color-info);    }
+
+    /* =========================================================================
+       Timeline
+       ========================================================================= */
+    .timeline { list-style: none; padding: 0; margin: 1.5rem 0; position: relative; }
+    .timeline::before {
+      content: "";
+      position: absolute;
+      left: 7px; top: 4px; bottom: 4px;
+      width: 1px;
+      background: var(--color-border);
+    }
+    .timeline li {
+      padding-left: 2rem;
+      position: relative;
+      margin-bottom: 1.5rem;
+    }
+    .timeline li::before {
+      content: "";
+      position: absolute;
+      left: 2px; top: 8px;
+      width: 11px; height: 11px;
+      border-radius: 50%;
+      background: var(--color-surface);
+      border: 2px solid var(--color-accent);
+    }
+    .timeline__date { font-size: 0.8125rem; color: var(--color-faint); margin: 0; }
+    .timeline__title { font-weight: 600; margin: 0 0 0.25rem; }
+
+    /* =========================================================================
+       Architecture / mermaid
+       ========================================================================= */
+    .architecture {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      overflow-x: auto;
+    }
+    .architecture .mermaid { display: flex; justify-content: center; }
+
+    /* =========================================================================
+       Footer
+       ========================================================================= */
+    .report-footer {
+      margin-top: clamp(3rem, 4rem + 2vw, 6rem);
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--color-border);
+      color: var(--color-faint);
+      font-size: 0.8125rem;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    /* =========================================================================
+       Print
+       ========================================================================= */
+    @media print {
+      :root { --color-bg: white; --color-surface: white; --color-surface-2: white; }
+      .report-shell { display: block; padding: 0; }
+      .toc, .theme-toggle, .no-print { display: none !important; }
+      main { padding: 0; max-width: none; }
+      a { color: inherit; border-bottom: 0; }
+      section, .card, .chart-card, .data-table { break-inside: avoid; page-break-inside: avoid; }
+      h1, h2, h3 { break-after: avoid; }
+      body { font-size: 11pt; }
+    }
+  </style>
+</head>
+<body>
+
+  <button class="theme-toggle no-print" type="button" id="themeToggle" aria-label="テーマを切り替え">
+    <span aria-hidden="true">◐</span><span data-theme-label>Auto</span>
+  </button>
+
+  <div class="report-shell">
+
+    <!-- TOC built at runtime from <section data-toc="…"> -->
+    <nav class="toc no-print" aria-label="目次">
+      <p class="toc__heading">目次</p>
+      <ul class="toc__list" id="tocList"></ul>
+    </nav>
+
+    <main>
+
+      <!-- =================== HEADER =================== -->
+      <header class="report-header">
+        <p class="eyebrow">Report Type · 2026-05-16</p>
+        <h1>レポートタイトル</h1>
+        <p class="lead" style="margin-top:0.75rem;">サブタイトル、または一文の要約。読み手が30秒で全体像を把握できる粒度で書く。</p>
+        <dl class="report-meta">
+          <span><dt>作成者</dt><dd>Author Name</dd></span>
+          <span><dt>期間</dt><dd>2026-04-01 – 2026-05-15</dd></span>
+          <span><dt>ステータス</dt><dd><span class="pip pip--success"></span> Final</dd></span>
+        </dl>
+      </header>
+
+      <!-- =================== SUMMARY =================== -->
+      <section id="summary" data-toc="サマリー">
+        <h2 style="margin-top:0;padding-top:0;border-top:0;">サマリー</h2>
+        <p>このセクションには3〜5文の executive summary を置く。誰が読んでも要旨が掴めること。</p>
+
+        <div class="grid-kpi">
+          <div class="kpi">
+            <p class="kpi__label">主要指標A</p>
+            <div class="kpi__value">128k</div>
+            <div class="kpi__delta kpi__delta--up">▲ 12.4% vs 前月</div>
+          </div>
+          <div class="kpi">
+            <p class="kpi__label">主要指標B</p>
+            <div class="kpi__value">3.42%</div>
+            <div class="kpi__delta kpi__delta--down">▼ 0.8pt vs 前月</div>
+          </div>
+          <div class="kpi">
+            <p class="kpi__label">主要指標C</p>
+            <div class="kpi__value">¥ 9.21M</div>
+            <div class="kpi__delta kpi__delta--flat">± 0.0% vs 前月</div>
+          </div>
+          <div class="kpi">
+            <p class="kpi__label">主要指標D</p>
+            <div class="kpi__value">98.1%</div>
+            <div class="kpi__delta kpi__delta--up">▲ 1.2pt vs 前月</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =================== FINDINGS =================== -->
+      <section id="findings" data-toc="主要な発見">
+        <h2>主要な発見</h2>
+        <p>箇条書きにせず、見つかった事実 → なぜ起きたか → 影響、の順に短く記述する。</p>
+
+        <div class="chart-card">
+          <div class="chart-card__header">
+            <h3 class="chart-card__title">日次推移</h3>
+            <span class="chart-card__meta">直近30日</span>
+          </div>
+          <div class="chart-wrap"><canvas id="chart-daily" aria-label="日次推移チャート"></canvas></div>
+          <details style="margin-top:0.75rem;">
+            <summary class="caption" style="cursor:pointer;">データを表で見る</summary>
+            <table class="data-table" style="margin-top:0.75rem;">
+              <thead><tr><th>日付</th><th class="num">値</th></tr></thead>
+              <tbody id="chart-daily-table"></tbody>
+            </table>
+          </details>
+        </div>
+      </section>
+
+      <!-- =================== DETAILS (tabs) =================== -->
+      <section id="details" data-toc="詳細">
+        <h2>詳細</h2>
+        <p>関連するが切り口が異なる情報はタブで束ねる。タブのラベルは内容を要約した短い名詞句にする。</p>
+
+        <div class="tabs" data-tabs>
+          <ul class="tabs__list" role="tablist">
+            <li role="presentation"><button class="tabs__trigger" role="tab" aria-selected="true"  aria-controls="tab-a" id="trig-a">セグメント別</button></li>
+            <li role="presentation"><button class="tabs__trigger" role="tab" aria-selected="false" aria-controls="tab-b" id="trig-b">地域別</button></li>
+            <li role="presentation"><button class="tabs__trigger" role="tab" aria-selected="false" aria-controls="tab-c" id="trig-c">チャネル別</button></li>
+          </ul>
+          <div class="tabs__panel" id="tab-a" role="tabpanel" aria-labelledby="trig-a" aria-hidden="false">
+            <p>セグメント別の詳細はここに。</p>
+          </div>
+          <div class="tabs__panel" id="tab-b" role="tabpanel" aria-labelledby="trig-b" aria-hidden="true">
+            <p>地域別の詳細はここに。</p>
+          </div>
+          <div class="tabs__panel" id="tab-c" role="tabpanel" aria-labelledby="trig-c" aria-hidden="true">
+            <p>チャネル別の詳細はここに。</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- =================== DATA TABLE =================== -->
+      <section id="data" data-toc="データ">
+        <h2>データ</h2>
+        <p>並び替え・絞り込み・検索可能。100行を超えるなら CSV へのリンクも添える。</p>
+
+        <div class="table-wrap" data-sortable-table>
+          <div class="table-toolbar no-print">
+            <input type="search" placeholder="検索…" data-table-search aria-label="テーブル検索">
+            <select data-table-filter="status" aria-label="ステータスで絞り込み">
+              <option value="">ステータス: すべて</option>
+              <option value="OK">OK</option>
+              <option value="Warn">Warn</option>
+              <option value="Fail">Fail</option>
+            </select>
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th data-sort="string">名前 <span class="sort-indicator">↕</span></th>
+                <th data-sort="string">ステータス <span class="sort-indicator">↕</span></th>
+                <th data-sort="number" class="num">値 <span class="sort-indicator">↕</span></th>
+                <th data-sort="date">最終更新 <span class="sort-indicator">↕</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>サービスA</td><td><span class="badge badge--success">OK</span></td><td class="num">1,284</td><td>2026-05-12</td></tr>
+              <tr><td>サービスB</td><td><span class="badge badge--high">Warn</span></td><td class="num">982</td><td>2026-05-11</td></tr>
+              <tr><td>サービスC</td><td><span class="badge badge--critical">Fail</span></td><td class="num">42</td><td>2026-05-09</td></tr>
+              <tr><td>サービスD</td><td><span class="badge badge--success">OK</span></td><td class="num">3,109</td><td>2026-05-12</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- =================== ARCHITECTURE =================== -->
+      <section id="architecture" data-toc="アーキテクチャ">
+        <h2>アーキテクチャ</h2>
+        <p>システム構成は Mermaid で書く。テキストソースが残るので diff が取れる。</p>
+        <div class="architecture">
+          <pre class="mermaid">
+flowchart LR
+  User([User])
+  CDN[(CDN)]
+  Web[Web App]
+  API[API Gateway]
+  Auth[Auth Service]
+  DB[(Postgres)]
+  Cache[(Redis)]
+
+  User -->|HTTPS| CDN --> Web
+  Web -->|REST| API
+  API --> Auth
+  API --> Cache
+  API --> DB
+          </pre>
+        </div>
+      </section>
+
+      <!-- =================== RISKS (accordion) =================== -->
+      <section id="risks" data-toc="リスクと未解決事項">
+        <h2>リスクと未解決事項</h2>
+        <p>項目数が多い、かつ各項目が独立して読まれるならアコーディオン。</p>
+        <div class="accordion">
+          <details>
+            <summary>R-01 データ品質に依存する仮説 <span class="badge badge--high">High</span></summary>
+            <div class="accordion__body"><p>背景・現状・必要なアクション・期限・担当を含めて書く。</p></div>
+          </details>
+          <details>
+            <summary>R-02 移行期間中のロールバック手順 <span class="badge badge--medium">Medium</span></summary>
+            <div class="accordion__body"><p>背景・現状・必要なアクション・期限・担当を含めて書く。</p></div>
+          </details>
+        </div>
+      </section>
+
+      <!-- =================== TIMELINE =================== -->
+      <section id="timeline" data-toc="タイムライン">
+        <h2>タイムライン</h2>
+        <ol class="timeline">
+          <li>
+            <p class="timeline__date">2026-04-01</p>
+            <p class="timeline__title">フェーズ1 着手</p>
+            <p>スコープ確定とベースライン計測を完了。</p>
+          </li>
+          <li>
+            <p class="timeline__date">2026-04-22</p>
+            <p class="timeline__title">中間レビュー</p>
+            <p>主要KPIの改善傾向を確認。検証範囲を一部拡張。</p>
+          </li>
+          <li>
+            <p class="timeline__date">2026-05-15</p>
+            <p class="timeline__title">最終レビュー</p>
+            <p>本レポート提出。次フェーズの判断材料を提示。</p>
+          </li>
+        </ol>
+      </section>
+
+      <!-- =================== RECOMMENDATIONS =================== -->
+      <section id="recommendations" data-toc="提言">
+        <h2>提言</h2>
+        <ol>
+          <li>具体的アクション(誰が・何を・いつまでに)。</li>
+          <li>判断保留にする項目とその根拠。</li>
+          <li>次回計測タイミング。</li>
+        </ol>
+      </section>
+
+      <footer class="report-footer">
+        <span>Generated 2026-05-16 · html-report-generator</span>
+        <span>v1.0</span>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    /* ---------- Theme toggle: auto → light → dark → auto ---------- */
+    (function () {
+      const root = document.documentElement;
+      const btn = document.getElementById('themeToggle');
+      if (!btn) return;
+      const label = btn.querySelector('[data-theme-label]');
+      const apply = mode => {
+        root.dataset.theme = mode;
+        if (label) label.textContent = mode === 'auto' ? 'Auto' : mode === 'dark' ? 'Dark' : 'Light';
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        root.classList.toggle('is-dark', mode === 'dark' || (mode === 'auto' && prefersDark));
+      };
+      apply(localStorage.getItem('theme') || 'auto');
+      btn.addEventListener('click', () => {
+        const next = { auto: 'light', light: 'dark', dark: 'auto' }[root.dataset.theme] || 'auto';
+        localStorage.setItem('theme', next);
+        apply(next);
+      });
+      window.matchMedia('(prefers-color-scheme: dark)')
+        .addEventListener('change', () => { if (root.dataset.theme === 'auto') apply('auto'); });
+    })();
+
+    /* ---------- TOC build + scrollspy ---------- */
+    (function () {
+      const list = document.getElementById('tocList');
+      if (!list) return;
+      const sections = Array.from(document.querySelectorAll('section[data-toc]'));
+      const items = sections.map(s => {
+        const li = document.createElement('li');
+        const a  = document.createElement('a');
+        a.href = '#' + s.id;
+        a.className = 'toc__link';
+        a.textContent = s.dataset.toc;
+        li.appendChild(a); list.appendChild(li);
+        return { section: s, link: a };
+      });
+      const obs = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            items.forEach(({ link }) => link.classList.remove('is-active'));
+            const m = items.find(i => i.section === e.target);
+            if (m) m.link.classList.add('is-active');
+          }
+        });
+      }, { rootMargin: '-40% 0px -55% 0px', threshold: 0 });
+      sections.forEach(s => obs.observe(s));
+    })();
+
+    /* ---------- Tabs ---------- */
+    document.querySelectorAll('[data-tabs]').forEach(group => {
+      const triggers = group.querySelectorAll('[role="tab"]');
+      triggers.forEach(t => t.addEventListener('click', () => {
+        triggers.forEach(o => {
+          const sel = o === t;
+          o.setAttribute('aria-selected', sel);
+          const p = document.getElementById(o.getAttribute('aria-controls'));
+          if (p) p.setAttribute('aria-hidden', !sel);
+        });
+      }));
+    });
+
+    /* ---------- Sortable / filterable / searchable table ---------- */
+    document.querySelectorAll('[data-sortable-table]').forEach(wrap => {
+      const table = wrap.querySelector('table');
+      const tbody = table.querySelector('tbody');
+      const rows  = Array.from(tbody.querySelectorAll('tr'));
+      const search = wrap.querySelector('[data-table-search]');
+      const filters = wrap.querySelectorAll('[data-table-filter]');
+
+      const parse = (text, type) => {
+        if (type === 'number') return parseFloat(text.replace(/[^\d.\-]/g, '')) || 0;
+        if (type === 'date') return new Date(text).getTime() || 0;
+        return text.toLowerCase();
+      };
+
+      table.querySelectorAll('thead th[data-sort]').forEach((th, idx) => {
+        th.addEventListener('click', () => {
+          const type = th.dataset.sort;
+          const asc  = !th.classList.contains('is-sorted-asc');
+          table.querySelectorAll('thead th').forEach(o => {
+            o.classList.remove('is-sorted', 'is-sorted-asc', 'is-sorted-desc');
+            const ind = o.querySelector('.sort-indicator'); if (ind) ind.textContent = '↕';
+          });
+          th.classList.add('is-sorted', asc ? 'is-sorted-asc' : 'is-sorted-desc');
+          const ind = th.querySelector('.sort-indicator'); if (ind) ind.textContent = asc ? '↑' : '↓';
+          rows.sort((a, b) => {
+            const av = parse(a.children[idx].textContent.trim(), type);
+            const bv = parse(b.children[idx].textContent.trim(), type);
+            return av < bv ? (asc ? -1 : 1) : av > bv ? (asc ? 1 : -1) : 0;
+          });
+          rows.forEach(r => tbody.appendChild(r));
+        });
+      });
+
+      const apply = () => {
+        const q = (search?.value || '').toLowerCase().trim();
+        const active = {};
+        filters.forEach(f => { if (f.value) active[f.dataset.tableFilter] = f.value.toLowerCase(); });
+        rows.forEach(row => {
+          const text = row.textContent.toLowerCase();
+          let visible = !q || text.includes(q);
+          if (visible) for (const [, v] of Object.entries(active)) if (!text.includes(v)) { visible = false; break; }
+          row.style.display = visible ? '' : 'none';
+        });
+      };
+      search?.addEventListener('input', apply);
+      filters.forEach(f => f.addEventListener('change', apply));
+    });
+
+    /* ---------- Chart.js theme + sample chart ---------- */
+    window.addEventListener('load', () => {
+      if (typeof Chart !== 'undefined') {
+        const cs = getComputedStyle(document.documentElement);
+        const t = n => cs.getPropertyValue(n).trim();
+        Chart.defaults.font.family = t('--font-sans');
+        Chart.defaults.font.size = 12;
+        Chart.defaults.color = t('--color-muted');
+        Chart.defaults.borderColor = t('--color-border');
+        Chart.defaults.plugins.legend.labels.boxWidth = 10;
+        Chart.defaults.plugins.legend.labels.boxHeight = 10;
+        Chart.defaults.plugins.legend.labels.usePointStyle = true;
+
+        const ctx = document.getElementById('chart-daily');
+        if (ctx) {
+          const labels = Array.from({ length: 30 }, (_, i) => `${i+1}`);
+          const data = labels.map(() => 80 + Math.round(Math.random() * 60));
+          new Chart(ctx, {
+            type: 'line',
+            data: { labels, datasets: [{
+              label: '日次値', data,
+              borderColor: t('--color-series-1'),
+              backgroundColor: `color-mix(in oklch, ${t('--color-series-1')}, transparent 80%)`,
+              borderWidth: 2, tension: 0.3, pointRadius: 0, pointHoverRadius: 4, fill: true,
+            }]},
+            options: {
+              responsive: true, maintainAspectRatio: false,
+              plugins: { legend: { display: false } },
+              scales: {
+                x: { grid: { display: false }, ticks: { maxTicksLimit: 8 } },
+                y: { grid: { color: t('--color-border') }, beginAtZero: true },
+              },
+            },
+          });
+          const tbody = document.getElementById('chart-daily-table');
+          if (tbody) tbody.innerHTML = labels.map((l, i) => `<tr><td>Day ${l}</td><td class="num">${data[i]}</td></tr>`).join('');
+        }
+      }
+
+      if (typeof mermaid !== 'undefined') {
+        // Mermaid (v11) does NOT support OKLCH in themeVariables — pass hex.
+        const isDark = document.documentElement.classList.contains('is-dark');
+        mermaid.initialize({
+          startOnLoad: true,
+          theme: 'base',
+          themeVariables: isDark ? {
+            primaryColor: '#262626', primaryTextColor: '#f5f5f5',
+            primaryBorderColor: '#4d4d4d', lineColor: '#a3a3a3',
+            secondaryColor: '#1f1f1f', tertiaryColor: '#1a1a1a',
+            fontFamily: getComputedStyle(document.documentElement).getPropertyValue('--font-sans'),
+          } : {
+            primaryColor: '#f5f5f5', primaryTextColor: '#1a1a1a',
+            primaryBorderColor: '#cccccc', lineColor: '#666666',
+            secondaryColor: '#fafafa', tertiaryColor: '#ffffff',
+            fontFamily: getComputedStyle(document.documentElement).getPropertyValue('--font-sans'),
+          },
+        });
+      }
+    });
+  </script>
+</body>
+</html>

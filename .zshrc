@@ -131,3 +131,5 @@ export PATH="$PATH:$HOME/.local/bin"
 export DOCKER_HOST="unix://$HOME/.colima/default/docker.sock"
 
 export ECC_CONTEXT_MONITOR_COST_WARNINGS=off
+
+export PATH="/Users/kkmac/.antigravity-ide/antigravity-ide/bin:$PATH"
