@@ -22,10 +22,10 @@
       "TodoWrite(**)",
       "WebFetch(domain:*)",
       "Write(**)",
-      "mcp__plugin_playwright_playwright__browser_navigate",
-      "mcp__plugin_playwright_playwright__browser_press_key",
-      "mcp__plugin_playwright_playwright__browser_take_screenshot",
-      "mcp__plugin_playwright_playwright__browser_close"
+      "mcp__plugin_ecc_playwright__browser_navigate",
+      "mcp__plugin_ecc_playwright__browser_press_key",
+      "mcp__plugin_ecc_playwright__browser_take_screenshot",
+      "mcp__plugin_ecc_playwright__browser_close"
     ],
     "deny": [
       "Bash(bash:*)",
@@ -268,8 +268,8 @@
   },
   "enabledPlugins": {
     "code-simplifier@claude-plugins-official": true,
-    "context7@claude-plugins-official": true,
-    "playwright@claude-plugins-official": true,
+    "context7@claude-plugins-official": false,
+    "playwright@claude-plugins-official": false,
     "example-skills@anthropic-agent-skills": true,
     "commit-commands@claude-plugins-official": true,
     "code-review@claude-plugins-official": true,
@@ -283,7 +283,6 @@
     "octo@nyldn-plugins": true,
     "skill-creator@claude-plugins-official": true,
     "chrome-devtools-mcp@claude-plugins-official": true,
-    "aws-serverless@claude-plugins-official": true,
     "codex@openai-codex": true,
     "ecc@ecc": true,
     "linear@claude-plugins-official": true,
@@ -292,7 +291,11 @@
     "claude-code-setup@claude-plugins-official": true,
     "pyright-lsp@claude-plugins-official": true,
     "serena@claude-plugins-official": true,
-    "explanatory-output-style@claude-plugins-official": true
+    "explanatory-output-style@claude-plugins-official": true,
+    "academic-research-skills@academic-research-skills": true,
+    "deploy-on-aws@claude-plugins-official": true,
+    "aws-serverless@claude-plugins-official": true,
+    "data-engineering@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "nyldn-plugins": {
@@ -322,10 +325,17 @@
         "url": "https://github.com/affaan-m/everything-claude-code.git"
       },
       "autoUpdate": true
+    },
+    "academic-research-skills": {
+      "source": {
+        "source": "github",
+        "repo": "Imbad0202/academic-research-skills"
+      }
     }
   },
   "language": "Japanise",
   "effortLevel": "xhigh",
   "pluginConfigs": {},
+  "skipWorkflowUsageWarning": true,
   "skipAutoPermissionPrompt": true
 }
