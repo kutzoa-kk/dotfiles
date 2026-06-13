@@ -48,6 +48,7 @@ polished deliverable, or a pattern you haven't built before.
 | Interactive parameter / prompt / animation tuner | `references/interactive-playgrounds.md` |
 | Throwaway editor with "export when done" | `references/editing-interfaces.md` |
 | Architecture / flow / data diagram | `references/svg-and-diagrams.md` |
+| Raster cover, hero banner, eyecatch, or conceptual illustration | the **`codex-image-gen`** skill (generates via Codex CLI, no API key) |
 | Visual system, color, typography, spacing | `references/design-system.md` |
 | TOC, tabs, sortable tables, theme toggle JS | `references/interactivity.md` |
 | Planning/spec work spanning exploration, mockups, and a plan, kept across sessions | `references/linked-artifacts.md` (a web of linked HTML files) |
@@ -105,6 +106,9 @@ Tailwind v4 browser) via CDN.
 **Break the single-file rule when:**
 - The user wants a polished SVG illustration — author it as a separate `.svg` and
   reference it; don't base64-embed unless the user asks.
+- The report wants a raster cover, hero banner, or conceptual illustration (texture or
+  photographic feel, not line art) — generate it with the **`codex-image-gen`** skill and
+  reference it as an external file. Keep text out of the image and overlay real HTML type on top.
 - The artifact embeds many large screenshots — link to them, don't inline base64.
 - The user wants to share via S3 / GitHub Pages — multi-file is fine as long as relative
   paths work.

@@ -211,6 +211,14 @@ style: |
   .new-class { property: value; }
 ```
 
+## 画像・アイキャッチ生成
+
+スライドにカバー画像・アイキャッチ・概念イラストが欲しいときは **`codex-image-gen`** スキルで生成する（Codex CLI 経由、API キー不要）。
+
+- **テキストは画像に焼かない** — タイトルは Marp テキストで重ねる。翻訳・編集が効き、文字化けも避けられる。
+- 16:9 背景は `--size 1536x864` で生成し、`![bg]` または grid セルに配置。
+- アイコンは同一スタイル文で揃える。生成後は `marp-layout-validator` で文字はみ出しを検証。
+
 ## Resources
 
 - **[references/layouts.md](references/layouts.md)** — 40レイアウトパターン詳細
