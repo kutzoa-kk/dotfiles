@@ -1,2 +1,27 @@
 # SSH config (contains IPs and hostnames)
 dotdir/.ssh/config
+/*
+/.**
+
+!/.zshrc
+!/.zprofile
+!/.vimrc
+!/.gitignore_global
+!/.gitconfig
+!/.config/
+!/.config/**
+!/Brewfile
+
+## etc
+!/.bin/
+!/.bin/**
+
+!/README.md
+!/LICENCE
+!.gitignore
+!.gitkeep
+!/install.sh
+!/install_brew.sh
+!/.github/
+!/.github/**
+
