@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+#
+# pre-commit: secret のコミットを機械的に防ぐ
+# dotfiles 管理ファイル (.bin/hooks/pre-commit)。install.sh が
+# .git/hooks/pre-commit にリンクする。gitleaks があれば併用する。
+#
+# 緊急回避(誤検知時): git commit --no-verify
+#
+set -euo pipefail
+
+secret_re='(access[_-]?token|api[_-]?key|secret[_-]?key|client[_-]?secret|password[[:space:]:=]|private[_-]?key|-----BEGIN [A-Z ]*PRIVATE KEY-----|bearer[[:space:]]+[A-Za-z0-9._-]{20,})'
+
+found=""
+while IFS= read -r f; do
+  [ -n "$f" ] || continue
+  case "$f" in
+    *.png|*.jpg|*.jpeg|*.gif|*.webp|*.wasm|*.map|*.lock|*.min.js) continue ;;
+  esac
+  if git show ":$f" 2>/dev/null | grep -nEi "$secret_re" >/dev/null 2>&1; then
+    found="$found $f"
+  fi
+done < <(git diff --cached --name-only --diff-filter=ACM)
+
+if command -v gitleaks >/dev/null 2>&1; then
+  if ! gitleaks protect --staged --redact >/dev/null 2>&1; then
+    if ! gitleaks git --staged --redact >/dev/null 2>&1; then
+      found="$found [gitleaks-detection]"
+    fi
+  fi
+fi
+
+if [ -n "$found" ]; then
+  echo ""
+  echo "❌ コミット中止: secret らしき内容を検出しました"
+  for f in $found; do echo "   - $f"; done
+  echo ""
+  echo "   誤検知の場合: git commit --no-verify"
+  exit 1
+fi
+
+exit 0
