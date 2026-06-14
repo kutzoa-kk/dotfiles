@@ -13,6 +13,12 @@ dotdir/.codex/config.toml
 !/.gitconfig
 !/.config/
 !/.config/**
+
+# Machine-local state mistakenly committed under .config (re-exclude from the allowlist above)
+/.config/Autodesk/
+/.config/iterm2/
+/.config/raycast/
+/.config/wireshark/
 !/Brewfile
 
 ## etc
