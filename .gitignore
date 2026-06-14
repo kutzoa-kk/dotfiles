@@ -1,5 +1,8 @@
 # SSH config (contains IPs and hostnames)
 dotdir/.ssh/config
+
+# Codex config (machine-local: paths, [projects] trust history, hooks.state, auto-generated timestamps)
+dotdir/.codex/config.toml
 /*
 /.**
 
