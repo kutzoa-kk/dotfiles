@@ -142,7 +142,7 @@ DASH for SaMD は、SaMD（プログラム医療機器）の開発・承認を�
 | 通称 | IDATEN |
 | 審査機関 | PMDA |
 | 対象 | 承認を受けた医療機器（プログラム医療機器を含む）の市販後変更 |
-| 国際的対応 | PACMP（Post-Approval Change Management Protocol）相当 |
+| 国際的対応 | FDA PCCP（Predetermined Change Control Plan）に対応する制度（AI/ML 医療機器の市販後変更を事前計画で承認）。医薬品分野の PACMP（Post-Approval Change Management Protocol）が概念的源流。詳細は [international-regulatory.md](international-regulatory.md) 参照 |
 | 一次情報 URL | https://www.pmda.go.jp/review-services/drug-reviews/about-reviews/devices/0039.html |
 
 > **名称由来**: IDATEN は「韋駄天」（仏教の俊足の神）に由来することが確認されている。英語頭字語としての公式定義は **未確認**。公式文書で英語展開形が必要な場合は上記 URL の一次情報を参照すること。
