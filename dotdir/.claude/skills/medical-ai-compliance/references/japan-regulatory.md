@@ -110,10 +110,12 @@
 
 | 項目 | 内容 |
 |------|------|
-| 名称 | DASH for SaMD（Developing Advanced Single Health system for SaMD） |
-| 発行 | 令和2年（2020年）11月 厚生労働省 |
+| 名称 | DASH for SaMD（DX (Digital Transformation) Action Strategies in Healthcare for SaMD） |
+| 発行年月 | 令和2年（2020年）11月 |
+| 発行機関 | 厚生労働省 |
 | 審査機関 | PMDA |
-| 一次情報 URL | https://www.pmda.go.jp/review-services/f2f-pre/strategies/0011.html |
+| 一次情報 URL（名称出典） | https://www.mhlw.go.jp/content/11124500/000761870.pdf |
+| 一次情報 URL（相談窓口） | https://www.pmda.go.jp/review-services/f2f-pre/strategies/0011.html |
 
 ### 3.2 目的と主要施策
 
@@ -140,7 +142,7 @@ DASH for SaMD は、SaMD（プログラム医療機器）の開発・承認を�
 | 通称 | IDATEN |
 | 審査機関 | PMDA |
 | 対象 | 承認を受けた医療機器（プログラム医療機器を含む）の市販後変更 |
-| 国際的対応 | IMDRF PCMP（Predetermined Change Control Plan）相当 |
+| 国際的対応 | PACMP（Post-Approval Change Management Protocol）相当 |
 | 一次情報 URL | https://www.pmda.go.jp/review-services/drug-reviews/about-reviews/devices/0039.html |
 
 > **名称由来**: IDATEN は「韋駄天」（仏教の俊足の神）に由来することが確認されている。英語頭字語としての公式定義は **未確認**。公式文書で英語展開形が必要な場合は上記 URL の一次情報を参照すること。
@@ -164,7 +166,7 @@ IDATEN は、AI/ML ベースの SaMD における継続的な改善（追加学�
 - **RWD（Real-World Data）活用**: 市販後に収集した実臨床データを用いた性能改善
 - **アルゴリズム更新**: あらかじめ定義した性能基準・評価指標の範囲内でのアルゴリズム変更
 
-> **国際比較**: FDA の Predetermined Change Control Plan（PCCP）と目的・構造が対応している。FDA PCCP との実質的な等価性については PMDA への確認を推奨する（相互承認の保証はない）。
+> **国際比較**: 海外規制との比較詳細は `international-regulatory.md` を参照すること。
 
 ---
 
