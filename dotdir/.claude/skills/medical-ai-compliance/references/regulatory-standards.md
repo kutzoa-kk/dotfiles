@@ -90,8 +90,8 @@ Category I が最低リスク、Category IV が最高リスク。
 | 情報の重要性 ↓ / 医療状況の重大性 → | **Critical** | **Serious** | **Non-serious** |
 |--------------------------------------|:------------:|:-----------:|:---------------:|
 | **Treat or diagnose**                | **IV**       | **III**     | **II**          |
-| **Drive clinical management**        | **III**      | **III**     | **II**          |
-| **Inform clinical management**       | **II**        | **II**      | **I**           |
+| **Drive clinical management**        | **III**      | **II**      | **I**           |
+| **Inform clinical management**       | **II**        | **I**       | **I**           |
 
 > ⚠️ **未確認注記**: 上記マトリクスの各セルの割り当て（Category I〜IV）は  
 > 二次的な解説資料に基づいています。各セルの正確な値・境界条件・根拠条文は  

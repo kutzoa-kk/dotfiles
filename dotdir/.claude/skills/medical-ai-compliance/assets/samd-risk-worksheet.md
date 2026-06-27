@@ -152,7 +152,7 @@ SaMD の出力が、臨床判断の参考情報として利用される。最終
 
 > ⚠️ **未確認注記**: 下表のセル値は二次的解説資料に基づきます。  
 > N12FINAL:2014 PDF の本文・Appendix の Table で正確な値を確認してください。  
-> 本スキル内の `references/regulatory-standards.md` も参照してください（ただし同ファイルのマトリクスも未確認）。
+> 本スキル内の `references/regulatory-standards.md` のマトリクスとも一致します（両者とも IMDRF N12 の標準的なカテゴリ配置）。各セルの定義文言・境界条件は上記 N12 PDF で最終確認してください。
 
 Category I が **最低リスク**、Category IV が **最高リスク** です。
 
