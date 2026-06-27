@@ -221,6 +221,6 @@ TRIPOD+AI はコード・モデル・データの可用性（open science）を�
 
 ---
 
-> 出典: Collins GS, Moons KGM, et al. Transparent reporting of multivariable prediction models developed or validated using clustered data: TRIPOD+AI. *BMJ* 2024;385:e078378. https://doi.org/10.1136/bmj-2023-078378
+> 出典: Collins GS, Moons KGM, et al. TRIPOD+AI statement: updated guidance for reporting clinical prediction models that use regression or machine learning methods. *BMJ* 2024;385:e078378. https://doi.org/10.1136/bmj-2023-078378
 >
 > 本雛形は reporting-guidelines.md（medical-ai-compliance スキル）の TRIPOD+AI セクションと整合しています。
