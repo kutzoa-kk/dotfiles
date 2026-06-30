@@ -37,12 +37,13 @@ composer は `#prompt-textarea`（**contenteditable ProseMirror div**、textarea
 ```js
 () => {
   // 生成中は true、完了で false。false が2連続したら完了とみなす。
-  if (document.querySelector('button[data-testid="stop-button"]')) return true; // 生成中
+  if (document.querySelector('button[data-testid="stop-button"]')) return true; // 生成中（停止ボタンあり）
   const turns = document.querySelectorAll('[data-message-author-role="assistant"]');
-  const last = turns[turns.length - 1];
-  if (!last) return true;  // まだ assistant ターンが無い → 未完了扱い
-  const root = last.closest('article') || last;
-  const done = root.querySelector(
+  if (turns.length === 0) return true;  // まだ assistant ターンが無い → 未完了扱い
+  // 完了サイン: ターンアクション（コピー等）の出現をページ全体で確認する。
+  // 注意: 現行 chatgpt.com では assistant ターンは <article> で包まれず（closest('article')=null）、
+  //       copy ボタンは role 要素の外側にあるため、article/role スコープ検索では見つからない（ライブ検証で確認）。
+  const done = document.querySelector(
     'button[data-testid="copy-turn-action-button"], button[data-testid="good-response-turn-action-button"]'
   );
   return !done;  // finished-action がまだ無ければ生成中
