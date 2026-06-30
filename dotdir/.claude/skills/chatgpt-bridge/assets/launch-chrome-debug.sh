@@ -29,9 +29,10 @@ echo "[chatgpt-bridge] launching Chrome (port ${PORT}, profile ${PROFILE_DIR})"
   --no-first-run \
   --no-default-browser-check \
   >/dev/null 2>&1 &
+disown
 
 # 起動待ち（最大 ~10s）
-for _ in $(seq 1 20); do
+for _ in {1..20}; do
   if curl -sf "$HEALTH_URL" >/dev/null 2>&1; then
     echo "[chatgpt-bridge] ready on :${PORT}"
     echo "[chatgpt-bridge] 初回は開いた Chrome で https://chatgpt.com にログインしてください（profile に永続）。"
