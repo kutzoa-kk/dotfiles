@@ -305,8 +305,14 @@
     }
   },
   "language": "Japanise",
-  "effortLevel": "xhigh",
+  "effortLevel": "high",
   "pluginConfigs": {},
+  "tui": "fullscreen",
+  "voice": {
+    "enabled": true,
+    "mode": "hold"
+  },
   "skipWorkflowUsageWarning": true,
-  "skipAutoPermissionPrompt": true
+  "skipAutoPermissionPrompt": true,
+  "voiceEnabled": true
 }
