@@ -36,10 +36,10 @@
 選択した chat への遷移（href が分かれば直接遷移が確実）:
 
 ```js
-(href) => { location.assign(href); return location.pathname; }
+() => { location.assign("<<href を文字列リテラルで埋め込む>>"); return location.pathname; }
 ```
 
-（MCP では `evaluate_script` に href を args で渡すか、`navigate_page` で `https://chatgpt.com{href}` へ遷移。）
+（推奨は `navigate_page` で `https://chatgpt.com{href}` へ遷移。`evaluate_script` を使う場合は href を関数本体の文字列リテラルとして埋め込む（`args` は element uid 用でデータ文字列は渡せない）。）
 
 ## 仮想化の注意
 

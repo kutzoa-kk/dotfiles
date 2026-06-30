@@ -12,7 +12,8 @@ composer は `#prompt-textarea`（**contenteditable ProseMirror div**、textarea
 `evaluate_script` で直接入れる場合の代替（ネイティブ打鍵が使えないとき）:
 
 ```js
-(text) => {
+() => {
+  const text = "<<質問文を文字列リテラルで埋め込む>>";
   const el = document.querySelector('#prompt-textarea');
   el.focus();
   document.execCommand('selectAll', false);
@@ -20,6 +21,8 @@ composer は `#prompt-textarea`（**contenteditable ProseMirror div**、textarea
   return el.innerText.length;
 }
 ```
+
+`evaluate_script` の `args` は snapshot の element uid 専用であり、質問文などのデータは args で渡さず関数本体に文字列リテラルとして埋め込む（Claude が呼び出し時に埋め込む）。
 
 ## 2. 送信
 
@@ -33,6 +36,7 @@ composer は `#prompt-textarea`（**contenteditable ProseMirror div**、textarea
 
 ```js
 () => {
+  // 生成中は true、完了で false。false が2連続したら完了とみなす。
   if (document.querySelector('button[data-testid="stop-button"]')) return true; // 生成中
   const turns = document.querySelectorAll('[data-message-author-role="assistant"]');
   const last = turns[turns.length - 1];
