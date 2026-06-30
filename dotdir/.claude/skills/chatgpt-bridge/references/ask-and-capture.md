@@ -2,6 +2,70 @@
 
 1 つのチャット画面で、質問を送り、ストリーミング完了を検知し、最終回答テキストを抽出する。
 
+## 0. モード選択（任意）
+
+ユーザーがモードを明示した場合（例「Pro拡張で」「最高で」「標準で」）のみ実行。指定が無ければ**現在チャットで選択中のモードをそのまま使う**（既定動作）。
+
+モードセレクタは上部バーの `button[aria-haspopup="menu"]` で、ボタンの innerText が現在のモード（例 `最高`）。**Radix メニューはプログラム的 `.click()` では開かない**——`pointerdown`→`pointerup`→`click` を dispatch する（ライブ検証で確認）。
+
+現在モードの確認＋選択肢の列挙（ラベルはドリフトしうるので実行時に確認）:
+
+```js
+async () => {
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+  const btn = [...document.querySelectorAll('button')]
+    .find(b => b.getAttribute('aria-haspopup') === 'menu' &&
+               /^(最速|標準|高|最高|Pro|GPT|Auto|Thinking)/i.test((b.innerText||'').trim()));
+  if (!btn) return { ok:false, reason:'mode selector not found' };
+  const current = (btn.innerText||'').trim();
+  const o = { bubbles:true, cancelable:true, view:window, pointerId:1, pointerType:'mouse', button:0 };
+  btn.dispatchEvent(new PointerEvent('pointerdown', o));
+  btn.dispatchEvent(new PointerEvent('pointerup', o));
+  btn.dispatchEvent(new MouseEvent('click', o));
+  await sleep(700);
+  const options = [...document.querySelectorAll('[role="menuitem"],[role="menuitemradio"]')]
+    .map(e => (e.innerText||'').trim()).filter(Boolean);
+  document.dispatchEvent(new KeyboardEvent('keydown', { key:'Escape', bubbles:true }));
+  return { ok:true, current, options };
+}
+```
+
+目的モードを選択（`want` は関数本体に文字列リテラルで埋め込む。args では渡さない）:
+
+```js
+async () => {
+  const want = "<<目的モードを文字列リテラルで（例: Pro 拡張 / 最高 / 標準）>>";
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+  const norm = s => (s||'').replace(/\s/g,'');
+  const btn = [...document.querySelectorAll('button')]
+    .find(b => b.getAttribute('aria-haspopup') === 'menu' &&
+               /^(最速|標準|高|最高|Pro|GPT|Auto|Thinking)/i.test((b.innerText||'').trim()));
+  if (!btn) return { ok:false, reason:'mode selector not found' };
+  if (norm(btn.innerText) === norm(want)) return { ok:true, already:true, mode: (btn.innerText||'').trim() };
+  const o = { bubbles:true, cancelable:true, view:window, pointerId:1, pointerType:'mouse', button:0 };
+  btn.dispatchEvent(new PointerEvent('pointerdown', o));
+  btn.dispatchEvent(new PointerEvent('pointerup', o));
+  btn.dispatchEvent(new MouseEvent('click', o));
+  await sleep(700);
+  const item = [...document.querySelectorAll('[role="menuitem"],[role="menuitemradio"]')]
+    .find(e => norm(e.innerText) === norm(want));
+  if (!item) {
+    document.dispatchEvent(new KeyboardEvent('keydown', { key:'Escape', bubbles:true }));
+    return { ok:false, reason:'mode not in menu', want };
+  }
+  item.dispatchEvent(new PointerEvent('pointerdown', o));
+  item.dispatchEvent(new PointerEvent('pointerup', o));
+  item.dispatchEvent(new MouseEvent('click', o));
+  await sleep(500);
+  return { ok:true, selected: (btn.innerText||'').trim() };
+}
+```
+
+選択後はセレクタボタンの innerText が `want` に変わったか確認。変わらなければ **fail-loud**（推測で送信しない）。
+
+観測済みモード（2026-06-30、ドリフトしうるので上の列挙で実行時確認）: `最速` / `標準` / `高` / `最高` / `Pro 拡張` / `GPT-5.5`。
+- ユーザーの「Pro拡張」= メニュー表記「**Pro 拡張**」。**最重量で応答が数分**かかるため、§3 の完了検知タイムアウトを **600s 以上**に上げること。
+
 ## 1. 質問を入力
 
 composer は `#prompt-textarea`（**contenteditable ProseMirror div**、textarea ではない）。`fill` は使わず**ネイティブ打鍵**で入力する:

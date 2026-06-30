@@ -26,6 +26,7 @@ Chrome 上の ChatGPT（Pro）を chrome-devtools MCP（remote-debugging attach�
 
 ### Step 3: 各 (質問, 対象) を処理
 - チャット解決: `references/chat-targeting.md`（新規 / 既存名検索・無一致/複数一致処理）
+- モード指定（例「Pro拡張で」「最高で」）があれば送信前に `references/ask-and-capture.md` §0 でモード選択（指定が無ければ現在モードのまま）。重いモード（Pro 拡張）は完了検知タイムアウトを 600s+ に延長。
 - 送信&取得: `references/ask-and-capture.md`（ProseMirror 入力 / 二重シグナル完了検知 / 抽出）
 - 送信対象が 5 件を超える場合は、ループ実行前にユーザーへ確認する。
 - 必ず MCP は **:9222 attach 済みサーバ**（例 `mcp__chrome-cdp__*`）を使う。操作対象の指定は `take_snapshot` の uid（click/type_text 用）、CSS セレクタの存在確認は `evaluate_script` で実行時プローブ（count>0）。
