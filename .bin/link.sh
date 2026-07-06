@@ -201,6 +201,7 @@ if [ -d "${DOTDIR_ROOT}/.claude" ]; then
     
     # Directories to link (list of directory names to link instead of skip)
     LINK_DIRECTORIES=("agents" "workflows" "scripts" "assets" "skills" "rules")
+    PRESERVE_FILES=("settings.json")   # 外部ツール(orca/Claude Code)が書き換える → リンクせず保全（seed-if-absent）
     
     for claudefile in "${DOTDIR_ROOT}"/.claude/* ; do
         [[ ! -e "$claudefile" ]] && continue
@@ -222,8 +223,21 @@ if [ -d "${DOTDIR_ROOT}/.claude" ]; then
             fi
             # Other directories are skipped (can be added to LINK_DIRECTORIES if needed)
         else
-            # Link files
-            ln -fnsv "$claudefile" "$HOME/.claude/$filename"
+            # Link files（外部ツールが書き換えるファイルは保全）
+            is_preserve=false
+            for pf in "${PRESERVE_FILES[@]}"; do
+                [[ "$filename" == "$pf" ]] && is_preserve=true && break
+            done
+            if [[ "$is_preserve" == true ]]; then
+                if [[ ! -e "$HOME/.claude/$filename" ]]; then
+                    cp "$claudefile" "$HOME/.claude/$filename"      # 種を蒔く（新マシン）
+                    echo "seeded (copy): $filename"
+                else
+                    echo "preserved (exists): $filename"            # 既存を保全
+                fi
+            else
+                ln -fnsv "$claudefile" "$HOME/.claude/$filename"
+            fi
         fi
     done
 fi
