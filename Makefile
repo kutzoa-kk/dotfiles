@@ -19,6 +19,11 @@ link:
 	@.bin/link.sh
 	@echo "\033[0;34mDone.\033[0m"
 
+# Pull permanent settings from live ~/.claude into git (dotdir)
+settings-pull:
+	@echo "\033[0;34mRun settings-pull.sh\033[0m"
+	@.bin/settings-pull.sh
+
 # Install macOS applications.
 brew:
 	@echo "\033[0;34mRun brew.sh\033[0m"
