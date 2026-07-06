@@ -30,6 +30,8 @@ const FINDINGS = {
 
 const COMMON = `対象: /Users/kkmclab/dotfiles（git 実体）と /Users/kkmclab/.claude（稼働環境）。
 環境知識: merge リンク構造（実体は dotdir/.claude/）。settings.json は外部ツール orca が hooks を注入し得る。
+settings.json の所有モデル（docs/settings-ownership.md）: git=種／稼働=ライブ。稼働側にのみ存在するキー（model・enabledPlugins・extraKnownMarketplaces・orca 注入 hooks 等）は設計どおりでありドリフトではない。報告するのは「恒久設定が make settings-pull で種へ吸い上げられていない疑い」がある場合のみ。
+プラグインの数え方: installed（キャッシュ存在）と enabled（settings.json の enabledPlugins が true）を区別し、常駐カウントは enabled のみ。ecc の SKILL.md 数は言語ミラー（es/tr 等）を除いた distinct 数で数える。
 制約: 読み取り専用 — いかなるファイルも変更・削除しないこと。
 出力: 所見リスト。evidence には必ずパスと数値（行数・個数・サイズ）を含める。該当なしなら findings: [] を返す。`
 
