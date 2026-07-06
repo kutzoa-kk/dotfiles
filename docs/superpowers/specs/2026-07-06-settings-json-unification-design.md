@@ -1,6 +1,6 @@
 # settings.json 一本化 設計書
 
-作成: 2026-07-06 · 状態: **設計（承認済み・実装前）** · 対象: dotfiles の Claude Code 設定リンク戦略
+作成: 2026-07-06 · 状態: **実装完了**（commit bd4630a〜49c4517。git=種／稼働=ライブ／`make settings-pull`）· 対象: dotfiles の Claude Code 設定リンク戦略
 
 ## 目的
 

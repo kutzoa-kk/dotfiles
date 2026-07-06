@@ -2,7 +2,7 @@
 
 - **日付**: 2026-06-30
 - **対象**: Claude Code ユーザースキル（`dotdir/.claude/skills/chatgpt-bridge/`）
-- **ステータス**: 設計合意済み（実装計画待ち）
+- **ステータス**: 実装済み（`dotdir/.claude/skills/chatgpt-bridge/` として稼働中。2026-07-06 更新）
 
 ## 1. 目的
 

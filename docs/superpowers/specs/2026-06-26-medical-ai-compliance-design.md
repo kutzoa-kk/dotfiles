@@ -2,7 +2,7 @@
 
 - **日付**: 2026-06-26
 - **対象**: Claude Code ユーザースキル（`dotdir/.claude/skills/medical-ai-compliance/`）
-- **ステータス**: 設計合意済み（実装計画待ち）
+- **ステータス**: 実装済み（`dotdir/.claude/skills/medical-ai-compliance/` として稼働中。2026-07-06 更新）
 
 ## 1. 目的
 
