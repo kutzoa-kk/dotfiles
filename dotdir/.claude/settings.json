@@ -238,22 +238,22 @@
     "command": "bash ~/.claude/scripts/statusline.sh"
   },
   "enabledPlugins": {
-    "code-simplifier@claude-plugins-official": true,
+    "code-simplifier@claude-plugins-official": false,
     "context7@claude-plugins-official": false,
     "playwright@claude-plugins-official": false,
-    "example-skills@anthropic-agent-skills": true,
+    "example-skills@anthropic-agent-skills": false,
     "commit-commands@claude-plugins-official": true,
-    "code-review@claude-plugins-official": true,
-    "feature-dev@claude-plugins-official": true,
-    "ralph-loop@claude-plugins-official": true,
+    "code-review@claude-plugins-official": false,
+    "feature-dev@claude-plugins-official": false,
+    "ralph-loop@claude-plugins-official": false,
     "swift-lsp@claude-plugins-official": true,
-    "hookify@claude-plugins-official": true,
+    "hookify@claude-plugins-official": false,
     "frontend-design@claude-plugins-official": true,
     "superpowers@claude-plugins-official": true,
-    "claude-md-management@claude-plugins-official": true,
-    "octo@nyldn-plugins": true,
+    "claude-md-management@claude-plugins-official": false,
+    "octo@nyldn-plugins": false,
     "skill-creator@claude-plugins-official": true,
-    "chrome-devtools-mcp@claude-plugins-official": true,
+    "chrome-devtools-mcp@claude-plugins-official": false,
     "codex@openai-codex": true,
     "ecc@ecc": true,
     "linear@claude-plugins-official": true,
@@ -266,7 +266,7 @@
     "academic-research-skills@academic-research-skills": true,
     "deploy-on-aws@claude-plugins-official": true,
     "aws-serverless@claude-plugins-official": true,
-    "data-engineering@claude-plugins-official": true
+    "data-engineering@claude-plugins-official": false
   },
   "extraKnownMarketplaces": {
     "nyldn-plugins": {
