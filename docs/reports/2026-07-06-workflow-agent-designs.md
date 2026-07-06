@@ -5,7 +5,7 @@
 
 設計原則（調査レポートより）:
 - 並列化は探索型の高価値タスク限定（マルチエージェントはチャット比約15倍のトークン）
-- サブエージェント指示は4要素必須: **目的 / 出力形式 / 使うツール・手順 / タスク境界**
+- サブエージェント指示は4要素必須: **目的 / 出力形式 / 使うツール / タスク境界**
 - 読み取り専用にできるものは読み取り専用にする（監査系はすべて該当）
 - 重複を増やさない: 汎用リサーチは既存 deep-research を使い、新設は「この環境の資産を束ねるもの」のみ
 
@@ -61,7 +61,7 @@ const FINDINGS = {
   },
 }
 
-const COMMON = `対象: /Users/kkmclab/dotfiles(git 実体）と /Users/kkmclab/.claude（稼働環境）。
+const COMMON = `対象: /Users/kkmclab/dotfiles（git 実体）と /Users/kkmclab/.claude（稼働環境）。
 環境知識: merge リンク構造（実体は dotdir/.claude/）。settings.json は外部ツール orca が hooks を注入し得る。
 制約: 読み取り専用 — いかなるファイルも変更・削除しないこと。
 出力: 所見リスト。evidence には必ずパスと数値（行数・個数・サイズ）を含める。該当なしなら findings: [] を返す。`
@@ -195,7 +195,7 @@ return { file, lenses: lenses.map(l => l.key), confirmed }
 
 ## C-4: named Workflow 第3弾 — `sdd-experiment-sweep`
 
-- 目的: SDD ML プロジェクトの実験群を横断監査し、ゲート違反・リーク兆候・整合性を1つの比較ビューに集約。自作スキル最大勢力（sdd-* 7個）の「1実験ずつ手動」を「全実験を一括」に変える
+- 目的: SDD ML プロジェクトの実験群を横断監査し、ゲート違反・リーク兆候・整合性を1つの比較ビューに集約。自作スキル最大勢力（sdd-* スキル6個 + 実験ワークスペース1件）の「1実験ずつ手動」を「全実験を一括」に変える
 - 配置: `dotdir/.claude/workflows/sdd-experiment-sweep.js`
 - 起動: `Workflow({ name: 'sdd-experiment-sweep', args: { projectRoot: '<プロジェクト絶対パス>' } })`
 
@@ -303,7 +303,7 @@ model: sonnet
 1. 読み取り専用。ファイルの作成・変更・削除は一切しない（Bash も ls/find/du/diff 等の照会に限る）
 2. すべての所見に証拠（パス・行数・個数・サイズ）を付ける
 3. 事実と推測を明確に区別する
-4. 修理方法は「推奨」として書き、実行はしない
+4. 修正方法は「推奨」として書き、実行はしない
 
 ## 出力形式
 所見リスト（id / severity: critical|high|medium|low / title / evidence / recommendation）。
@@ -373,7 +373,7 @@ model: inherit
 
 設計メモ:
 - モデル割り当て — 機械点検の env-auditor と定型レビューの jp-doc-reviewer は sonnet 固定（コスト効率）。判断の質が結果を左右する research-methodologist のみ `inherit`（Fable セッションから呼べば Fable で動く）
-- ecc 28種との重複なし（環境固有知識・スタイルガイド運用・敵対的方法論検証は既存エージェントにない役割）
+- ecc の稼働 Agent 67体との重複なし（環境固有知識・スタイルガイド運用・敵対的方法論検証は既存エージェントにない役割）
 
 ---
 
@@ -397,5 +397,5 @@ model: inherit
 - [ ] C-2: env-audit.js を配置 → `Workflow({ name: 'env-audit', args: { date: '<今日>' } })` で試走 → 出力を docs/reports/env-audit-<date>.md へ整形保存
 - [ ] C-3: doc-review-panel.js を配置 → 既存文書1本（例: 本設計書）で試走し、観点の越境・偽陽性棄却の挙動を確認
 - [ ] C-4: sdd-experiment-sweep.js を配置 → 実在の SDD プロジェクトで試走
-- [ ] C-6: CLAUDE.md へ4行追記（63行 → 67行。200行上限に対し余裕）
+- [ ] C-6: CLAUDE.md へ4行追記（67行 → 71行。200行上限に対し余裕）
 - [ ] 試走後: 各 Workflow の journal を確認し、指示文の曖昧さ・スキーマ不足を1回改訂（評価駆動の反復）

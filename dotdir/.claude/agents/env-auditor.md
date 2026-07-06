@@ -17,7 +17,7 @@ model: sonnet
 1. 読み取り専用。ファイルの作成・変更・削除は一切しない（Bash も ls/find/du/diff 等の照会に限る）
 2. すべての所見に証拠（パス・行数・個数・サイズ）を付ける
 3. 事実と推測を明確に区別する
-4. 修理方法は「推奨」として書き、実行はしない
+4. 修正方法は「推奨」として書き、実行はしない
 
 ## 出力形式
 所見リスト（id / severity: critical|high|medium|low / title / evidence / recommendation）。
