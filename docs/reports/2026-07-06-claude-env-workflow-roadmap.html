@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="ja" data-theme="auto">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Claude 環境整理 × Workflow 活用 — 調査統合と取り組みロードマップ</title>
+  <meta name="description" content="dotfiles の Claude Code 環境を4系統で調査し、優先度付きの取り組み項目に整理した統合レポート（実装前の整理）。">
+  <meta name="generator" content="html-report-generator">
+
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.2/dist/index.global.js" integrity="sha384-yzJGD2ZXURu6RaDFjaXOC6IrnZq1aEeldwvXw7Pec43Q2BnmHkys/fGPzvwEtojO" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11.16.0/dist/mermaid.min.js" integrity="sha384-T/0lMUdJpd2S1ZHtRiofG3htU3xPCrFVeAQ1UUE2TJwlEJSV5NUwn30kP28n238E" crossorigin="anonymous" defer></script>
+
+  <style>
+    :root {
+      --color-bg:            oklch(99% 0 0);
+      --color-surface:       oklch(100% 0 0);
+      --color-surface-2:     oklch(97.5% 0 0);
+      --color-border:        oklch(92% 0 0);
+      --color-border-strong: oklch(85% 0 0);
+      --color-ink:           oklch(18% 0 0);
+      --color-muted:         oklch(45% 0 0);
+      --color-faint:         oklch(60% 0 0);
+      --color-accent:        oklch(55% 0.18 255);
+      --color-accent-2:      oklch(62% 0.14 195);
+      --color-success:       oklch(58% 0.15 145);
+      --color-warning:       oklch(72% 0.16 75);
+      --color-danger:        oklch(58% 0.20 25);
+      --color-info:          oklch(60% 0.13 245);
+
+      --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text",
+                   "Hiragino Sans", "Noto Sans JP", "Segoe UI",
+                   Helvetica, Arial, sans-serif;
+      --font-mono: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+    }
+
+    :where(.is-dark) {
+      --color-bg:            oklch(14% 0 0);
+      --color-surface:       oklch(17% 0 0);
+      --color-surface-2:     oklch(20% 0 0);
+      --color-border:        oklch(28% 0 0);
+      --color-border-strong: oklch(38% 0 0);
+      --color-ink:           oklch(96% 0 0);
+      --color-muted:         oklch(72% 0 0);
+      --color-faint:         oklch(55% 0 0);
+      --color-accent:        oklch(72% 0.16 255);
+      --color-accent-2:      oklch(75% 0.13 195);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 1.65;
+      color: var(--color-ink);
+      background: var(--color-bg);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    a {
+      color: var(--color-accent);
+      text-decoration: none;
+      border-bottom: 1px solid color-mix(in oklch, var(--color-accent), transparent 70%);
+      transition: border-color 120ms ease;
+    }
+    a:hover { border-bottom-color: var(--color-accent); }
+    h1, h2, h3, h4 { font-weight: 600; letter-spacing: -0.02em; line-height: 1.2; margin: 0; }
+    h1 { font-size: clamp(2rem, 1.5rem + 1.6vw, 2.75rem); }
+    h2 {
+      font-size: 1.625rem;
+      margin-top: clamp(3rem, 4rem + 2vw, 6rem);
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--color-border);
+      scroll-margin-top: 1rem;
+    }
+    h3 { font-size: 1.25rem; margin-top: 2.5rem; scroll-margin-top: 1rem; }
+    h4 { font-size: 1.05rem; margin-top: 1.75rem; }
+    p, ul, ol { margin: 0 0 1rem; }
+    ul, ol { padding-left: 1.25em; }
+    li + li { margin-top: 0.5rem; }
+    hr { border: 0; border-top: 1px solid var(--color-border); margin: 2rem 0; }
+    code, pre, kbd, samp { font-family: var(--font-mono); font-size: 0.9em; }
+    code:not(pre code) {
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      padding: 0.1em 0.35em;
+      border-radius: 4px;
+    }
+    pre {
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      padding: 1rem 1.5rem;
+      overflow-x: auto;
+      line-height: 1.4;
+    }
+    :focus-visible {
+      outline: 2px solid var(--color-accent);
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+
+    .report-shell {
+      display: grid;
+      grid-template-columns: 240px minmax(0, 1fr);
+      max-width: calc(240px + 880px + 8rem);
+      margin: 0 auto;
+      padding: 0 1.25rem;
+      gap: 4rem;
+    }
+    @media (max-width: 900px) {
+      .report-shell { grid-template-columns: 1fr; gap: 0; }
+      .toc { position: static !important; height: auto !important; padding-top: 1rem; }
+    }
+    main { padding: 3rem 0 6rem; min-width: 0; max-width: 880px; }
+
+    .toc {
+      position: sticky;
+      top: 0;
+      align-self: start;
+      height: 100vh;
+      padding: 2rem 0 1.25rem;
+      overflow-y: auto;
+      border-right: 1px solid var(--color-border);
+      font-size: 0.8125rem;
+    }
+    .toc__heading {
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-faint);
+      margin: 0 0 0.75rem;
+      padding-right: 1rem;
+    }
+    .toc__list { list-style: none; padding: 0; margin: 0; }
+    .toc__link {
+      display: block;
+      padding: 0.25rem 0.75rem 0.25rem 1rem;
+      color: var(--color-muted);
+      border-bottom: 0;
+      border-left: 2px solid transparent;
+      margin-left: -2px;
+      transition: color 120ms ease, border-color 120ms ease;
+    }
+    .toc__link:hover { color: var(--color-ink); }
+    .toc__link.is-active {
+      color: var(--color-ink);
+      border-left-color: var(--color-accent);
+      font-weight: 500;
+    }
+
+    .lead    { font-size: 1.125rem; color: var(--color-muted); }
+    .caption { font-size: 0.8125rem; color: var(--color-faint); }
+    .eyebrow {
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-faint);
+      margin: 0 0 0.75rem;
+    }
+
+    .report-header { padding-bottom: 1.5rem; border-bottom: 1px solid var(--color-border); margin-bottom: 1.5rem; }
+    .report-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1.5rem;
+      color: var(--color-muted);
+      font-size: 0.8125rem;
+      margin: 1rem 0 0;
+    }
+    .report-meta dt { display: inline; font-weight: 500; color: var(--color-faint); }
+    .report-meta dd { display: inline; margin: 0 0 0 0.25em; }
+
+    .theme-toggle {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 999px;
+      color: var(--color-muted);
+      font: inherit;
+      font-size: 0.8125rem;
+      cursor: pointer;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 1px 1px rgba(0,0,0,0.03);
+      z-index: 10;
+    }
+    .theme-toggle:hover { color: var(--color-ink); }
+
+    .grid-kpi {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      margin: 1.5rem 0 2rem;
+    }
+    .kpi {
+      padding: 1rem 1.5rem;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+    }
+    .kpi__label { font-size: 0.8125rem; color: var(--color-muted); margin: 0 0 0.5rem; }
+    .kpi__value { font-size: 1.75rem; font-weight: 600; line-height: 1; letter-spacing: -0.02em; }
+    .kpi__note { margin-top: 0.5rem; font-size: 0.8125rem; color: var(--color-faint); }
+    .text-danger  { color: var(--color-danger); }
+    .text-warning { color: var(--color-warning); }
+    .text-success { color: var(--color-success); }
+
+    .card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+    }
+    .callout {
+      border-left: 3px solid var(--color-accent);
+      background: color-mix(in oklch, var(--color-accent), transparent 94%);
+      border-radius: 0 8px 8px 0;
+      padding: 1rem 1.5rem;
+      margin: 1.5rem 0;
+    }
+    .callout--warn {
+      border-left-color: var(--color-warning);
+      background: color-mix(in oklch, var(--color-warning), transparent 92%);
+    }
+
+    .table-wrap { margin: 1.5rem 0; overflow-x: auto; }
+    .table-toolbar {
+      display: flex; gap: 0.75rem; align-items: center;
+      margin-bottom: 0.75rem; flex-wrap: wrap;
+    }
+    .table-toolbar input[type="search"],
+    .table-toolbar select {
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      background: var(--color-surface);
+      color: var(--color-ink);
+      font: inherit;
+      font-size: 0.8125rem;
+    }
+    .table-toolbar input[type="search"] { flex: 1 1 220px; max-width: 320px; }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8125rem;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .data-table thead th {
+      background: var(--color-surface-2);
+      text-align: left;
+      font-weight: 600;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--color-border);
+      cursor: pointer;
+      user-select: none;
+      position: sticky;
+      top: 0;
+    }
+    .data-table thead th[data-sort]:hover { color: var(--color-accent); }
+    .data-table thead th .sort-indicator { opacity: 0.4; margin-left: 0.25em; font-size: 0.85em; }
+    .data-table thead th.is-sorted .sort-indicator { opacity: 1; color: var(--color-accent); }
+    .data-table tbody td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--color-border); vertical-align: top; }
+    .data-table tbody tr:last-child td { border-bottom: 0; }
+    .data-table tbody tr:hover td { background: var(--color-surface-2); }
+    .num { text-align: right; font-variant-numeric: tabular-nums; }
+
+    .tabs { margin: 1.5rem 0; }
+    .tabs__list {
+      display: flex; gap: 0;
+      border-bottom: 1px solid var(--color-border);
+      padding: 0; margin: 0 0 1rem; list-style: none; flex-wrap: wrap;
+    }
+    .tabs__trigger {
+      padding: 0.75rem 1rem;
+      background: none; border: 0;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      color: var(--color-muted);
+      font: inherit;
+      font-weight: 500;
+      cursor: pointer;
+      transition: color 120ms ease;
+    }
+    .tabs__trigger[aria-selected="true"] {
+      color: var(--color-ink);
+      border-bottom-color: var(--color-accent);
+    }
+    .tabs__trigger:hover { color: var(--color-ink); }
+    .tabs__panel { display: none; }
+    .tabs__panel[aria-hidden="false"] { display: block; }
+
+    .accordion details {
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      margin-bottom: 0.75rem;
+      background: var(--color-surface);
+      overflow: hidden;
+    }
+    .accordion summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 0.75rem 1.5rem;
+      font-weight: 500;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .accordion summary::-webkit-details-marker { display: none; }
+    .accordion summary::after {
+      content: "+";
+      font-size: 1.25em;
+      color: var(--color-faint);
+      transition: transform 120ms ease;
+      margin-left: auto;
+    }
+    .accordion details[open] summary::after { content: "−"; }
+    .accordion__body { padding: 0 1.5rem 1.5rem; }
+    .finding-id { font-family: var(--font-mono); font-size: 0.8125rem; color: var(--color-faint); }
+    .finding-meta {
+      display: grid;
+      grid-template-columns: 8rem 1fr;
+      gap: 0.35rem 1rem;
+      font-size: 0.875rem;
+      margin: 0 0 1rem;
+    }
+    .finding-meta dt { color: var(--color-faint); }
+    .finding-meta dd { margin: 0; }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35em;
+      padding: 0.15em 0.6em;
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      border-radius: 999px;
+      border: 1px solid;
+      white-space: nowrap;
+    }
+    .badge--critical { color: var(--color-danger);  border-color: color-mix(in oklch, var(--color-danger), transparent 60%);  background: color-mix(in oklch, var(--color-danger), transparent 90%); }
+    .badge--high     { color: var(--color-warning); border-color: color-mix(in oklch, var(--color-warning), transparent 60%); background: color-mix(in oklch, var(--color-warning), transparent 90%); }
+    .badge--medium   { color: var(--color-info);    border-color: color-mix(in oklch, var(--color-info), transparent 60%);    background: color-mix(in oklch, var(--color-info), transparent 90%); }
+    .badge--low      { color: var(--color-muted); border-color: var(--color-border); background: var(--color-surface-2); }
+    .badge--success  { color: var(--color-success); border-color: color-mix(in oklch, var(--color-success), transparent 60%); background: color-mix(in oklch, var(--color-success), transparent 90%); }
+
+    .pip { display:inline-block; width:.5rem; height:.5rem; border-radius:50%; vertical-align: middle; }
+    .pip--success { background: var(--color-success); }
+    .pip--warning { background: var(--color-warning); }
+
+    .timeline { list-style: none; padding: 0; margin: 1.5rem 0; position: relative; }
+    .timeline::before {
+      content: "";
+      position: absolute;
+      left: 7px; top: 4px; bottom: 4px;
+      width: 1px;
+      background: var(--color-border);
+    }
+    .timeline li {
+      padding-left: 2rem;
+      position: relative;
+      margin-bottom: 1.5rem;
+    }
+    .timeline li::before {
+      content: "";
+      position: absolute;
+      left: 2px; top: 8px;
+      width: 11px; height: 11px;
+      border-radius: 50%;
+      background: var(--color-surface);
+      border: 2px solid var(--color-accent);
+    }
+    .timeline__date { font-size: 0.8125rem; color: var(--color-faint); margin: 0; }
+    .timeline__title { font-weight: 600; margin: 0 0 0.25rem; }
+
+    .architecture {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      overflow-x: auto;
+    }
+    .architecture .mermaid { display: flex; justify-content: center; }
+    .architecture svg { cursor: zoom-in; }
+    .diagram-lightbox { position: fixed; inset: 0; z-index: 50; background: color-mix(in oklch, var(--color-bg), transparent 6%); backdrop-filter: blur(4px); display: none; }
+    .diagram-lightbox.is-open { display: block; }
+    .diagram-lightbox__stage { position: absolute; inset: 0; overflow: hidden; cursor: grab; touch-action: none; }
+    .diagram-lightbox__stage.is-panning { cursor: grabbing; }
+    .diagram-lightbox__stage svg { position: absolute; top: 0; left: 0; transform-origin: 0 0; max-width: none !important; }
+    .diagram-lightbox__bar { position: absolute; top: 1rem; right: 1rem; z-index: 2; display: flex; gap: 0.5rem; }
+    .diagram-lightbox__btn { min-width: 2.25rem; height: 2.25rem; padding: 0 0.6rem; display: inline-flex; align-items: center; justify-content: center; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 8px; color: var(--color-ink); font: inherit; font-size: 0.9375rem; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+    .diagram-lightbox__btn:hover { border-color: var(--color-border-strong); }
+    .diagram-lightbox__hint { position: absolute; bottom: 1rem; left: 50%; transform: translateX(-50%); margin: 0; font-size: 0.8125rem; color: var(--color-muted); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 999px; padding: 0.25rem 0.9rem; white-space: nowrap; }
+
+    .report-footer {
+      margin-top: clamp(3rem, 4rem + 2vw, 6rem);
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--color-border);
+      color: var(--color-faint);
+      font-size: 0.8125rem;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    @media print {
+      :root { --color-bg: white; --color-surface: white; --color-surface-2: white; }
+      .report-shell { display: block; padding: 0; }
+      .toc, .theme-toggle, .no-print { display: none !important; }
+      main { padding: 0; max-width: none; }
+      a { color: inherit; border-bottom: 0; }
+      section, .card, .data-table { break-inside: avoid; page-break-inside: avoid; }
+      h1, h2, h3 { break-after: avoid; }
+      body { font-size: 11pt; }
+    }
+  </style>
+</head>
+<body>
+
+  <button class="theme-toggle no-print" type="button" id="themeToggle" aria-label="テーマを切り替え">
+    <span aria-hidden="true">◐</span><span data-theme-label>Auto</span>
+  </button>
+
+  <div class="report-shell">
+
+    <nav class="toc no-print" aria-label="目次">
+      <p class="toc__heading">目次</p>
+      <ul class="toc__list" id="tocList"></ul>
+    </nav>
+
+    <main>
+
+      <!-- =================== HEADER =================== -->
+      <header class="report-header">
+        <p class="eyebrow">環境監査 &amp; 設計整理 · 2026-07-06</p>
+        <h1>Claude 環境整理 × Workflow 活用<br>調査統合と取り組みロードマップ</h1>
+        <p class="lead" style="margin-top:0.75rem;">結論：この環境の最優先課題は「新しい何かを足すこと」ではなく、<strong>常駐コンテキストの回復（確認済みの不具合2件を含む）→ 重複の一本化 → その上に自作 Agent / Workflow 資産（現状ゼロ）を少数精鋭で設計する</strong>ことです。本レポートは4系統の調査を17件の所見と4フェーズ・19項目のロードマップに整理したものです（実装は未着手）。</p>
+        <dl class="report-meta">
+          <span><dt>対象</dt><dd>~/dotfiles（dotdir/.claude/）+ 稼働環境 ~/.claude/</dd></span>
+          <span><dt>調査方法</dt><dd>並列サブエージェント4系統（棚卸し / 公式 / 海外 / 日本語圏）</dd></span>
+          <span><dt>ステータス</dt><dd><span class="pip pip--warning"></span> 調査完了・実装判断待ち</dd></span>
+        </dl>
+      </header>
+
+      <!-- =================== SUMMARY =================== -->
+      <section id="summary" data-toc="サマリー">
+        <h2 style="margin-top:0;padding-top:0;border-top:0;">サマリー</h2>
+        <p>環境の現状は「拡張は世界最先端級に厚いが、足元の常駐層に確認済みの不具合が2件あり、自作のオーケストレーション資産はゼロ」です。プラグイン約30個・自作スキル22個に対し、自作エージェント定義と保存済み Workflow は存在せず、その置き場となるシンボリックリンク3本は破損しています。一方で <code>rules/ecc</code> 約1,200行が全セッションに自動注入されていること、CLAUDE.md の <code>@RTK.md</code> 参照が解決に失敗していることを、本セッションのコンテキストを一次証拠として確認しました。世の中の潮流（公式・海外・日本語圏で一致）は「常駐を最小化し、必要時に取りに行く」構造への収斂であり、整理の方向性は明確です。</p>
+
+        <div class="grid-kpi">
+          <div class="kpi">
+            <p class="kpi__label">有効プラグイン</p>
+            <div class="kpi__value">約30</div>
+            <p class="kpi__note">インストールは39（孤立11含む）</p>
+          </div>
+          <div class="kpi">
+            <p class="kpi__label">自作スキル</p>
+            <div class="kpi__value">22</div>
+            <p class="kpi__note">SDD/ML 7・ハーネス 6・Marp 3 他</p>
+          </div>
+          <div class="kpi">
+            <p class="kpi__label">自作 Agent / Workflow</p>
+            <div class="kpi__value text-danger">0</div>
+            <p class="kpi__note">置き場のリンクも破損中</p>
+          </div>
+          <div class="kpi">
+            <p class="kpi__label">常駐 rules 注入</p>
+            <div class="kpi__value text-danger">≈1,200行</div>
+            <p class="kpi__note">全セッションで確認（一次証拠）</p>
+          </div>
+          <div class="kpi">
+            <p class="kpi__label">所見</p>
+            <div class="kpi__value">17</div>
+            <p class="kpi__note">Critical 2 / High 2 / Medium 4 / Low 4 / 良好 5</p>
+          </div>
+        </div>
+
+        <div class="callout">
+          <p style="margin:0;"><strong>「Fable 5 が使える間に」の使いどころ：</strong>機械的な掃除はどのモデルでもできます。Fable 5 の推論力が最も活きるのは、<strong>フェーズ1の取捨選択判断（何を残し何を消すか）とフェーズ2の設計（Workflow / Agent の責務設計）</strong>です。ロードマップの各項目に「Fable 5 適性」を付けています。</p>
+        </div>
+      </section>
+
+      <!-- =================== METHODOLOGY =================== -->
+      <section id="methodology" data-toc="調査の方法">
+        <h2>調査の方法</h2>
+        <p>メインセッションを統率役とし、4系統の調査を並列サブエージェントに委譲しました（CLAUDE.md の委譲方針に準拠）。</p>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>系統</th><th>担当エージェント</th><th>対象</th><th>主な成果</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>① ローカル棚卸し</td><td>Explore（読み取り専用）</td><td>dotdir/.claude/ と ~/.claude/ の全構造</td><td>所見の大半の事実基盤（数値・パス）</td></tr>
+              <tr><td>② 公式ベストプラクティス</td><td>claude-code-guide</td><td>code.claude.com/docs ほか公式文書</td><td>スキル / エージェント / Workflow / メモリの推奨仕様</td></tr>
+              <tr><td>③ 海外コミュニティ</td><td>general-purpose（Web 調査）</td><td>Anthropic ブログ、著名リポジトリ、実測記事</td><td>説明文予算の脱落問題、マルチエージェントの費用対効果</td></tr>
+              <tr><td>④ 日本語圏コミュニティ</td><td>general-purpose（Web 調査）</td><td>Zenn / Qiita / 企業テックブログ</td><td>3層構造の実測事例、サブエージェント運用の落とし穴</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>棚卸しエージェントの結論のうち「rules/ は常時ロードされない」という推測は、<strong>本セッションのコンテキスト実物と矛盾したため棄却</strong>しました（rules/ecc の common 全10ファイル + web 全7ファイル + README が「全プロジェクト向けグローバル指示」として注入されているのを直接確認）。このように、可能な所見は一次証拠で検証しています。検証できていない項目は「推測」と明示します。</p>
+      </section>
+
+      <!-- =================== FINDINGS =================== -->
+      <section id="findings" data-toc="環境診断（所見）">
+        <h2>環境診断（所見）</h2>
+        <p>重要度の定義：<span class="badge badge--critical">Critical</span> 設計意図がいま壊れている / <span class="badge badge--high">High</span> 品質・コストへの恒常的影響 / <span class="badge badge--medium">Medium</span> 保守性・整合性の問題 / <span class="badge badge--low">Low</span> 軽微・美観。「確認済み」はファイル・セッション実物で検証した事実、「推測」は検証未了を意味します。</p>
+
+        <div class="table-wrap" data-sortable-table>
+          <div class="table-toolbar no-print">
+            <input type="search" placeholder="所見を検索…" data-table-search aria-label="所見検索">
+            <select data-table-filter="severity" aria-label="重要度で絞り込み">
+              <option value="">重要度: すべて</option>
+              <option value="Critical">Critical</option>
+              <option value="High">High</option>
+              <option value="Medium">Medium</option>
+              <option value="Low">Low</option>
+            </select>
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th data-sort="string">ID <span class="sort-indicator">↕</span></th>
+                <th data-sort="string">所見 <span class="sort-indicator">↕</span></th>
+                <th data-sort="string">重要度 <span class="sort-indicator">↕</span></th>
+                <th data-sort="string">検証 <span class="sort-indicator">↕</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>ENV-001</td><td><code>@RTK.md</code> の import が解決失敗（RTK ルールが常駐していない）</td><td><span class="badge badge--critical">Critical</span></td><td>確認済み</td></tr>
+              <tr><td>ENV-002</td><td><code>rules/ecc</code> 約1,200行が全セッションへ無差別に自動注入</td><td><span class="badge badge--critical">Critical</span></td><td>確認済み</td></tr>
+              <tr><td>ENV-003</td><td>スキル説明文の文字数予算（既定15,000字）超過の疑い — 超過分は無警告で脱落</td><td><span class="badge badge--high">High</span></td><td>推測（要計測）</td></tr>
+              <tr><td>ENV-004</td><td>同一役割ツールの多系統重複（ブラウザ自動化5系統、レビュー5系統以上ほか）</td><td><span class="badge badge--high">High</span></td><td>確認済み</td></tr>
+              <tr><td>ENV-005</td><td><code>skills/sdd-ml-experiment-workspace/</code> に実験残置物274ファイル</td><td><span class="badge badge--medium">Medium</span></td><td>確認済み</td></tr>
+              <tr><td>ENV-006</td><td>破損シンボリックリンク3本（agents / commands / workflows）— 自作資産の置き場が未整備</td><td><span class="badge badge--medium">Medium</span></td><td>確認済み</td></tr>
+              <tr><td>ENV-007</td><td>settings.json の git ↔ 稼働ドリフト（orca 注入・.bak 残置・"Japanise" 綴り）</td><td><span class="badge badge--medium">Medium</span></td><td>確認済み</td></tr>
+              <tr><td>ENV-008</td><td>.mcp.json（7サーバ定義）が稼働側に未リンクで休眠の可能性</td><td><span class="badge badge--medium">Medium</span></td><td>確認済み（休眠かは推測）</td></tr>
+              <tr><td>ENV-009</td><td>docs の設計書ステータスが実装に未追随（3件とも実装済み表記なし）</td><td><span class="badge badge--low">Low</span></td><td>確認済み</td></tr>
+              <tr><td>ENV-010</td><td>プラグインキャッシュ 1.5GB・temp 残置10個・バックアップファイル群</td><td><span class="badge badge--low">Low</span></td><td>確認済み</td></tr>
+              <tr><td>ENV-011</td><td>ブランチ mbc が origin より32コミット先行（未 push）+ 未コミット変更</td><td><span class="badge badge--low">Low</span></td><td>確認済み</td></tr>
+              <tr><td>ENV-012</td><td>dotfiles プロジェクトの MEMORY.md が未作成（他19プロジェクトには存在）</td><td><span class="badge badge--low">Low</span></td><td>確認済み</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>主要所見の詳細</h3>
+        <div class="accordion">
+          <details open>
+            <summary><span class="finding-id">ENV-001</span> <code>@RTK.md</code> import の解決失敗 <span class="badge badge--critical">Critical</span></summary>
+            <div class="accordion__body">
+              <dl class="finding-meta">
+                <dt>事実</dt><dd>CLAUDE.md は <code>@RTK.md</code> と <code>@japanese-style-guide.md</code> の2つを参照。本セッションのコンテキストには japanese-style-guide.md の内容は載っているが、RTK.md（トークン削減プロキシ RTK の説明）は載っていない。</dd>
+                <dt>原因</dt><dd>RTK.md の実体は <code>~/.claude/RTK.md</code>（git 管理外）にのみ存在し、japanese-style-guide.md は <code>dotdir/.claude/</code> にのみ存在。@import はシンボリックリンク越しに dotfiles 実体パス基準で解決されるため、~/.claude/ 側にしかない RTK.md が見つからない。</dd>
+                <dt>影響</dt><dd>RTK の運用ルール（hook による自動書き換えの前提知識）が全セッションで欠落。hook 自体（<code>rtk hook claude</code>）は動いているため実害は限定的だが、「常駐させる」という設計意図が静かに壊れている。</dd>
+                <dt>推奨対応</dt><dd>RTK.md を <code>dotdir/.claude/</code> へ移設して git 管理下に置く（1ファイル移動 + リンク）。</dd>
+              </dl>
+            </div>
+          </details>
+
+          <details open>
+            <summary><span class="finding-id">ENV-002</span> rules/ecc 約1,200行の無差別常駐 <span class="badge badge--critical">Critical</span></summary>
+            <div class="accordion__body">
+              <dl class="finding-meta">
+                <dt>事実</dt><dd>本セッション（dotfiles での作業。Web フロントエンド開発ではない）のコンテキストに、<code>rules/ecc/common/</code> 全10ファイルと <code>rules/ecc/web/</code> 全7ファイル + README（合計約1,200行）が「全プロジェクト向けグローバル指示」として注入されている。</dd>
+                <dt>原因</dt><dd><code>~/.claude/rules/</code> 配下の Markdown が自動ロードされる仕組みに対し、ファイルに適用範囲（<code>paths</code> frontmatter）の指定がなく、README のような「人間向け説明文書」まで注入対象になっている。</dd>
+                <dt>影響</dt><dd>毎セッションのトークン浪費に加え、無関係なルール（例：この dotfiles 作業に Web パフォーマンス予算表）が指示として混入し、指示遵守率を下げる。GMOペパボの実測では同型の整理で起動時トークンを 114,847 → 19,232（83%減）にした事例がある。</dd>
+                <dt>推奨対応</dt><dd>3択の判断：(a) 各ファイルに <code>paths</code> を付けて適用範囲を絞る、(b) 手順系はスキル（遅延ロード）へ降格、(c) ecc プラグイン本体と重複するものは削除。README は無条件に注入対象から外す。</dd>
+              </dl>
+            </div>
+          </details>
+
+          <details>
+            <summary><span class="finding-id">ENV-003</span> スキル説明文の予算超過の疑い <span class="badge badge--high">High</span></summary>
+            <div class="accordion__body">
+              <dl class="finding-meta">
+                <dt>事実（外部報告）</dt><dd>スキル/コマンドの説明文（description）合計には既定 15,000 文字（約4,000トークン）の予算があり、超過分は<strong>警告なくシステムプロンプトから脱落する</strong>（Jesse Vincent、2025-12 報告）。スキル20個で1個あたり約300字、60個で約130字が上限の計算になる（Zenn 試算）。</dd>
+                <dt>本環境の状況</dt><dd>ecc（報告値で数百スキル）+ octo（約50スキル+47コマンド）+ superpowers + ARS ほかで、有効スキル総数は数百規模。予算超過はほぼ確実で、「入れているのに Claude から見えていないスキル」が相当数あると推定される（<strong>推測 — 計測で確定させる</strong>）。</dd>
+                <dt>影響</dt><dd>スキルの自動発動が静かに壊れる。どれが脱落しているか制御できないため、「たまに効かない」という再現困難な品質劣化として現れる。</dd>
+                <dt>推奨対応</dt><dd>まず <code>/context</code> で実測。恒久対策はプラグイン削減（ENV-004 と同時）。<code>SLASH_COMMAND_TOOL_CHAR_BUDGET=30000</code> の拡大は応急処置と割り切る。</dd>
+              </dl>
+            </div>
+          </details>
+
+          <details>
+            <summary><span class="finding-id">ENV-004</span> 同一役割ツールの多系統重複 <span class="badge badge--high">High</span></summary>
+            <div class="accordion__body">
+              <p>確認された重複系統。発動の競合・説明文予算の浪費・選択迷いの3重コストを生んでいます。</p>
+              <div class="table-wrap">
+                <table class="data-table">
+                  <thead><tr><th>役割</th><th>並存する系統</th><th class="num">系統数</th></tr></thead>
+                  <tbody>
+                    <tr><td>ブラウザ / Chrome 自動化</td><td>chrome-cdp(ユーザー直登録）/ claude-in-chrome / chrome-devtools-mcp プラグイン / ecc 内蔵 chrome-devtools / ecc 内蔵 playwright + 自作 playwright-cli スキル</td><td class="num">5+1</td></tr>
+                    <tr><td>コードレビュー</td><td>code-review プラグイン / ecc:code-review + 言語別 / octo:review 系 / superpowers レビュー / code-simplifier・simplify</td><td class="num">5+</td></tr>
+                    <tr><td>深掘り調査</td><td>deep-research / ecc:deep-research / ARS:deep-research / octo:research 系</td><td class="num">4</td></tr>
+                    <tr><td>スキル作成</td><td>skill-creator / ecc:skill-create / example-skills:skill-creator</td><td class="num">3</td></tr>
+                    <tr><td>hook 生成</td><td>hookify / ecc:hookify* / 自作 auto-format-hook・lint-config-guard</td><td class="num">3</td></tr>
+                    <tr><td>CLAUDE.md 生成</td><td>claude-md-management / 自作 claude-md-generator / octo 系</td><td class="num">3</td></tr>
+                    <tr><td>MCP 二重登録</td><td>serena（プラグイン + .mcp.json）/ Context7（無効プラグイン + .mcp.json）</td><td class="num">2×2</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p style="margin-bottom:0;"><strong>推奨対応：</strong>役割ごとに「正」を1系統決め、他は無効化。判断基準は (1) 実際の使用実績、(2) 保守の主体（自作 &gt; 公式 &gt; サードパーティの順で制御しやすい）、(3) 説明文の予算コスト。</p>
+            </div>
+          </details>
+
+          <details>
+            <summary><span class="finding-id">ENV-005〜012</span> その他の所見（残置物・ドリフト・軽微） <span class="badge badge--medium">Medium</span><span class="badge badge--low">Low</span></summary>
+            <div class="accordion__body">
+              <ul style="margin-bottom:0;">
+                <li><strong>ENV-005</strong>：<code>skills/sdd-ml-experiment-workspace/</code> は SKILL.md を持たない A/B 評価ハーネスの残骸で、274ファイル（<code>.pyc</code>・<code>.pytest_cache</code> 含む）が git 追跡下。skills 領域を汚染しリポジトリの大半のファイル数を占める。→ docs/ か別リポジトリへ退避。</li>
+                <li><strong>ENV-006</strong>：<code>~/.claude/{agents, commands, workflows}</code> の3リンクがターゲット不在で破損。自作エージェント・Workflow を作る際の置き場がない状態。→ dotdir 側にディレクトリを新設しリンク再生成（フェーズ2の前提）。</li>
+                <li><strong>ENV-007</strong>：稼働側 settings.json に外部ツール orca が hooks を注入済み（git 版と乖離）。<code>language: "Japanise"</code> の綴り誤りも両方に存在。→ ドリフトの取り込み方針を決めて統一。</li>
+                <li><strong>ENV-008</strong>：<code>dotdir/.claude/.mcp.json</code>（Context7, github, deepwiki, filesystem, fetch, sequential-thinking, serena）は稼働側にリンクされておらず、休眠の可能性（推測）。→ 使うなら正規の位置へ、使わないなら削除。</li>
+                <li><strong>ENV-009</strong>：docs/superpowers の設計書3件のステータス表記が「実装計画待ち」のまま（実装は完了済み）。→ 自作 repo-hygiene-audit スキルを自環境に適用する好機。</li>
+                <li><strong>ENV-010</strong>：プラグインキャッシュ 1.5GB、temp ディレクトリ残置10個、<code>ecc.bak</code>・<code>settings.json.bak</code>・<code>hooks.json.bak</code> 群。→ 機械的に掃除。</li>
+                <li><strong>ENV-011</strong>：mbc ブランチが origin +32 コミット、未コミット変更あり（日本語品質と html-report-generator の育成中変更）。→ 区切りを付けて push。</li>
+                <li><strong>ENV-012</strong>：dotfiles プロジェクトのみ MEMORY.md 未作成。→ 本レポートの要点を初期値として育成開始。</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+
+        <h3>既に良い点（維持すべき資産）</h3>
+        <div class="card">
+          <ul style="margin-bottom:0;">
+            <li><strong>CLAUDE.md 本体は63行のポインタ型</strong>で、公式推奨（200行以下）・コミュニティの「薄い派」収斂と完全に一致しています。</li>
+            <li><strong>自作スキル22個の説明文設計は水準が高い</strong>：トリガー列挙 + 「Do NOT trigger」の否定条件は、海外の設計指南が推奨する形そのものです。</li>
+            <li><strong>安全側の権限設計</strong>：約50パターンの deny リスト、ガード系 hooks、秘密情報の平文コミットなし。</li>
+            <li><strong>設計文書の文化</strong>：spec → plan → 実装の流れが docs/superpowers に既に確立しています。</li>
+            <li><strong>「記録で育てる」運用の実績</strong>：japanese-style-guide.md の育成型運用は、ソニックガーデンの自動改善ループと同型の先進的実践です。</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- =================== TRENDS =================== -->
+      <section id="trends" data-toc="世の中の動向">
+        <h2>世の中の動向（調査結果の要点）</h2>
+        <p>3系統の外部調査は、驚くほど同じ結論に収斂しています：<strong>「コンテキストは希少資源。常駐を最小化し、必要時に取りに行く」</strong>。以下、系統別の要点です。</p>
+
+        <div class="tabs" data-tabs>
+          <ul class="tabs__list" role="tablist">
+            <li role="presentation"><button class="tabs__trigger" role="tab" aria-selected="true"  aria-controls="tab-official" id="trig-official">公式（Anthropic）</button></li>
+            <li role="presentation"><button class="tabs__trigger" role="tab" aria-selected="false" aria-controls="tab-overseas" id="trig-overseas">海外コミュニティ</button></li>
+            <li role="presentation"><button class="tabs__trigger" role="tab" aria-selected="false" aria-controls="tab-jp" id="trig-jp">日本語圏</button></li>
+          </ul>
+
+          <div class="tabs__panel" id="tab-official" role="tabpanel" aria-labelledby="trig-official" aria-hidden="false">
+            <ul>
+              <li><strong>スキル</strong>：SKILL.md 本体は150行未満に抑え、詳細は references/ へ（段階的開示）。説明文（description）が自動発動の判定材料のすべて。作成は「評価から始める」— 実タスクでの失敗箇所を特定してから書き、使われ方を観測して反復改善する。</li>
+              <li><strong>サブエージェント</strong>：Sonnet をデフォルトにし、Opus 級は複雑推論のみ、Haiku は軽量作業。独立コンテキストにより「多数ファイルを読む作業をメイン会話から隔離する」のが第一の使い道。</li>
+              <li><strong>Workflow（動的オーケストレーション）</strong>：<code>.claude/workflows/</code> に JavaScript + meta ブロックで保存。同時16並列・計1,000エージェントまで。向くのは「多数ファイルの同一チェック」「大規模移行」「複数ソースの交差検証」「複数案の独立立案→評価」。<strong>向かないのは単一ファイル編集・3ステップ未満・対話が要る作業</strong>。</li>
+              <li><strong>マルチエージェントの費用対効果</strong>（研究システムの実測）：単一 Opus 比で評価 90.2% 向上、ただしトークンはチャット比約15倍。性能分散の80%はトークン量で説明される。<strong>effort scaling</strong>（単純な確認は1エージェント・ツール呼び出し3〜10回、複雑な調査のみ10超のサブエージェント）が運用原則。エージェント間依存が強いタスクと大半のコーディングには不向き。</li>
+              <li><strong>CLAUDE.md / メモリ</strong>：200行以下。「事実・規約は CLAUDE.md、複数ステップの手順はスキル」という分担。@import は起動時展開なので常駐コストに直接乗る。</li>
+              <li><strong>コンテキスト管理</strong>：遅延ツール読み込み（ToolSearch）は既定で有効。圧縮・構造化メモ・サブエージェント分離が汚染対策の三本柱。大規模作業はコンテキスト80%未満から着手。</li>
+            </ul>
+          </div>
+
+          <div class="tabs__panel" id="tab-overseas" role="tabpanel" aria-labelledby="trig-overseas" aria-hidden="true">
+            <ul>
+              <li><strong>説明文予算の「静かな脱落」</strong>（最重要）：スキル/コマンド説明文の合計には既定15,000文字の予算があり、超過分は警告なく脱落する。Superpowers 自身も低使用スキルの統合・説明文短縮を実施した。</li>
+              <li><strong>キュレーションの潮流</strong>：「量の網羅」から「品質シグナルによる厳選」へ。36.6K スターの wshobson/agents は192エージェントを84の焦点別プラグインに分割し「必要な分だけ入れる」設計へ移行。Memory/Context 管理と Usage/Cost 監視が独立カテゴリ化＝管理自体が主要関心事に。</li>
+              <li><strong>著名 dotfiles の実践</strong>：citypaul は常駐分を約3,000行→約160行へ削減し、29パターンを「必要時に自動発見されるスキル」へ分離。規則の羅列でなく<strong>判断フレームワーク</strong>（「schema が必要かを判定する5つの質問」等）を常駐させる方針。</li>
+              <li><strong>スキルの検証文化</strong>：superpowers は「圧力シナリオ」をサブエージェントに演じさせ、スキルが守られるかテストしてから改訂する（文書への TDD）。信頼できない出所のスキルは導入前にコード・同梱物まで監査せよ（公式も明記）。</li>
+              <li><strong>自動発動の限界</strong>：発動判定は意味的推論で非決定的。誤発動と不発の両方が構造的に発生するため、確実性が要る操作はスラッシュ明示起動へ、危険操作には <code>disable-model-invocation: true</code> を。</li>
+            </ul>
+          </div>
+
+          <div class="tabs__panel" id="tab-jp" role="tabpanel" aria-labelledby="trig-jp" aria-hidden="true">
+            <ul>
+              <li><strong>3層構造への収斂</strong>：CLAUDE.md（薄いエントリポイント）/ rules/（常駐だが paths で範囲限定）/ skills/（呼び出し時のみ）。GMOペパボの実測で起動時トークン 114,847 → 19,232（83%減）。「厚い CLAUDE.md」を擁護する記事は見つからず、争点は「どこまで rules に残すか」へ移行。</li>
+              <li><strong>スキルは「作る」から「育てる」へ</strong>：ソニックガーデンは会話履歴から失敗信号を抽出 → Issue 化 → スキル定義を自動修正して PR → 人間はレビューのみ、という毎日の自動改善ループを構築（13日間で40件超の自動改善）。21個運用者の知見では、説明文は先頭に重要語を集中させ（250字で切り詰め）、月1で棚卸し。</li>
+              <li><strong>サブエージェント運用の落とし穴4つ</strong>：(1) 会話履歴を引き継がない — 必要情報は指示文かファイルで渡す、(2) 全部並列は罠 — 並列化は全体の30〜40%で十分、(3) 同一ファイルへの複数書き込みで上書き事故 — 「1ファイル=1エージェント」厳守、(4) 5分以上かかるタスクだけ委譲する目安。</li>
+              <li><strong>個人マーケットプレイス化</strong>：COLOPL・Cybozu は「git リポジトリそのものがマーケットプレイス」の最小構成で社内配布を標準化。個人 dotfiles でも成熟スキルをプラグイン昇格させ、別マシン展開を1コマンドにする流れ。</li>
+              <li><strong>hooks は3類型に定着</strong>：ガード（PreToolUse + 終了コード2）/ 整形（PostToolUse）/ 通知（Stop・Notification の音分け）。「通知だけに絞る」抑制派も存在。</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- =================== TARGET MODEL =================== -->
+      <section id="target-model" data-toc="目指す構造">
+        <h2>目指す構造</h2>
+        <p>整理の方向をひと言で表すと「<strong>常駐層のダイエットと、オンデマンド層への計画的な引っ越し</strong>」です。図の上段（常駐層）にあるものを最小化し、下段（オンデマンド層）に移すほど、毎セッションの品質とコストが改善します。図はクリックで拡大できます。</p>
+        <div class="architecture">
+          <pre class="mermaid">
+flowchart TB
+  subgraph R["常駐層 — 毎セッション自動ロード（最小化する）"]
+    direction TB
+    CM["CLAUDE.md 63行 ✅ 薄い"]
+    JS["@japanese-style-guide.md 35行 ✅ 機能中"]
+    RTK["@RTK.md ❌ 解決失敗中（ENV-001）"]
+    RULES["rules/ecc 約1,200行 ❌ 無差別注入（ENV-002）"]
+    DESC["スキル/コマンド説明文の合計<br/>予算15,000字・超過分は無言で脱落（ENV-003）"]
+  end
+  subgraph O["オンデマンド層 — 必要時のみロード（ここへ移す）"]
+    direction TB
+    SK["SKILL.md 本文 + references/（遅延ロード）"]
+    WF["named Workflow（.claude/workflows/ — 現状ゼロ）"]
+    AG["自作 Agent 定義（.claude/agents/ — 現状ゼロ）"]
+    SUB["サブエージェントの独立コンテキスト<br/>（重い読み込みを隔離）"]
+  end
+  RULES -- "paths 限定 or スキル降格" --> SK
+  DESC -- "プラグイン厳選で予算内へ" --> SK
+  R ~~~ O
+          </pre>
+        </div>
+        <p class="caption">現状の診断を重ねた目標構造。✅ は現状維持、❌ は要修正。右下の Workflow / Agent がユーザーの主目的である「新設する資産」です。</p>
+      </section>
+
+      <!-- =================== ROADMAP =================== -->
+      <section id="roadmap" data-toc="取り組みロードマップ">
+        <h2>取り組みロードマップ（4フェーズ・19項目）</h2>
+        <p>フェーズ順が推奨実施順です。<strong>フェーズ0→1 が「土台の修理」、フェーズ2 が主目的の「資産設計」</strong>で、順序を逆にすると新資産も説明文予算の脱落や重複競合に飲まれるため、この順を推奨します。「Fable 5 適性」は高度な推論・設計判断が品質を左右する度合いです（◎=Fable 5 で実施する価値が高い / ○=あれば良い / −=どのモデルでも可）。</p>
+
+        <div class="table-wrap" data-sortable-table>
+          <div class="table-toolbar no-print">
+            <input type="search" placeholder="項目を検索…" data-table-search aria-label="ロードマップ検索">
+            <select data-table-filter="phase" aria-label="フェーズで絞り込み">
+              <option value="">フェーズ: すべて</option>
+              <option value="P0">P0 計測と応急処置</option>
+              <option value="P1">P1 常駐の回復</option>
+              <option value="P2">P2 資産設計</option>
+              <option value="P3">P3 仕組み化</option>
+            </select>
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th data-sort="string">ID <span class="sort-indicator">↕</span></th>
+                <th data-sort="string">フェーズ <span class="sort-indicator">↕</span></th>
+                <th data-sort="string">取り組み項目 <span class="sort-indicator">↕</span></th>
+                <th data-sort="string">対応所見 <span class="sort-indicator">↕</span></th>
+                <th data-sort="string">効果 <span class="sort-indicator">↕</span></th>
+                <th data-sort="string">労力 <span class="sort-indicator">↕</span></th>
+                <th data-sort="string">Fable 5 <span class="sort-indicator">↕</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>A-1</td><td>P0</td><td><code>/context</code> で常駐消費と説明文予算超過を実測（すべての判断の基準線）</td><td>ENV-003</td><td>大</td><td>極小</td><td>−</td></tr>
+              <tr><td>A-2</td><td>P0</td><td>RTK.md を dotdir へ移設し @import を修復</td><td>ENV-001</td><td>中</td><td>極小</td><td>−</td></tr>
+              <tr><td>A-3</td><td>P0</td><td><code>language</code> 綴り修正・.bak / temp / キャッシュ1.5GB の掃除</td><td>ENV-007, 010</td><td>小</td><td>小</td><td>−</td></tr>
+              <tr><td>B-1</td><td>P1</td><td>rules/ecc の解体：paths 限定 / スキル降格 / 削除 の3択を1ファイルずつ判断</td><td>ENV-002</td><td>特大</td><td>中</td><td>◎</td></tr>
+              <tr><td>B-2</td><td>P1</td><td>プラグイン棚卸し：使用実績で ecc / octo の未使用ドメインを無効化、孤立11個の判断</td><td>ENV-003</td><td>特大</td><td>中</td><td>◎</td></tr>
+              <tr><td>B-3</td><td>P1</td><td>重複系統の一本化（ブラウザ自動化 / レビュー / 調査 / スキル作成 / hook 生成 / CLAUDE.md 生成 / MCP 二重登録）</td><td>ENV-004, 008</td><td>大</td><td>中</td><td>◎</td></tr>
+              <tr><td>B-4</td><td>P1</td><td>sdd-ml-experiment-workspace（274ファイル）を docs/ か別リポジトリへ退避</td><td>ENV-005</td><td>中</td><td>小</td><td>−</td></tr>
+              <tr><td>B-5</td><td>P1</td><td>settings.json ドリフト解消（orca hooks の取り込み方針決定・統一）</td><td>ENV-007</td><td>中</td><td>小</td><td>○</td></tr>
+              <tr><td>C-1</td><td>P2</td><td><code>dotdir/.claude/{agents, workflows}</code> 新設 + 破損リンク3本の再生成（link.sh 更新）</td><td>ENV-006</td><td>中</td><td>小</td><td>−</td></tr>
+              <tr><td>C-2</td><td>P2</td><td>named Workflow 第1弾 <code>env-audit</code> の設計（環境監査の並列展開：説明文予算・重複・未使用検出 → 集約レポート）</td><td>ENV-002〜004</td><td>特大</td><td>中</td><td>◎</td></tr>
+              <tr><td>C-3</td><td>P2</td><td>named Workflow 第2弾 <code>doc-review-panel</code> の設計（文書・論文の多観点並列レビュー + 敵対的検証。ARS / japanese-output-review と接続）</td><td>—</td><td>大</td><td>中</td><td>◎</td></tr>
+              <tr><td>C-4</td><td>P2</td><td>named Workflow 第3弾 <code>sdd-experiment-sweep</code> の設計（SDD ML 実験の並列監査・横断比較。sdd-* 7スキルを束ねる）</td><td>—</td><td>大</td><td>中</td><td>◎</td></tr>
+              <tr><td>C-5</td><td>P2</td><td>自作 Agent 少数精鋭の設計（2〜3体。ecc 28種と重複しない不足分のみ + モデル/effort 割り当て指針）</td><td>ENV-006</td><td>大</td><td>中</td><td>◎</td></tr>
+              <tr><td>C-6</td><td>P2</td><td>CLAUDE.md へ運用原則を追記（effort scaling / 1ファイル1エージェント / 5分ルール / 指示4要素）</td><td>—</td><td>大</td><td>小</td><td>○</td></tr>
+              <tr><td>D-1</td><td>P3</td><td>自作スキルの圧力テスト導入（誤発動・不発シナリオの回帰テスト、superpowers 式）</td><td>—</td><td>中</td><td>中</td><td>○</td></tr>
+              <tr><td>D-2</td><td>P3</td><td>スキル自動改善ループ（会話履歴 → Issue → 自動 PR → 人間レビュー、ソニックガーデン式）</td><td>—</td><td>大</td><td>大</td><td>○</td></tr>
+              <tr><td>D-3</td><td>P3</td><td>個人マーケットプレイス化（成熟スキルのプラグイン昇格、別マシン展開1コマンド）</td><td>—</td><td>中</td><td>中</td><td>−</td></tr>
+              <tr><td>D-4</td><td>P3</td><td>docs ステータス更新・MEMORY.md 育成開始・mbc の push 整理</td><td>ENV-009, 011, 012</td><td>小</td><td>小</td><td>−</td></tr>
+              <tr><td>D-5</td><td>P3</td><td>月1棚卸しルーチン化（env-audit Workflow の定期実行 + 説明文予算の監視）</td><td>ENV-003</td><td>大</td><td>小</td><td>−</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>フェーズの意図</h3>
+        <ol class="timeline">
+          <li>
+            <p class="timeline__date">P0 — 計測と応急処置（合計 1時間以内）</p>
+            <p class="timeline__title">「基準線を取ってから、確実に壊れているものだけ直す」</p>
+            <p>A-1 の計測が以降のすべての判断根拠になります。世の中の実践（ペパボ・海外実測記事）は例外なく「計測が先」でした。A-2 は確認済みの不具合修理で、判断の余地がなく即実施できます。</p>
+          </li>
+          <li>
+            <p class="timeline__date">P1 — 常駐コンテキストの回復（1〜2日）</p>
+            <p class="timeline__title">「足し算をやめて、引き算で品質を買う」</p>
+            <p>環境整理の本丸です。B-1（rules 解体）と B-2（プラグイン棚卸し）は「何を残すか」のトレードオフ判断そのものなので、Fable 5 の推論力が最も費用対効果高く使える場所です。B-2 では ecc の未使用ドメイン（healthcare / logistics / homelab / blockchain 系など）と孤立プラグイン11個が主な候補になります。</p>
+          </li>
+          <li>
+            <p class="timeline__date">P2 — Workflow / Agent 資産の設計（2〜3日、主目的）</p>
+            <p class="timeline__title">「ゼロの資産を、少数精鋭で立ち上げる」</p>
+            <p>ユーザーの当初目的である「Workflow の有効活用のための設計」です。詳細は次セクション。C-2 の env-audit を第1弾に置くのは、<strong>作った Workflow が P1 の再実行を自動化し、D-5 の月1ルーチンにそのまま転用できる</strong>（作る行為自体が整理を仕組み化する）ためです。</p>
+          </li>
+          <li>
+            <p class="timeline__date">P3 — 運用の仕組み化（中期・継続）</p>
+            <p class="timeline__title">「一度きりの掃除を、続く仕組みに変える」</p>
+            <p>圧力テスト（D-1）と自動改善ループ（D-2）は「スキルを育てる」文化の装置化です。D-2 は野心的なので、D-1 → D-5 が安定してからで十分です。</p>
+          </li>
+        </ol>
+      </section>
+
+      <!-- =================== WORKFLOW DESIGN =================== -->
+      <section id="workflow-design" data-toc="Workflow / Agent 設計方針">
+        <h2>Workflow / Agent 設計方針（フェーズ2の詳細）</h2>
+
+        <h3>設計原則（公式研究 + コミュニティ実践から）</h3>
+        <div class="card">
+          <ol style="margin-bottom:0;">
+            <li><strong>effort scaling を守る</strong>：マルチエージェントはチャット比で約15倍のトークンを使い、それを回収できるのは「並列探索型の高価値タスク」だけです。単純な確認は1エージェント・ツール呼び出し3〜10回で済ませ、10超のサブエージェントは複雑な調査に限定します。</li>
+            <li><strong>Workflow に向くタスクだけ Workflow にする</strong>：多数ファイルの同一チェック（監査）、交差検証、複数案の独立立案→評価。単一ファイル編集・3ステップ未満・対話が必要な作業・依存の強いコーディングには使いません。</li>
+            <li><strong>サブエージェント指示は4要素を必ず含める</strong>：目的 / 出力形式 / 使うツール / タスク境界。会話履歴は引き継がれないため、必要情報は指示文かファイルで渡します。</li>
+            <li><strong>書き込み競合を設計で殺す</strong>：「1ファイル=1エージェント」を厳守し、並列書き込みが要る場合のみ worktree 分離を使います。</li>
+            <li><strong>重複を増やさない</strong>：汎用リサーチ系は既存の deep-research スキルが既にあるため新設しません。新設するのは「この環境にしかない資産を束ねるもの」だけです。</li>
+          </ol>
+        </div>
+
+        <h3>named Workflow 候補（3本）</h3>
+        <div class="accordion">
+          <details open>
+            <summary><span class="finding-id">WF-1</span> env-audit — Claude 環境の定期監査 <span class="badge badge--success">第1弾に推奨</span></summary>
+            <div class="accordion__body">
+              <dl class="finding-meta">
+                <dt>目的</dt><dd>スキル説明文の予算消費・重複系統・未使用プラグイン・破損リンク・git↔稼働ドリフトを並列に点検し、1枚の監査レポートに集約する。</dd>
+                <dt>構造案</dt><dd>並列展開（説明文予算 / 重複検出 / 残置物検出 / ドリフト検出の4エージェント）→ コードで集約 → レポート生成。監査は読み取り専用なので安全に自動化できる。</dd>
+                <dt>選定理由</dt><dd>本レポートの P1 作業をそのまま再実行可能な形に固定でき、月1ルーチン（D-5）に直結する。最初の Workflow として「作る過程で Workflow 機能自体を学べる」教材性も高い。</dd>
+              </dl>
+            </div>
+          </details>
+          <details>
+            <summary><span class="finding-id">WF-2</span> doc-review-panel — 文書・論文の多観点並列レビュー</summary>
+            <div class="accordion__body">
+              <dl class="finding-meta">
+                <dt>目的</dt><dd>論文・レポート・設計書を、観点別レビュアー（論理構成 / 事実確認 / 日本語品質 / 統計・方法論など）が並列でレビューし、所見を敵対的に検証してから統合する。</dd>
+                <dt>構造案</dt><dd>観点別の並列展開 → 所見ごとに検証エージェント（反証を試みる）→ 生き残った所見のみ集約。ARS の査読エージェントと japanese-output-review スキルを部品として接続。</dd>
+                <dt>選定理由</dt><dd>ユーザーの実業務（医学研究・文書作成）に直結し、既存資産（ARS・医療コンプライアンススキル・日本語品質システム）を束ねて価値を出せる。Anthropic 公式の「1コマンドから観点別レビュアー並列起動」パターンの応用。</dd>
+              </dl>
+            </div>
+          </details>
+          <details>
+            <summary><span class="finding-id">WF-3</span> sdd-experiment-sweep — SDD ML 実験の横断監査</summary>
+            <div class="accordion__body">
+              <dl class="finding-meta">
+                <dt>目的</dt><dd>SDD ML プロジェクトの実験群に対し、リーク検査・実験整合性監査・ログ比較を並列実行し、実験横断の比較マトリクスを生成する。</dd>
+                <dt>構造案</dt><dd>実験ディレクトリを列挙 → pipeline で各実験に監査エージェント（sdd-experiment-audit / sdd-pre-train-guard の手順を利用）→ 集約して sdd-report-generator へ接続。</dd>
+                <dt>選定理由</dt><dd>自作スキル最大勢力（SDD/ML 系7個）は現在1つずつ手動起動する設計。「多数対象への同一チェック」という Workflow の得意形そのもので、束ねる価値が最も高い。</dd>
+              </dl>
+            </div>
+          </details>
+        </div>
+
+        <h3>自作 Agent 候補（少数精鋭2〜3体）</h3>
+        <p>ecc 由来の28種と役割が被るものは作りません。「この環境固有の文脈を持つもの」だけを新設します。</p>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>候補</th><th>役割</th><th>モデル / effort 案</th><th>新設理由</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><code>env-auditor</code></td>
+                <td>dotfiles / .claude 環境の監査専任（WF-1 から呼ばれる読み取り専用ワーカー）</td>
+                <td>Sonnet / medium</td>
+                <td>merge リンク構造・orca・RTK など環境固有の知識を1箇所に集約できる</td>
+              </tr>
+              <tr>
+                <td><code>jp-doc-reviewer</code></td>
+                <td>日本語文書の品質レビュー専任（japanese-style-guide.md を常に参照、WF-2 の一員）</td>
+                <td>Sonnet / medium（軽量チェックは Haiku）</td>
+                <td>スタイルガイド育成運用とレビューを接続する常設の担い手が不在</td>
+              </tr>
+              <tr>
+                <td><code>research-methodologist</code>（任意）</td>
+                <td>統計・研究方法論の検証専任（WF-2 の統計観点、SDD 系の相談役）</td>
+                <td>Fable 5 / high（判断の質が結果を左右）</td>
+                <td>ARS は執筆寄りで、方法論の敵対的検証に特化した役がない</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>CLAUDE.md へ追記する運用原則（C-6 の中身、4行想定）</h3>
+        <pre>- 並列サブエージェントは探索型の高価値タスク限定（約15倍のトークンに見合う時のみ。単純タスクは1体・3〜10ツール呼び出し）
+- サブエージェント指示は4要素必須：目的 / 出力形式 / 使うツール / タスク境界
+- 書き込みは「1ファイル=1エージェント」。競合するなら worktree 分離
+- 5分未満で終わる作業は委譲しない（オーバーヘッドが利得を食う）</pre>
+        <p class="caption">既存の「サブエージェント1つにつき1タスク」方針を、調査で得た定量根拠つきの運用原則へ拡張するものです。</p>
+      </section>
+
+      <!-- =================== SOURCES =================== -->
+      <section id="sources" data-toc="出典">
+        <h2>出典</h2>
+        <h3>公式（Anthropic / Claude Code）</h3>
+        <ul>
+          <li><a href="https://code.claude.com/docs/en/skills.md">Skills</a> / <a href="https://code.claude.com/docs/en/sub-agents.md">Sub-agents</a> / <a href="https://code.claude.com/docs/en/workflows.md">Dynamic Workflows</a> / <a href="https://code.claude.com/docs/en/memory.md">Memory</a> / <a href="https://code.claude.com/docs/en/plugins.md">Plugins</a> / <a href="https://code.claude.com/docs/en/context-window">Context Window</a> / <a href="https://code.claude.com/docs/en/best-practices">Best Practices</a></li>
+          <li><a href="https://www.anthropic.com/engineering/multi-agent-research-system">How we built our multi-agent research system</a>（90.2% 向上 / 約15倍トークン / effort scaling）</li>
+          <li><a href="https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills">Equipping agents for the real world with Agent Skills</a>（評価駆動のスキル作成）</li>
+          <li><a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">Effective context engineering for AI agents</a>（圧縮・構造化メモ・サブエージェント分離）</li>
+        </ul>
+        <h3>海外コミュニティ</h3>
+        <ul>
+          <li><a href="https://blog.fsck.com/2025/12/17/claude-code-skills-not-triggering/">Jesse Vincent — スキル説明文予算15,000字と静かな脱落</a> / <a href="https://blog.fsck.com/2025/10/09/superpowers/">Superpowers（強制ワークフローと圧力テスト）</a></li>
+          <li><a href="https://github.com/citypaul/.dotfiles">citypaul/.dotfiles</a>（約3,000行→約160行）/ <a href="https://github.com/wshobson/agents">wshobson/agents</a>（焦点別分割プラグイン）/ <a href="https://github.com/hesreallyhim/awesome-claude-code">awesome-claude-code</a></li>
+          <li><a href="https://github.com/anthropics/skills">anthropics/skills</a>（段階的開示の3層）/ <a href="https://simonwillison.net/2025/Oct/16/claude-skills/">Simon Willison — Skills 評</a></li>
+          <li><a href="https://paddo.dev/blog/claude-skills-controllability-problem/">スキル自動発動の制御性問題</a> / <a href="https://scottspence.com/posts/optimising-mcp-server-context-usage-in-claude-code">MCP コンテキスト消費の実測</a></li>
+        </ul>
+        <h3>日本語圏</h3>
+        <ul>
+          <li><a href="https://zenn.dev/pepabo/articles/claude-code-rules-skills-split">GMOペパボ — 3層構造で83%削減（114,847→19,232トークン）</a></li>
+          <li><a href="https://zenn.dev/yamato_snow/articles/3cd6ed9ac340a2">やまと — スキル21個運用の設計と育て方</a> / <a href="https://zenn.dev/yamato_snow/articles/8eff833984b842">同 — トークン消費半減の5フェーズ運用</a></li>
+          <li><a href="https://zenn.dev/sonicgarden/articles/claude-code-self-improving-loop">ソニックガーデン — スキルの毎日自動改善ループ</a></li>
+          <li><a href="https://zenn.dev/akira_papa/articles/6e7eeb6fca6f04">あきらパパ — サブエージェント並列化の落とし穴4つ</a></li>
+          <li><a href="https://zenn.dev/soichiyo/articles/b2a0ba2814acf6">soichiyo — 設定の全体設計（3層分類と symlink 配布）</a> / <a href="https://tech.enechange.co.jp/entry/2026/03/24/102016">ENECHANGE — CLAUDE.md 肥大化対策</a></li>
+          <li><a href="https://blog.cybozu.io/entry/2026/02/20/150000">Cybozu — チーム専用マーケットプレイス</a> / <a href="https://blog.colopl.dev/entry/2025/10/17/110000">COLOPL — 社内プラグインマーケットプレイス</a></li>
+          <li><a href="https://zenn.dev/polipoli/articles/agent-skills-context-architecture">スキル説明文の予算試算（20個なら300字/個）</a></li>
+        </ul>
+        <p class="caption">このほか調査エージェントの完全な出典リストは会話ログを参照。リンク先は 2026-07-06 時点で確認したものです。</p>
+      </section>
+
+      <footer class="report-footer">
+        <span>Generated 2026-07-06 · 調査4系統の統合 · 実装は未着手（本レポートは整理のみ）</span>
+        <span>v1.0</span>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    /* ---------- Theme toggle: auto → light → dark → auto ---------- */
+    (function () {
+      const root = document.documentElement;
+      const btn = document.getElementById('themeToggle');
+      if (!btn) return;
+      const label = btn.querySelector('[data-theme-label]');
+      const apply = mode => {
+        root.dataset.theme = mode;
+        if (label) label.textContent = mode === 'auto' ? 'Auto' : mode === 'dark' ? 'Dark' : 'Light';
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        root.classList.toggle('is-dark', mode === 'dark' || (mode === 'auto' && prefersDark));
+      };
+      apply(localStorage.getItem('theme') || 'auto');
+      btn.addEventListener('click', () => {
+        const next = { auto: 'light', light: 'dark', dark: 'auto' }[root.dataset.theme] || 'auto';
+        localStorage.setItem('theme', next);
+        apply(next);
+      });
+      window.matchMedia('(prefers-color-scheme: dark)')
+        .addEventListener('change', () => { if (root.dataset.theme === 'auto') apply('auto'); });
+    })();
+
+    /* ---------- TOC build + scrollspy ---------- */
+    (function () {
+      const list = document.getElementById('tocList');
+      if (!list) return;
+      const sections = Array.from(document.querySelectorAll('section[data-toc]'));
+      const items = sections.map(s => {
+        const li = document.createElement('li');
+        const a  = document.createElement('a');
+        a.href = '#' + s.id;
+        a.className = 'toc__link';
+        a.textContent = s.dataset.toc;
+        li.appendChild(a); list.appendChild(li);
+        return { section: s, link: a };
+      });
+      const obs = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            items.forEach(({ link }) => link.classList.remove('is-active'));
+            const m = items.find(i => i.section === e.target);
+            if (m) m.link.classList.add('is-active');
+          }
+        });
+      }, { rootMargin: '-40% 0px -55% 0px', threshold: 0 });
+      sections.forEach(s => obs.observe(s));
+    })();
+
+    /* ---------- Tabs ---------- */
+    document.querySelectorAll('[data-tabs]').forEach(group => {
+      const triggers = group.querySelectorAll('[role="tab"]');
+      triggers.forEach(t => t.addEventListener('click', () => {
+        triggers.forEach(o => {
+          const sel = o === t;
+          o.setAttribute('aria-selected', sel);
+          const p = document.getElementById(o.getAttribute('aria-controls'));
+          if (p) p.setAttribute('aria-hidden', !sel);
+        });
+      }));
+    });
+
+    /* ---------- Sortable / filterable / searchable table ---------- */
+    document.querySelectorAll('[data-sortable-table]').forEach(wrap => {
+      const table = wrap.querySelector('table');
+      const tbody = table.querySelector('tbody');
+      const rows  = Array.from(tbody.querySelectorAll('tr'));
+      const search = wrap.querySelector('[data-table-search]');
+      const filters = wrap.querySelectorAll('[data-table-filter]');
+
+      const parse = (text, type) => {
+        if (type === 'number') return parseFloat(text.replace(/[^\d.\-]/g, '')) || 0;
+        if (type === 'date') return new Date(text).getTime() || 0;
+        return text.toLowerCase();
+      };
+
+      table.querySelectorAll('thead th[data-sort]').forEach((th, idx) => {
+        th.addEventListener('click', () => {
+          const type = th.dataset.sort;
+          const asc  = !th.classList.contains('is-sorted-asc');
+          table.querySelectorAll('thead th').forEach(o => {
+            o.classList.remove('is-sorted', 'is-sorted-asc', 'is-sorted-desc');
+            const ind = o.querySelector('.sort-indicator'); if (ind) ind.textContent = '↕';
+          });
+          th.classList.add('is-sorted', asc ? 'is-sorted-asc' : 'is-sorted-desc');
+          const ind = th.querySelector('.sort-indicator'); if (ind) ind.textContent = asc ? '↑' : '↓';
+          rows.sort((a, b) => {
+            const av = parse(a.children[idx].textContent.trim(), type);
+            const bv = parse(b.children[idx].textContent.trim(), type);
+            return av < bv ? (asc ? -1 : 1) : av > bv ? (asc ? 1 : -1) : 0;
+          });
+          rows.forEach(r => tbody.appendChild(r));
+        });
+      });
+
+      const apply = () => {
+        const q = (search?.value || '').toLowerCase().trim();
+        const active = {};
+        filters.forEach(f => { if (f.value) active[f.dataset.tableFilter] = f.value.toLowerCase(); });
+        rows.forEach(row => {
+          const text = row.textContent.toLowerCase();
+          let visible = !q || text.includes(q);
+          if (visible) for (const [, v] of Object.entries(active)) if (!text.includes(v)) { visible = false; break; }
+          row.style.display = visible ? '' : 'none';
+        });
+      };
+      search?.addEventListener('input', apply);
+      filters.forEach(f => f.addEventListener('change', apply));
+    });
+
+    /* ---------- Diagram zoom lightbox (click .architecture svg) ---------- */
+    (function () {
+      const box = document.createElement('div');
+      box.className = 'diagram-lightbox';
+      box.setAttribute('role', 'dialog');
+      box.setAttribute('aria-modal', 'true');
+      box.setAttribute('aria-label', '図の拡大表示');
+      box.innerHTML =
+        '<div class="diagram-lightbox__stage"></div>' +
+        '<div class="diagram-lightbox__bar">' +
+          '<button type="button" class="diagram-lightbox__btn" data-zoom-out aria-label="縮小">−</button>' +
+          '<button type="button" class="diagram-lightbox__btn" data-zoom-reset aria-label="全体表示に戻す">100%</button>' +
+          '<button type="button" class="diagram-lightbox__btn" data-zoom-in aria-label="拡大">＋</button>' +
+          '<button type="button" class="diagram-lightbox__btn" data-close aria-label="閉じる">✕</button>' +
+        '</div>' +
+        '<p class="diagram-lightbox__hint">ホイールで拡縮 / ドラッグで移動 / Esc で閉じる</p>';
+      document.body.appendChild(box);
+      const stage = box.querySelector('.diagram-lightbox__stage');
+      const resetBtn = box.querySelector('[data-zoom-reset]');
+      let scale = 1, tx = 0, ty = 0, opener = null;
+
+      const render = () => {
+        const svg = stage.querySelector('svg');
+        if (svg) svg.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')';
+        resetBtn.textContent = Math.round(scale * 100) + '%';
+      };
+      const zoomAt = (cx, cy, factor) => {
+        const next = Math.min(8, Math.max(0.2, scale * factor));
+        tx = cx - (cx - tx) * (next / scale);
+        ty = cy - (cy - ty) * (next / scale);
+        scale = next;
+        render();
+      };
+      const fit = () => {
+        const svg = stage.querySelector('svg');
+        if (!svg) return;
+        const w = parseFloat(svg.style.width) || 800;
+        const h = parseFloat(svg.style.height) || 600;
+        scale = Math.min((innerWidth - 64) / w, (innerHeight - 96) / h);
+        tx = (innerWidth - w * scale) / 2;
+        ty = (innerHeight - h * scale) / 2;
+        render();
+      };
+      const openBox = source => {
+        opener = document.activeElement;
+        stage.innerHTML = '';
+        const clone = source.cloneNode(true);
+        const vb = source.viewBox && source.viewBox.baseVal;
+        const w = (vb && vb.width) || source.getBoundingClientRect().width || 800;
+        const h = (vb && vb.height) || source.getBoundingClientRect().height || 600;
+        clone.style.maxWidth = 'none';
+        clone.style.width = w + 'px';
+        clone.style.height = h + 'px';
+        stage.appendChild(clone);
+        box.classList.add('is-open');
+        document.body.style.overflow = 'hidden';
+        fit();
+        box.querySelector('[data-close]').focus();
+      };
+      const closeBox = () => {
+        box.classList.remove('is-open');
+        document.body.style.overflow = '';
+        if (opener && opener.focus) opener.focus();
+      };
+
+      document.addEventListener('click', e => {
+        const svg = e.target.closest && e.target.closest('.architecture svg');
+        if (svg) openBox(svg);
+      });
+      box.querySelector('[data-close]').addEventListener('click', closeBox);
+      box.querySelector('[data-zoom-in]').addEventListener('click', () => zoomAt(innerWidth / 2, innerHeight / 2, 1.25));
+      box.querySelector('[data-zoom-out]').addEventListener('click', () => zoomAt(innerWidth / 2, innerHeight / 2, 1 / 1.25));
+      resetBtn.addEventListener('click', fit);
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && box.classList.contains('is-open')) closeBox();
+      });
+      stage.addEventListener('wheel', e => {
+        e.preventDefault();
+        zoomAt(e.clientX, e.clientY, e.deltaY < 0 ? 1.15 : 1 / 1.15);
+      }, { passive: false });
+
+      let pan = null;
+      stage.addEventListener('pointerdown', e => {
+        pan = { id: e.pointerId, x: e.clientX, y: e.clientY, moved: 0 };
+        stage.classList.add('is-panning');
+        stage.setPointerCapture(e.pointerId);
+      });
+      stage.addEventListener('pointermove', e => {
+        if (!pan || e.pointerId !== pan.id) return;
+        const dx = e.clientX - pan.x, dy = e.clientY - pan.y;
+        pan.x = e.clientX; pan.y = e.clientY;
+        pan.moved += Math.abs(dx) + Math.abs(dy);
+        tx += dx; ty += dy;
+        render();
+      });
+      stage.addEventListener('pointerup', e => {
+        if (!pan || e.pointerId !== pan.id) return;
+        const wasClick = pan.moved < 5 && !e.target.closest('svg');
+        stage.classList.remove('is-panning');
+        pan = null;
+        if (wasClick) closeBox();
+      });
+    })();
+
+    /* ---------- Mermaid ---------- */
+    window.addEventListener('load', () => {
+      if (typeof mermaid !== 'undefined') {
+        const isDark = document.documentElement.classList.contains('is-dark');
+        mermaid.initialize({
+          startOnLoad: true,
+          theme: 'base',
+          themeVariables: isDark ? {
+            primaryColor: '#262626', primaryTextColor: '#f5f5f5',
+            primaryBorderColor: '#4d4d4d', lineColor: '#a3a3a3',
+            secondaryColor: '#1f1f1f', tertiaryColor: '#1a1a1a',
+            fontFamily: getComputedStyle(document.documentElement).getPropertyValue('--font-sans'),
+          } : {
+            primaryColor: '#f5f5f5', primaryTextColor: '#1a1a1a',
+            primaryBorderColor: '#cccccc', lineColor: '#666666',
+            secondaryColor: '#fafafa', tertiaryColor: '#ffffff',
+            fontFamily: getComputedStyle(document.documentElement).getPropertyValue('--font-sans'),
+          },
+        });
+      }
+    });
+  </script>
+</body>
+</html>
