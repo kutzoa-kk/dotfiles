@@ -178,6 +178,40 @@ for one-line indicators.
 </svg>
 ```
 
+## Click-to-zoom lightbox for large diagrams
+
+A wide `flowchart LR` with several subgraphs renders fine in Mermaid but gets
+scaled down to fit the ~880px content column — at which point 13px node labels
+become unreadable. Don't shrink the diagram or split it reflexively; give the
+reader a zoom affordance. `assets/base.html` ships this wired up:
+
+- Clicking any `svg` inside `.architecture` opens a fullscreen lightbox.
+- Wheel zooms around the cursor, drag pans, `Esc` / backdrop click closes,
+  and +/−/fit buttons cover keyboard-free use.
+- `cursor: zoom-in` on the diagram plus a caption note ("図はクリックで拡大")
+  make the affordance discoverable — an invisible zoom is a missing zoom.
+
+Implementation notes (the full snippet lives in `assets/base.html`; copy the
+`.diagram-lightbox` CSS block and the "Diagram zoom lightbox" script block):
+
+- **Clone the rendered SVG** into the lightbox at its `viewBox` natural size.
+  Mermaid sets an inline `max-width` on its output — undo it on the clone
+  (`clone.style.maxWidth = 'none'`), never on the original.
+- **Fit-to-viewport initial scale**: `min((vw−64)/w, (vh−96)/h)` centers the
+  whole diagram first; the reader zooms in from there.
+- **Zoom around the cursor** with `transform-origin: 0 0` and the fixed-point
+  update `t' = c − (c − t)·(s'/s)` — zooming toward the corner instead of the
+  cursor is the most common way to get this wrong.
+- The wheel listener must be **non-passive** (`{ passive: false }`) or
+  `preventDefault()` silently fails and the page scrolls behind the overlay.
+- Use **pointer capture** for panning so fast drags don't drop, and treat a
+  motionless pointerup on the backdrop as "close".
+- Dialog a11y: `role="dialog"` + `aria-modal`, focus the close button on
+  open, restore focus to the opener on close, lock body scroll while open.
+
+The same pattern applies to hand-written inline SVG — the delegation targets
+`.architecture svg`, not Mermaid specifically.
+
 ## External SVG vs inline
 
 | Inline | External `<img src=".svg">` |

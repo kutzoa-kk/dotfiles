@@ -24,6 +24,40 @@ answer, then show the work.
 `TL;DR` is non-negotiable. Skim-readers should be able to leave knowing the
 answer without scrolling past the first viewport.
 
+## Per-finding structure — 目的 → 手法 → 結果 → 考察 (IMRaD per section)
+
+Each **Findings** section (one per analysis/experiment) should carry the reader
+through *why → how → what → so-what* with explicit, labelled blocks. This is the
+IMRaD shape applied at the section level, and it is the default for research/EDA/
+experiment write-ups (especially Japanese ones):
+
+1. **目的 (Purpose)** — what this analysis tests and *why*, in 1–2 sentences.
+   Motivate it from the previous finding when there is a narrative thread.
+2. **手法 (Method)** — data source, population, N, the analysis/estimator, and
+   the threshold (say so if pre-registered). Terse but reproducible.
+3. **結果 (Results)** — the figure/table and numbers. Every chart gets a
+   one-sentence caption stating *what the reader should notice*.
+4. **考察 (Discussion)** — interpretation, conclusion, and honest limitations
+   (never over- or under-state modest/FAIL/confounded results). Hand off to the
+   next section when the finding drives it.
+
+Give each of the four a distinct visual treatment (a coloured left-border callout
+for 目的/手法/考察, an underlined label for 結果) so that, across many sections,
+a reader can skim just the 目的 and 考察 blocks and follow the whole arc — what
+each step set out to show and what it actually showed. In multi-increment
+investigations this is what makes the through-line legible.
+
+```css
+.aim   {border-left:5px solid var(--slate); background:#eef4f8; border-radius:0 8px 8px 0; padding:.9rem 1.2rem}
+.method{border-left:5px solid var(--muted); background:#f4f5f6; border-radius:0 8px 8px 0; padding:.9rem 1.2rem}
+.rlabel{border-bottom:2px solid var(--border); font-weight:700; letter-spacing:.12em; padding-bottom:.25rem}
+.disc  {border-left:5px solid var(--gold);  background:#fbf6ec; border-radius:0 8px 8px 0; padding:.9rem 1.2rem}
+/* 各ブロックの <h4> は小さめ・トラッキング広め（.78rem, letter-spacing:.1em）でラベル化 */
+```
+
+Skip the four-part labelling only for the overview (TL;DR) and the final synthesis/
+recommendation section — those *are* the top-level 目的 and 考察 for the whole report.
+
 ## Minimum viable version
 
 Some analyses are short. The shortest acceptable structure:

@@ -452,6 +452,23 @@
     .architecture .mermaid { display: flex; justify-content: center; }
 
     /* =========================================================================
+       Diagram zoom lightbox — click any .architecture svg to view fullscreen.
+       Wide LR flowcharts get scaled down to fit the ~880px column and become
+       unreadable; this is the default remedy (wheel = zoom, drag = pan,
+       Esc / backdrop click = close). Wired by the script at the bottom.
+       ========================================================================= */
+    .architecture svg { cursor: zoom-in; }
+    .diagram-lightbox { position: fixed; inset: 0; z-index: 50; background: color-mix(in oklch, var(--color-bg), transparent 6%); backdrop-filter: blur(4px); display: none; }
+    .diagram-lightbox.is-open { display: block; }
+    .diagram-lightbox__stage { position: absolute; inset: 0; overflow: hidden; cursor: grab; touch-action: none; }
+    .diagram-lightbox__stage.is-panning { cursor: grabbing; }
+    .diagram-lightbox__stage svg { position: absolute; top: 0; left: 0; transform-origin: 0 0; max-width: none !important; }
+    .diagram-lightbox__bar { position: absolute; top: 1rem; right: 1rem; z-index: 2; display: flex; gap: 0.5rem; }
+    .diagram-lightbox__btn { min-width: 2.25rem; height: 2.25rem; padding: 0 0.6rem; display: inline-flex; align-items: center; justify-content: center; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 8px; color: var(--color-ink); font: inherit; font-size: 0.9375rem; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+    .diagram-lightbox__btn:hover { border-color: var(--color-border-strong); }
+    .diagram-lightbox__hint { position: absolute; bottom: 1rem; left: 50%; transform: translateX(-50%); margin: 0; font-size: 0.8125rem; color: var(--color-muted); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 999px; padding: 0.25rem 0.9rem; white-space: nowrap; }
+
+    /* =========================================================================
        Footer
        ========================================================================= */
     .report-footer {
@@ -619,7 +636,7 @@
       <!-- =================== ARCHITECTURE =================== -->
       <section id="architecture" data-toc="アーキテクチャ">
         <h2>アーキテクチャ</h2>
-        <p>システム構成は Mermaid で書く。テキストソースが残るので diff が取れる。</p>
+        <p>システム構成は Mermaid で書く。テキストソースが残るので diff が取れる。図はクリックで全画面拡大できる（ホイールで拡縮・ドラッグで移動・Esc で閉じる）。</p>
         <div class="architecture">
           <pre class="mermaid">
 flowchart LR
@@ -804,6 +821,116 @@ flowchart LR
       search?.addEventListener('input', apply);
       filters.forEach(f => f.addEventListener('change', apply));
     });
+
+    /* ---------- Diagram zoom lightbox (click .architecture svg) ----------
+       Clone the rendered SVG at its viewBox natural size, fit it to the
+       viewport, then wheel-zoom around the cursor / drag-pan / Esc to close.
+       Works for Mermaid output and hand-written inline SVG alike. */
+    (function () {
+      const box = document.createElement('div');
+      box.className = 'diagram-lightbox';
+      box.setAttribute('role', 'dialog');
+      box.setAttribute('aria-modal', 'true');
+      box.setAttribute('aria-label', '図の拡大表示');
+      box.innerHTML =
+        '<div class="diagram-lightbox__stage"></div>' +
+        '<div class="diagram-lightbox__bar">' +
+          '<button type="button" class="diagram-lightbox__btn" data-zoom-out aria-label="縮小">−</button>' +
+          '<button type="button" class="diagram-lightbox__btn" data-zoom-reset aria-label="全体表示に戻す">100%</button>' +
+          '<button type="button" class="diagram-lightbox__btn" data-zoom-in aria-label="拡大">＋</button>' +
+          '<button type="button" class="diagram-lightbox__btn" data-close aria-label="閉じる">✕</button>' +
+        '</div>' +
+        '<p class="diagram-lightbox__hint">ホイールで拡縮 / ドラッグで移動 / Esc で閉じる</p>';
+      document.body.appendChild(box);
+      const stage = box.querySelector('.diagram-lightbox__stage');
+      const resetBtn = box.querySelector('[data-zoom-reset]');
+      let scale = 1, tx = 0, ty = 0, opener = null;
+
+      const render = () => {
+        const svg = stage.querySelector('svg');
+        if (svg) svg.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')';
+        resetBtn.textContent = Math.round(scale * 100) + '%';
+      };
+      const zoomAt = (cx, cy, factor) => {
+        // Keep the point under the cursor fixed: p' = t + s·p  (origin 0 0).
+        const next = Math.min(8, Math.max(0.2, scale * factor));
+        tx = cx - (cx - tx) * (next / scale);
+        ty = cy - (cy - ty) * (next / scale);
+        scale = next;
+        render();
+      };
+      const fit = () => {
+        const svg = stage.querySelector('svg');
+        if (!svg) return;
+        const w = parseFloat(svg.style.width) || 800;
+        const h = parseFloat(svg.style.height) || 600;
+        scale = Math.min((innerWidth - 64) / w, (innerHeight - 96) / h);
+        tx = (innerWidth - w * scale) / 2;
+        ty = (innerHeight - h * scale) / 2;
+        render();
+      };
+      const openBox = source => {
+        opener = document.activeElement;
+        stage.innerHTML = '';
+        const clone = source.cloneNode(true);
+        const vb = source.viewBox && source.viewBox.baseVal;
+        const w = (vb && vb.width) || source.getBoundingClientRect().width || 800;
+        const h = (vb && vb.height) || source.getBoundingClientRect().height || 600;
+        clone.style.maxWidth = 'none';   // Mermaid sets inline max-width; undo it on the clone.
+        clone.style.width = w + 'px';
+        clone.style.height = h + 'px';
+        stage.appendChild(clone);
+        box.classList.add('is-open');
+        document.body.style.overflow = 'hidden';
+        fit();
+        box.querySelector('[data-close]').focus();
+      };
+      const closeBox = () => {
+        box.classList.remove('is-open');
+        document.body.style.overflow = '';
+        if (opener && opener.focus) opener.focus();
+      };
+
+      document.addEventListener('click', e => {
+        const svg = e.target.closest && e.target.closest('.architecture svg');
+        if (svg) openBox(svg);
+      });
+      box.querySelector('[data-close]').addEventListener('click', closeBox);
+      box.querySelector('[data-zoom-in]').addEventListener('click', () => zoomAt(innerWidth / 2, innerHeight / 2, 1.25));
+      box.querySelector('[data-zoom-out]').addEventListener('click', () => zoomAt(innerWidth / 2, innerHeight / 2, 1 / 1.25));
+      resetBtn.addEventListener('click', fit);
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && box.classList.contains('is-open')) closeBox();
+      });
+      // Wheel listener must be non-passive to preventDefault page scroll.
+      stage.addEventListener('wheel', e => {
+        e.preventDefault();
+        zoomAt(e.clientX, e.clientY, e.deltaY < 0 ? 1.15 : 1 / 1.15);
+      }, { passive: false });
+
+      let pan = null;
+      stage.addEventListener('pointerdown', e => {
+        pan = { id: e.pointerId, x: e.clientX, y: e.clientY, moved: 0 };
+        stage.classList.add('is-panning');
+        stage.setPointerCapture(e.pointerId);
+      });
+      stage.addEventListener('pointermove', e => {
+        if (!pan || e.pointerId !== pan.id) return;
+        const dx = e.clientX - pan.x, dy = e.clientY - pan.y;
+        pan.x = e.clientX; pan.y = e.clientY;
+        pan.moved += Math.abs(dx) + Math.abs(dy);
+        tx += dx; ty += dy;
+        render();
+      });
+      stage.addEventListener('pointerup', e => {
+        if (!pan || e.pointerId !== pan.id) return;
+        // A motionless click on the backdrop (not the SVG) closes the box.
+        const wasClick = pan.moved < 5 && !e.target.closest('svg');
+        stage.classList.remove('is-panning');
+        pan = null;
+        if (wasClick) closeBox();
+      });
+    })();
 
     /* ---------- Chart.js theme + sample chart ---------- */
     window.addEventListener('load', () => {

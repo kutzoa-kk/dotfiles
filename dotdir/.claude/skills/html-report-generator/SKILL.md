@@ -57,6 +57,11 @@ The four canonical long-form report shapes (data-analysis, system-development,
 status-progress, audit-review) live under `references/recipes/` and act as templates you
 can borrow from when they fit. Don't force a request into one of them if it doesn't.
 
+For analysis / research / experiment write-ups, structure **each finding section** as
+目的 → 手法 → 結果 → 考察 (Purpose → Method → Results → Discussion — IMRaD per section),
+with a distinct labelled block for each so a reader can skim just 目的 and 考察 across
+sections and follow the whole arc. See `references/recipes/data-analysis.md`.
+
 ## Workflow
 
 1. **Decide whether you actually need this skill.** A quick scratchpad, a single-chart
