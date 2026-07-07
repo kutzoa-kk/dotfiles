@@ -50,7 +50,8 @@ const solved = await pipeline(
 あなたの思考様式: ${p.stance}。この様式に忠実に、独立して問いに答えよ。
 必要なら Read/Grep/Bash で事実を調べてよい（ファイル変更は禁止）。
 出力: answer（結論）/ reasoning（根拠の要約、5行以内）/ confidence（high|medium|low）。`,
-    { label: `solve:${p.key}`, phase: 'Solve', schema: SOLUTION, ...modelOpt }),
+    { label: `solve:${p.key}`, phase: 'Solve', schema: SOLUTION, ...modelOpt })
+    .catch(() => null),
   (sol, p) => {
     if (!sol) return null
     const verifyPrompt = `役割: 敵対的検証者。次の解答を反証せよ。
@@ -61,11 +62,12 @@ const solved = await pipeline(
 出力: verdict（REFUTED=結論を変えうる欠陥あり / SURVIVED=反証失敗）と issues（発見した問題。なければ空配列）。`
     const verifyOpts = { label: `verify:${p.key}`, phase: 'Verify', schema: VERDICT, ...modelOpt }
     return agent(verifyPrompt, { ...verifyOpts, agentType: 'adversarial-verifier' })
-      .catch(() => {
-        log(`verify:${p.key}: adversarial-verifier 未登録のため汎用エージェントへフォールバック`)
+      .catch(e => {
+        log(`verify:${p.key}: adversarial-verifier で実行できないため汎用エージェントへフォールバック（${String(e).slice(0, 80)}）`)
         return agent(verifyPrompt, verifyOpts)
       })
-      .then(v => ({ perspective: p.key, solution: sol, verdict: v }))
+      .catch(() => null)
+      .then(v => v && { perspective: p.key, solution: sol, verdict: v })
   },
 )
 

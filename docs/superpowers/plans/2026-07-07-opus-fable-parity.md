@@ -557,8 +557,8 @@ return { question, survivors: survived.map(c => c.perspective), final }
 
 - [ ] **Step 2: 構文を検証する**
 
-Run: `node --input-type=module --check < dotdir/.claude/workflows/deep-reason.js && echo "syntax OK"`
-Expected: `syntax OK`
+Run: `node --check dotdir/.claude/workflows/deep-reason.js && echo "syntax OK"`
+Expected: `syntax OK`（Workflow スクリプトはトップレベル return を使うため --input-type=module では検査できない）
 
 - [ ] **Step 3: 最小構成で1回実行して検証する（トークン消費を抑えるため haiku 指定）**
 
