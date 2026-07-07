@@ -55,6 +55,13 @@
 - 解釈の分岐が結果を大きく変えるときは AskUserQuestion で確認（推測で大きな作業を進めない）
 - 依頼の解釈は decision-patterns.md の判断パターンに従う
 
+### 品質階段（Fable 級化基盤の使い分け）
+
+- 設計判断の分岐・確信の持てない技術判断・不可逆操作の前 → second-opinion スキル（Codex・agy 外注。Claude トークン温存）
+- 重要タスク（不可逆・本番反映・論文の数値）の完了前 → adversarial-verifier Agent で反証検証
+- 最重要の難問のみ → deep-reason Workflow（agent 7体分のコスト。起動前にコストを一言明示）
+- 実装・調査の単体作業も Codex/agy への委譲を優先し、Claude 並列は高価値タスク限定
+
 ### 検証
 
 - 動作を証明できるまで完了としない
