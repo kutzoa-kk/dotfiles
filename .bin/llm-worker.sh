@@ -19,9 +19,9 @@ TIMEOUT=300
 WORKDIR="$PWD"
 while [ $# -gt 0 ]; do
   case "$1" in
-    --role)    ROLE="${2:?--role に値がありません}"; shift 2 ;;
-    --timeout) TIMEOUT="${2:?--timeout に値がありません}"; shift 2 ;;
-    --cd)      WORKDIR="${2:?--cd に値がありません}"; shift 2 ;;
+    --role)    [ $# -ge 2 ] || usage; ROLE="$2"; shift 2 ;;
+    --timeout) [ $# -ge 2 ] || usage; TIMEOUT="$2"; shift 2 ;;
+    --cd)      [ $# -ge 2 ] || usage; WORKDIR="$2"; shift 2 ;;
     *) usage ;;
   esac
 done
@@ -48,8 +48,8 @@ run_one() {
   local name="$1" out rc start end
   start=$(date +%s)
   case "$name" in
-    codex) out=$(cd "$WORKDIR" && timeout "$TIMEOUT" codex exec --sandbox read-only "$PROMPT" 2>"$LOG_DIR/$STAMP-codex.err") ;;
-    agy)   out=$(cd "$WORKDIR" && timeout "$TIMEOUT" agy --print "$PROMPT" --model "Gemini 3.1 Pro (High)" 2>"$LOG_DIR/$STAMP-agy.err") ;;
+    codex) out=$(cd "$WORKDIR" && timeout -k 10 "$TIMEOUT" codex exec --sandbox read-only -- "$PROMPT" 2>"$LOG_DIR/$STAMP-codex.err") ;;
+    agy)   out=$(cd "$WORKDIR" && timeout -k 10 "$TIMEOUT" agy --print "$PROMPT" --model "Gemini 3.1 Pro (High)" 2>"$LOG_DIR/$STAMP-agy.err") ;;
   esac
   rc=$?
   end=$(date +%s)
