@@ -51,18 +51,26 @@ const solved = await pipeline(
 必要なら Read/Grep/Bash で事実を調べてよい（ファイル変更は禁止）。
 出力: answer（結論）/ reasoning（根拠の要約、5行以内）/ confidence（high|medium|low）。`,
     { label: `solve:${p.key}`, phase: 'Solve', schema: SOLUTION, ...modelOpt }),
-  (sol, p) => sol && agent(`役割: 敵対的検証者。次の解答を反証せよ。
+  (sol, p) => {
+    if (!sol) return null
+    const verifyPrompt = `役割: 敵対的検証者。次の解答を反証せよ。
 問い: ${question}
 解答: ${sol.answer}
 根拠: ${sol.reasoning}
 手順: 前提の誤り・見落とした分岐・根拠の飛躍を探す。必要なら Read/Grep/Bash で事実を裏取りする。
-出力: verdict（REFUTED=結論を変えうる欠陥あり / SURVIVED=反証失敗）と issues（発見した問題。なければ空配列）。`,
-    { label: `verify:${p.key}`, phase: 'Verify', schema: VERDICT, agentType: 'adversarial-verifier', ...modelOpt })
-    .then(v => ({ perspective: p.key, solution: sol, verdict: v })),
+出力: verdict（REFUTED=結論を変えうる欠陥あり / SURVIVED=反証失敗）と issues（発見した問題。なければ空配列）。`
+    const verifyOpts = { label: `verify:${p.key}`, phase: 'Verify', schema: VERDICT, ...modelOpt }
+    return agent(verifyPrompt, { ...verifyOpts, agentType: 'adversarial-verifier' })
+      .catch(() => {
+        log(`verify:${p.key}: adversarial-verifier 未登録のため汎用エージェントへフォールバック`)
+        return agent(verifyPrompt, verifyOpts)
+      })
+      .then(v => ({ perspective: p.key, solution: sol, verdict: v }))
+  },
 )
 
 const candidates = solved.filter(Boolean).filter(c => c.verdict)
-if (!candidates.length) throw new Error('全視点の推論が失敗しました')
+if (!candidates.length) throw new Error('全視点の推論または検証が失敗しました')
 
 const survived = candidates.filter(c => c.verdict.verdict === 'SURVIVED')
 const pool = survived.length ? survived : candidates // 全滅時は反証内容ごと審査に回す
