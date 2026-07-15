@@ -34,3 +34,13 @@ dotdir/.codex/config.toml
 !/.github/
 !/.github/**
 
+## Docs (design specs / plans / reports = 監査証跡)
+# /* が docs/ を無視するため新規ファイルが落ちる。ルートと同じ手法を docs 階層に適用:
+# docs/ を許可 → 直下を再度無視 → 監査証跡サブツリーのみ許可（docs/archive はキャッシュを含むので除外のまま）。
+!/docs/
+/docs/*
+!/docs/superpowers/
+!/docs/superpowers/**
+!/docs/reports/
+!/docs/reports/**
+
