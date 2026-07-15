@@ -2,9 +2,9 @@
 
 1 つのチャット画面で、質問を送り、ストリーミング完了を検知し、最終回答テキストを抽出する。
 
-## 0. モード選択（任意）
+## 0. モード選択（既定で GPT-5.6 を選択）
 
-ユーザーがモードを明示した場合（例「Pro拡張で」「最高で」「標準で」）のみ実行。指定が無ければ**現在チャットで選択中のモードをそのまま使う**（既定動作）。
+送信前に必ず実行する。**既定モデルは `GPT-5.6`**——ユーザーがモードを明示（例「Pro拡張で」「最高で」「標準で」）した場合はその指定を、無ければ `GPT-5.6` を `want` として選択する。現在モードが既に `want` なら選択操作はスキップされる（下の選択スニペットが早期 return）。既定モデルは選択スニペット冒頭の `DEFAULT_MODE` 1箇所で管理し、新モデルへ移行するときはそこだけ変更する。
 
 モードセレクタは上部バーの `button[aria-haspopup="menu"]` で、ボタンの innerText が現在のモード（例 `最高`）。**Radix メニューはプログラム的 `.click()` では開かない**——`pointerdown`→`pointerup`→`click` を dispatch する（ライブ検証で確認）。
 
@@ -15,7 +15,7 @@ async () => {
   const sleep = ms => new Promise(r => setTimeout(r, ms));
   const btn = [...document.querySelectorAll('button')]
     .find(b => b.getAttribute('aria-haspopup') === 'menu' &&
-               /^(最速|標準|高|最高|Pro|GPT|Auto|Thinking)/i.test((b.innerText||'').trim()));
+               /^(最速|標準|高|最高|Pro|GPT|Auto|Thinking|Sol|Luna|Terra)/i.test((b.innerText||'').trim()));
   if (!btn) return { ok:false, reason:'mode selector not found' };
   const current = (btn.innerText||'').trim();
   const o = { bubbles:true, cancelable:true, view:window, pointerId:1, pointerType:'mouse', button:0 };
@@ -34,12 +34,14 @@ async () => {
 
 ```js
 async () => {
-  const want = "<<目的モードを文字列リテラルで（例: Pro 拡張 / 最高 / 標準）>>";
+  const DEFAULT_MODE = "GPT-5.6";  // 既定モデル。新モデルへ移行するときはこの1行だけ変更する
+  // ユーザーが別モードを明示した場合のみ、その文字列に差し替える（例: "Pro 拡張" / "最高" / "標準"）
+  const want = DEFAULT_MODE;
   const sleep = ms => new Promise(r => setTimeout(r, ms));
   const norm = s => (s||'').replace(/\s/g,'');
   const btn = [...document.querySelectorAll('button')]
     .find(b => b.getAttribute('aria-haspopup') === 'menu' &&
-               /^(最速|標準|高|最高|Pro|GPT|Auto|Thinking)/i.test((b.innerText||'').trim()));
+               /^(最速|標準|高|最高|Pro|GPT|Auto|Thinking|Sol|Luna|Terra)/i.test((b.innerText||'').trim()));
   if (!btn) return { ok:false, reason:'mode selector not found' };
   if (norm(btn.innerText) === norm(want)) return { ok:true, already:true, mode: (btn.innerText||'').trim() };
   const o = { bubbles:true, cancelable:true, view:window, pointerId:1, pointerType:'mouse', button:0 };
@@ -61,10 +63,12 @@ async () => {
 }
 ```
 
-選択後はセレクタボタンの innerText が `want` に変わったか確認。変わらなければ **fail-loud**（推測で送信しない）。
+選択後はセレクタボタンの innerText が `want` に変わったか確認。変わらなければ **fail-loud**（推測で送信しない）。既定の `GPT-5.6` がメニューに見つからない場合（モデル選択が推論強度とは別 UI の可能性）も、選択せず fail-loud でユーザーに報告する。
 
-観測済みモード（2026-06-30、ドリフトしうるので上の列挙で実行時確認）: `最速` / `標準` / `高` / `最高` / `Pro 拡張` / `GPT-5.5`。
+観測済みモード（2026-07-15 時点、ドリフトしうるので上の列挙で実行時確認）: `最速` / `標準` / `高` / `最高` / `Pro 拡張` / `GPT-5.6`（既定） / `Sol` / `Luna` / `Terra`。
+- **GPT-5.6**（既定モデル。選択スニペットの `DEFAULT_MODE` で一元管理）: 旧 `GPT-5.5` は廃止。表示ラベルの正確な表記は実機の実行時列挙で確認し、メニューに無ければ選択せず fail-loud で報告する（モデル選択が推論強度とは別 UI の可能性があるため）。
 - ユーザーの「Pro拡張」= メニュー表記「**Pro 拡張**」。**最重量で応答が数分**かかるため、§3 の完了検知タイムアウトを **600s 以上**に上げること。
+- **Sol / Luna / Terra**（ChatGPT Pro に新規追加）: 表示ラベルがそのままメニュー表記。推論の重さは未確定なので、必ず上の列挙で実在を確認したうえで選択し、応答が数分に及ぶ場合は Pro 拡張と同様に §3 のタイムアウトを **600s 以上**へ延長する。
 
 ## 1. 質問を入力
 
