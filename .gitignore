@@ -44,3 +44,15 @@ dotdir/.codex/config.toml
 !/docs/reports/
 !/docs/reports/**
 
+## dotdir/.claude/scripts (hooks・statusline スクリプト = 稼働設定の実体)
+# /* が dotdir/ 配下の新規ファイルを無視するため docs と同じ手法で allowlist。
+!/dotdir/
+/dotdir/*
+!/dotdir/.claude/
+/dotdir/.claude/*
+!/dotdir/.claude/scripts/
+!/dotdir/.claude/scripts/**
+
+# macOS メタデータ（allowlist したサブツリー内でも常に無視）
+.DS_Store
+

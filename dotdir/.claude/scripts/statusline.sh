@@ -179,6 +179,16 @@ if [ -n "$usage_json" ]; then
   fi
 fi
 
+# ── RunCat Neo snapshot (best-effort; must never break the statusline) ──
+if command -v python3 >/dev/null 2>&1; then
+  enriched=$(printf '%s' "$input" | jq -c \
+    --arg five "${five_util:-}" --arg seven "${seven_util:-}" '
+    (if $five  != "" then .rate_limits.five_hour.used_percentage  = ($five  | tonumber) else . end)
+    | (if $seven != "" then .rate_limits.seven_day.used_percentage = ($seven | tonumber) else . end)
+  ' 2>/dev/null) || enriched="$input"
+  printf '%s' "$enriched" | python3 "$HOME/.claude/scripts/runcat-statusline.py" >/dev/null 2>&1 || true
+fi
+
 # ── Output ──
 printf '%b' "$line1"
 if [ -n "$line2" ]; then
