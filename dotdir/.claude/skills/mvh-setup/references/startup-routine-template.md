@@ -1,8 +1,69 @@
 # Session Startup Routine Template
 
-セッション開始時に agent が実行すべきチェックリスト。CLAUDE.md に追加するセクションのテンプレート。
+セッション開始時のチェックを実装するテンプレート。実装は2通りあり、ユーザーに選ばせる:
 
-## CLAUDE.md Section Template
+- **A. SessionStart hook 版（推奨）**: hook がスクリプトを自動実行し、stdout がコンテキストへ注入される。強制力があり、エージェントが手順を忘れない
+- **B. CLAUDE.md 記述版**: CLAUDE.md に手順を書く。設定が単純で人間も読めるが、実行はエージェント任せ
+
+選択基準: 確実性を取るなら A。チームの人間メンバーにも手順を見せたい・設定を最小にしたいなら B（併用も可）。
+
+## A. SessionStart Hook 版（推奨）
+
+以下を `.claude/scripts/hooks/session-startup.sh` として保存する（stdout がそのままコンテキストに入るため、出力は簡潔に保つ）:
+
+```bash
+#!/usr/bin/env bash
+# SessionStart Hook: inject session startup context.
+# stdout is added to the session context. Keep it short and fast (<10s).
+set -uo pipefail
+
+echo "## Session Startup Context"
+
+echo "### Recent commits"
+git log --oneline -5 2>/dev/null || echo "(not a git repo)"
+
+echo "### Uncommitted changes"
+git status --short 2>/dev/null | head -20
+
+if [ -f .claude/harness-scorecard.md ]; then
+  echo "### Harness scorecard"
+  grep -E '^\- \*\*|^Generated' .claude/harness-scorecard.md | head -6
+fi
+
+# Project-specific quick checks (adjust per stack, keep fast):
+# npm run typecheck --silent 2>&1 | tail -3
+# python -m pytest --co -q 2>&1 | tail -1
+
+exit 0
+```
+
+`.claude/settings.json` への登録（既存エントリとマージすること）:
+
+```json
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/scripts/hooks/session-startup.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+`$CLAUDE_PROJECT_DIR` はプロジェクトルートの絶対パスを指す環境変数。hook の実行時カレントディレクトリに依存しないよう、相対パスでの登録は避ける。
+
+```bash
+chmod +x .claude/scripts/hooks/session-startup.sh
+```
+
+## B. CLAUDE.md Section Template
 
 以下を CLAUDE.md の適切な位置に追加する。プロジェクトに合わせてコマンドを調整すること。
 

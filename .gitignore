@@ -68,6 +68,8 @@ dotdir/.codex/config.toml
 !/dotdir/.claude/skills/ml-experiment-traceability/**
 !/dotdir/.claude/skills/slack-dm-summary/
 !/dotdir/.claude/skills/slack-dm-summary/**
+!/dotdir/.claude/skills/mvh-setup/
+!/dotdir/.claude/skills/mvh-setup/**
 
 # macOS メタデータ（allowlist したサブツリー内でも常に無視）
 .DS_Store

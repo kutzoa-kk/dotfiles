@@ -6,9 +6,9 @@ description: >
   使用タイミング：(1)「set up harness」「harness engineering」、(2)「initialize project for Claude」、
   (3)「MVH」「minimum viable harness」、(4)「project setup for AI」、
   (5)「configure Claude Code for this project」、(6) 新規プロジェクトでベストプラクティスを導入したい場合、
-  (7)「ハーネスセットアップ」「プロジェクト初期設定」。
-  個別スキル（claude-md-generator, auto-format-hook, lint-config-guard, repo-hygiene-audit）を
-  フェーズに沿って順序立てて実行し、ハーネススコアカードで進捗を可視化する。
+  (7)「ハーネスセットアップ」「プロジェクト初期設定」、
+  (8) ECC プラグイン稼働環境で、プロジェクト側にコミット可能な harness（CLAUDE.md / hooks / ADR /
+  pre-commit）を整備したい場合。
 ---
 
 # Minimum Viable Harness (MVH) Setup Wizard
@@ -17,7 +17,11 @@ description: >
 
 ## Why This Exists
 
-Harness の品質がベンチマークで 22 ポイントの差を生む一方、モデル交換は 1 ポイントしか変わらない。しかし harness 構築には多くのコンポーネントがあり、どこから始めるべきか分かりにくい。このスキルは段階的なフェーズに沿ってセットアップをガイドし、何が完了済みで何が未着手かをスコアカードで可視化する。
+エージェントの成果はモデル単体ではなく harness（CLAUDE.md・hooks・完了ゲート・pre-commit）の質に大きく左右される。community の SWE-bench 分析では「同一モデルでも harness の交換でスコアが約 22 ポイント動く一方、モデルの交換では約 1 ポイントしか変わらない」という報告がある（Anthropic 公式の一次出典は未確認。数値は目安として扱い、断定引用しない）。
+
+harness には多くのコンポーネントがあり、どこから始めるべきか分かりにくい。このスキルは段階的なフェーズに沿ってセットアップをガイドし、何が完了済みで何が未着手かをスコアカードで可視化する。
+
+ECC プラグイン等のグローバル hooks が稼働する環境では、その充足分を検出して二重導入を避ける。mvh-setup の固有価値は「**プロジェクトにコミットでき、チームで共有できる成果物**」（CLAUDE.md・ADR・lefthook.yml・プロジェクト hooks）を作ることにある。グローバル hooks は個人環境にしか存在しない。
 
 ## Core Principles
 
@@ -25,8 +29,13 @@ Harness の品質がベンチマークで 22 ポイントの差を生む一方�
 2. **Incremental** -- 何度でも実行可能。前回の続きから再開できる
 3. **Phased** -- Week 1 の基盤から始め、段階的に強化する
 4. **Delegating** -- 専門スキルが存在するコンポーネントはそのスキルに委譲する
+5. **ECC-aware** -- グローバル（ECC hooks 等）で既に満たされている項目はプロジェクトへ再導入せず、スコアカードに「✳️ グローバル充足」と記録する。ただしチーム共有が要件の場合はプロジェクト版を優先する。詳細は [references/ecc-coexistence.md](./references/ecc-coexistence.md)
 
 ## Workflow
+
+### Step 0: 実行環境の注意（GateGuard 稼働時）
+
+ECC の Fact-Forcing Gate（GateGuard）が有効な環境では、**ファイルごとの初回 Edit/Write と初回 Bash がブロックされる**（新規ファイルの Write は必ず対象。Step 1 の分析コマンドも初手でブロックされ得る）。このスキルはファイルを複数生成するため、各生成の直前に「参照元 / 同目的の既存ファイルの不在 / データ構造 / ユーザー指示の原文」を先に提示してから Write すること。ブロックされた場合は事実を提示して同じ操作を再試行すれば通る。対処テンプレートは [references/ecc-coexistence.md](./references/ecc-coexistence.md) を参照。
 
 ### Step 1: Project Analysis
 
@@ -36,12 +45,16 @@ Harness の品質がベンチマークで 22 ポイントの差を生む一方�
 # 言語・フレームワーク検出
 ls package.json pyproject.toml go.mod Cargo.toml Gemfile build.gradle.kts Package.swift 2>/dev/null
 
-# 既存 CLAUDE.md の確認
+# 既存 CLAUDE.md / AGENTS.md の確認
 test -f CLAUDE.md && wc -l CLAUDE.md
+test -f AGENTS.md && wc -l AGENTS.md
 
-# 既存 hooks の確認
+# 既存 hooks / permissions の確認
 test -f .claude/settings.json && cat .claude/settings.json
 ls .claude/scripts/hooks/ 2>/dev/null
+
+# ECC プラグインの検出（グローバル hooks の充足判定に使う）
+grep -o '"ecc@ecc"[^,}]*' ~/.claude/settings.json 2>/dev/null
 
 # ADR ディレクトリの確認
 ls docs/adr/ docs/decisions/ adr/ 2>/dev/null
@@ -49,8 +62,9 @@ ls docs/adr/ docs/decisions/ adr/ 2>/dev/null
 # Pre-commit hooks の確認
 ls lefthook.yml lefthook-local.yml .husky/ 2>/dev/null
 
-# テストコマンドの確認
-# package.json の scripts.test, Makefile の test ターゲット等を確認
+# テストコマンドの確認（Item 6 の導入可否に直結）
+grep -o '"test"[[:space:]]*:[[:space:]]*"[^"]*"' package.json 2>/dev/null
+grep -E '^test:' Makefile 2>/dev/null
 
 # CI 設定の確認
 ls .github/workflows/ .gitlab-ci.yml Jenkinsfile 2>/dev/null
@@ -59,18 +73,27 @@ ls .github/workflows/ .gitlab-ci.yml Jenkinsfile 2>/dev/null
 test -f .claude/harness-scorecard.md && cat .claude/harness-scorecard.md
 ```
 
-以下の項目の状態を判定する:
+以下の12項目の状態を判定する（番号は Step 2 の表示・スコアカードと対応。各項目の詳細な受け入れ基準は [references/phase-checklist.md](./references/phase-checklist.md) を参照）:
 
-| Component | 判定方法 |
-|-----------|----------|
-| CLAUDE.md | ファイル存在 + 50行以下か |
-| PostToolUse auto-format | `.claude/settings.json` に PostToolUse hook があるか |
-| Linter config protection | `.claude/scripts/hooks/lint-config-guard.sh` があるか |
-| ADR directory | `docs/adr/` 等が存在し ADR-0001 があるか |
-| Stop Hook (test gate) | `.claude/settings.json` に Stop hook があるか |
-| Session startup routine | `.claude/settings.json` に startup 設定があるか、または CLAUDE.md にセッション開始手順があるか |
-| Pre-commit hooks | `lefthook.yml` または `.husky/` が存在するか |
-| Repo hygiene | 最近の audit 結果があるか |
+| # | Component | 判定方法 | ECC 稼働時の充足 |
+|---|-----------|----------|------------------|
+| 1 | CLAUDE.md | ファイル存在 + pointer-based + 250 行以下か | なし（プロジェクト固有） |
+| 2 | PostToolUse auto-format | `.claude/settings.json` に PostToolUse hook があるか | `stop:format-typecheck` / `quality-gate` が完全代替（✳️） |
+| 3 | Linter config protection | `.claude/scripts/hooks/lint-config-guard.sh` があるか | `pre:config-protection` が完全代替（✳️・**二重導入注意**） |
+| 4 | ADR directory | `docs/adr/` 等が存在し最初の ADR があるか | なし（プロジェクト固有） |
+| 5 | Repo hygiene | audit 記録があるか（`grep -qi hygiene .claude/harness-scorecard.md`） | なし |
+| 6 | Stop Hook (test gate) | `.claude/settings.json` に Stop hook があるか | `verification-loop` は部分代替（⬜ のまま） |
+| 7 | Session startup routine | SessionStart hook があるか、または CLAUDE.md にセッション開始手順があるか | `session:start` は部分代替（⬜ のまま） |
+| 8 | Pre-commit hooks | `lefthook.yml` または `.husky/` が存在するか | なし（git hook は ECC 対象外） |
+| 9 | Custom lint rules | プロジェクト固有 lint ルールの有無 | なし |
+| 10 | Periodic audit schedule | スコアカードに次回監査日があるか | `config-gc` は個人環境側のみ（部分） |
+| 11 | Safety gates | `permissions.deny` または PreToolUse hook の有無 | `safety-guard` 等が代替（✳️ になり得る） |
+| 12 | ECC 運用への接続 | スコアカードに harness-audit 導線があるか | ECC 環境のみ対象（非 ECC は N/A） |
+
+判定ルール:
+
+- **✳️ グローバル充足は「完全代替」のみ**。「部分代替」の項目は ⬜ のままにし、スコアカードの Details に部分代替の旨を記す
+- ECC が有効（`"ecc@ecc": true`）な場合、**Step 2 の表示前に**「このプロジェクトはチームで共有しますか」を確認する。チーム共有なら ✳️ を使わず全項目を ⬜/✅ で判定する（他メンバーの環境に ECC はない前提。詳細は [references/ecc-coexistence.md](./references/ecc-coexistence.md)）
 
 ### Step 2: Phase Selection
 
@@ -82,9 +105,9 @@ test -f .claude/harness-scorecard.md && cat .claude/harness-scorecard.md
 ## Current Harness Status
 
 ### Week 1 -- Foundation
-1. [✅] CLAUDE.md (37 lines, pointer-based)
-2. [⬜] PostToolUse auto-format -- Run /auto-format-hook
-3. [⬜] Linter config protection -- Run /lint-config-guard
+1. [✅] CLAUDE.md (120 lines, pointer-based) / AGENTS.md 層化は未設定
+2. [✳️] PostToolUse auto-format -- ECC quality-gate で充足（チーム共有するなら /auto-format-hook）
+3. [✳️] Linter config protection -- ECC pre:config-protection で充足
 4. [⬜] ADR-0001 (harness engineering decision)
 
 ### Week 2-4 -- Reinforcement
@@ -95,8 +118,9 @@ test -f .claude/harness-scorecard.md && cat .claude/harness-scorecard.md
 
 ### Month 2-3 -- Advanced
 9.  [⬜] Custom lint rules
-10. [⬜] Garbage collection schedule
-11. [⬜] PreToolUse safety gates
+10. [⬜] Periodic audit schedule
+11. [⬜] Safety gates (permissions.deny / PreToolUse)
+12. [⬜] ECC 運用への接続（ECC 環境のみ）
 
 Which items would you like to set up? (e.g., "1-4" for all Week 1, or "2,3,6")
 ```
@@ -105,23 +129,25 @@ Which items would you like to set up? (e.g., "1-4" for all Week 1, or "2,3,6")
 
 選択された各項目を順に実行する。
 
-#### Item 1: CLAUDE.md Generation
+#### Item 1: CLAUDE.md Generation (+ AGENTS.md 層化)
 
 **既存スキルに委譲する。**
 
-ユーザーに伝える: "Run `/claude-md-generator` to create a lean, pointer-based CLAUDE.md (under 50 lines)."
+ユーザーに伝える: "Run `/claude-md-generator` to create a lean, pointer-based CLAUDE.md."
 
-既に CLAUDE.md が存在し 50 行以下なら、スキップして OK と伝える。50 行超なら slim mode を提案する。
+判定基準: **pointer-based かつ 250 行以下**なら OK（常時ロードされるためコンテキスト予算を意識する。生成時は claude-md-generator の lean 方針＝50 行前後を目標にしつつ、既存ファイルの受け入れ上限は 250 行）。250 行超なら slim 化を提案する。
+
+**AGENTS.md 層化（オプション）**: Claude Code 以外のエージェント（Codex 等）も使うプロジェクトでは、エージェント共通ルールを `AGENTS.md` に置き、CLAUDE.md には Claude 固有の内容とポインタのみを残す層化を提案する。既に AGENTS.md がある場合は重複記述がないか確認する。層化はスコア外のオプションで、Item 1 の ✅/⬜ は CLAUDE.md のみで判定する。
 
 #### Item 2: PostToolUse Auto-Format
 
-**既存スキルに委譲する。**
+**既存スキルに委譲する。** ECC 稼働時はスキップ可（`quality-gate` / `stop:format-typecheck` が既にグローバルで動作）。**チームでフォーマット強制を共有したい場合のみ**プロジェクト版を導入する。
 
 ユーザーに伝える: "Run `/auto-format-hook` to detect your stack and set up auto-formatting hooks."
 
 #### Item 3: Linter Config Protection
 
-**既存スキルに委譲する。**
+**既存スキルに委譲する。** ECC 稼働時は `pre:config-protection` が既に同じ保護を提供しているため、プロジェクト導入すると**二重ガード**になる。原則スキップし「✳️ グローバル充足」とする。チーム共有が要件の場合のみ導入する。
 
 ユーザーに伝える: "Run `/lint-config-guard` to protect linter configs from agent tampering."
 
@@ -150,8 +176,7 @@ Accepted
 
 AI coding agents (Claude Code, etc.) perform significantly better when guided by
 a well-structured harness: CLAUDE.md, PostToolUse hooks, linter protection, and
-completion gates. Research shows harness quality causes a 22-point benchmark swing,
-while model choice causes only 1 point of difference.
+completion gates.
 
 Without a harness, agents drift: they forget to format, weaken lint rules to silence
 errors, skip tests, and produce inconsistent output across sessions.
@@ -160,7 +185,7 @@ errors, skip tests, and produce inconsistent output across sessions.
 
 We adopt harness engineering as a core development practice for this project:
 
-1. **CLAUDE.md** -- lean, pointer-based (under 50 lines), no prose duplication
+1. **CLAUDE.md** -- lean, pointer-based, no prose duplication
 2. **PostToolUse hooks** -- auto-format and lint after every file edit
 3. **Linter config protection** -- PreToolUse hook blocks agent from modifying lint configs
 4. **Stop Hook** -- test suite must pass before agent declares "done"
@@ -191,6 +216,8 @@ We adopt harness engineering as a core development practice for this project:
 - `.claude/scripts/hooks/stop-test-gate.sh` -- テスト実行スクリプト
 - `.claude/settings.json` への Stop hook エントリ追加
 
+**現行仕様の要点**: ブロックは **exit 2**（stderr の内容がフィードバックとして Claude に渡る）。exit 1 は「エラーだが処理続行」でありブロックにならない。入力 JSON の `stop_hook_active` を確認して無限ループを防ぐこと。詳細と JSON 出力による代替はテンプレート参照。
+
 Stop hook の登録:
 
 ```json
@@ -202,7 +229,7 @@ Stop hook の登録:
         "hooks": [
           {
             "type": "command",
-            "command": ".claude/scripts/hooks/stop-test-gate.sh"
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/scripts/hooks/stop-test-gate.sh"
           }
         ]
       }
@@ -211,23 +238,16 @@ Stop hook の登録:
 }
 ```
 
+**高度な代替**: hooks は `command` 以外に `prompt`（モデル1回評価）/ `agent`（ツール付きサブエージェント判定）型も使える。「テストが通ったか」を越えて「タスクの完了条件を満たしたか」を判定させたい場合は `agent` 型を検討する（設定は公式 hooks リファレンス参照）。
+
 **重要**: 既存の `settings.json` がある場合はマージする。
 
 #### Item 7: Session Startup Routine
 
-**直接生成する。** テンプレートは [references/startup-routine-template.md](./references/startup-routine-template.md) を参照。
+**直接生成する。** テンプレートは [references/startup-routine-template.md](./references/startup-routine-template.md) を参照。2通りの実装があり、ユーザーに選ばせる:
 
-CLAUDE.md に以下のセクションを追加する（既に存在しなければ）:
-
-```markdown
-## Session Startup
-
-Every session, run these checks before starting work:
-1. `git log --oneline -5` -- understand recent changes
-2. `cat .claude/harness-scorecard.md` -- check harness status
-3. Verify dev server / build works
-4. Read any in-progress notes in `docs/` or `TODO.md`
-```
+- **A. SessionStart hook 版（推奨）**: `.claude/settings.json` の SessionStart hook でスクリプトを自動実行し、結果をコンテキストへ注入する。強制力があり、エージェントが手順を忘れない
+- **B. CLAUDE.md 記述版**: CLAUDE.md に手順を書く。設定が単純で人間も読めるが、実行はエージェント任せ
 
 #### Item 8: Pre-commit Hooks
 
@@ -262,13 +282,14 @@ pre-push:
 
 Stack に応じてコマンドを調整する。既に `lefthook.yml` や `.husky/` が存在する場合はスキップ。
 
-#### Items 9-11: Advanced (Month 2-3)
+#### Items 9-12: Advanced (Month 2-3)
 
 これらは高度な項目。ユーザーが選択した場合はガイダンスを提供するが、自動生成はしない:
 
-- **Item 9: Custom lint rules** -- プロジェクト固有のルールを作成するガイダンスを提供。ESLint custom rules, Ruff custom rules, clippy lints 等。
-- **Item 10: Garbage collection schedule** -- `.claude/harness-scorecard.md` に次回監査日を記録し、CLAUDE.md に定期監査のリマインダーを追加。
-- **Item 11: PreToolUse safety gates** -- 破壊的コマンド（`rm -rf`, `git reset --hard` 等）をブロックする PreToolUse hook のガイダンスを提供。
+- **Item 9: Custom lint rules** -- プロジェクト固有のルールを作成するガイダンスを提供。`/custom-lint-rules` スキルがあれば委譲。ESLint custom rules, Ruff custom rules, clippy lints 等
+- **Item 10: Periodic audit schedule** -- `.claude/harness-scorecard.md` に次回監査日を記録し、CLAUDE.md に定期監査のリマインダーを追加。自動化手段として Claude Code 本体の `/skill-doctor`（スキル・プラグイン診断。提供されていない環境では `ecc:skill-health` で代替）、ECC 環境では `config-gc`（`~/.claude` の定期掃除）も案内する
+- **Item 11: Safety gates** -- 破壊的コマンドの防止。**第一候補は `settings.json` の `permissions.deny` ルール**（宣言的でメンテが楽）。パターンでは表せない判定が必要な場合のみ PreToolUse hook を書く。ECC 環境では `safety-guard` 等が既に同役割を担っていないか確認し、重複するなら「✳️ グローバル充足」とする
+- **Item 12: ECC 運用への接続（ECC 環境のみ）** -- セットアップ完了後の継続運用を ECC 側へ引き継ぐ。`/ecc:harness-audit`（42 チェックの決定論採点。本スキルのスコアカードより計測が厳密）を定期実行に据え、コンテキスト予算の監査（ECC context-budget スキル）も案内する
 
 ### Step 4: Generate Harness Scorecard
 
@@ -277,6 +298,8 @@ Stack に応じてコマンドを調整する。既に `lefthook.yml` や `.husk
 ```bash
 mkdir -p .claude
 ```
+
+ステータスは3値: ✅ Done / ⬜ Not set / ✳️ Global（ECC 等のグローバル hooks で充足。プロジェクト成果物としては存在しない）。
 
 スコアカードのフォーマット:
 
@@ -290,35 +313,40 @@ Project: <project name from package.json or directory name>
 
 | # | Component | Phase | Status | Details |
 |---|-----------|-------|--------|---------|
-| 1 | CLAUDE.md (<=50 lines) | Week 1 | ✅ Done | 37 lines, pointer-based |
-| 2 | PostToolUse auto-format | Week 1 | ✅ Done | Biome + Oxlint |
-| 3 | Linter config protection | Week 1 | ⬜ Not set | Run /lint-config-guard |
+| 1 | CLAUDE.md (pointer-based, <=250 lines) | Week 1 | ✅ Done | 120 lines |
+| 2 | PostToolUse auto-format | Week 1 | ✳️ Global | ECC quality-gate |
+| 3 | Linter config protection | Week 1 | ✳️ Global | ECC pre:config-protection |
 | 4 | ADR directory | Week 1 | ✅ Done | ADR-0001 created |
 | 5 | Repo hygiene audit | Week 2-4 | ⬜ Not audited | Run /repo-hygiene-audit |
 | 6 | Stop Hook (test gate) | Week 2-4 | ⬜ Not set | Needs test command |
-| 7 | Session startup routine | Week 2-4 | ⬜ Not set | Add to CLAUDE.md |
+| 7 | Session startup routine | Week 2-4 | ⬜ Not set | SessionStart hook 推奨 |
 | 8 | Pre-commit hooks | Week 2-4 | ✅ Done | Lefthook configured |
 | 9 | Custom lint rules | Month 2-3 | ⬜ Not set | Advanced |
-| 10 | Garbage collection | Month 2-3 | ⬜ Not set | Advanced |
-| 11 | PreToolUse safety gates | Month 2-3 | ⬜ Not set | Advanced |
+| 10 | Periodic audit schedule | Month 2-3 | ⬜ Not set | Advanced |
+| 11 | Safety gates | Month 2-3 | ⬜ Not set | permissions.deny 推奨 |
+| 12 | ECC 運用への接続 | Month 2-3 | ⬜ Not set | ECC 環境のみ |
 
 ## Score
 
-- **Week 1 (Foundation)**: 3/4
+- **Week 1 (Foundation)**: 4/4 (うちグローバル充足 2)
 - **Week 2-4 (Reinforcement)**: 1/4
-- **Month 2-3 (Advanced)**: 0/3
-- **Total**: 4/11
+- **Month 2-3 (Advanced)**: 0/4
+- **Total**: 5/12
 
 ## Next Steps
 
-1. Run `/lint-config-guard` to protect linter configs
-2. Set up Stop Hook after configuring test command
-3. Add session startup routine to CLAUDE.md
+1. Set up Stop Hook after configuring test command
+2. Add SessionStart startup hook
+3. Run /repo-hygiene-audit
 
 ## Audit History
 
-- <date>: Initial MVH setup (score 4/11)
+- <date>: Initial MVH setup (score 5/12)
 ```
+
+✳️ Global はスコア上「充足」として数えるが、Details にグローバル充足である旨を必ず残す（チーム共有が必要になったときの見直し対象）。部分代替（`verification-loop` / `session:start` 等）は ⬜ のままにし、Details に「ECC が部分代替」と記す。**非 ECC 環境では Item 12 を N/A** とし、分母を 11 で表記する（例: `Total: 5/11`）。
+
+**ECC 環境では**、このスコアカードに加えて `/ecc:harness-audit` の実行を案内する（rubric 固定の決定論チェックで、本スキルの判定より厳密。役割分担: mvh-setup=導入ウィザード、harness-audit=採点器）。
 
 **重要**: 既存のスコアカードがある場合は、Audit History に前回の記録を残しつつ更新する。
 
@@ -328,10 +356,12 @@ Project: <project name from package.json or directory name>
 
 | File | Purpose | When |
 |------|---------|------|
-| `docs/adr/ADR-0001-adopt-harness-engineering.md` | First ADR | Item 4 selected |
+| `docs/adr/ADR-0001-adopt-harness-engineering.md`（既存 ADR があれば次番号で同形式に命名） | First ADR | Item 4 selected |
 | `.claude/scripts/hooks/stop-test-gate.sh` | Stop Hook script | Item 6 selected |
+| `.claude/scripts/hooks/session-startup.sh` | SessionStart script | Item 7-A selected |
 | `.claude/settings.json` (updated) | Hook registration | Items 6, 7 |
-| `CLAUDE.md` (updated) | Startup routine section | Item 7 selected |
+| `CLAUDE.md` (updated) | Startup routine section | Item 7-B selected |
+| `AGENTS.md` (new/updated) | エージェント共通ルール | Item 1 で層化選択時 |
 | `lefthook.yml` | Pre-commit hook config | Item 8 selected |
 | `.claude/harness-scorecard.md` | Progress tracking | Always (Step 4) |
 
@@ -340,10 +370,12 @@ Project: <project name from package.json or directory name>
 - [Phase checklist with acceptance criteria](./references/phase-checklist.md)
 - [Stop Hook script template](./references/stop-hook-template.md)
 - [Session startup routine template](./references/startup-routine-template.md)
+- [ECC 共存ガイド（検出・充足判定・GateGuard 対処）](./references/ecc-coexistence.md)
 
 ## Important Notes
 
 - スコアカードは `.claude/harness-scorecard.md` に永続化される。次回セッションでの進捗確認に使用する
 - 委譲先スキルの具体的な実装内容はそのスキルの SKILL.md を参照すること。このスキルはオーケストレーションのみを担当する
 - 既存の設定ファイルは必ずマージする。上書きは禁止
+- ✳️ グローバル充足の判定は環境依存（その個人環境でしか成立しない）。チーム開発のプロジェクトでは、グローバル充足に頼らずプロジェクト成果物を優先するようユーザーに確認する
 - ユーザーが「全部やって」と言った場合は Week 1 (Items 1-4) から開始し、完了後に Week 2-4 へ進むか確認する
