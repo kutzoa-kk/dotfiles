@@ -60,6 +60,14 @@ dotdir/.codex/config.toml
 !/dotdir/.claude/skills/stop-ai-slop/**
 !/dotdir/.claude/skills/humanize-ja/
 !/dotdir/.claude/skills/humanize-ja/**
+!/dotdir/.claude/skills/graphify/
+!/dotdir/.claude/skills/graphify/**
+!/dotdir/.claude/skills/japanese-output-review/
+!/dotdir/.claude/skills/japanese-output-review/**
+!/dotdir/.claude/skills/ml-experiment-traceability/
+!/dotdir/.claude/skills/ml-experiment-traceability/**
+!/dotdir/.claude/skills/slack-dm-summary/
+!/dotdir/.claude/skills/slack-dm-summary/**
 
 # macOS メタデータ（allowlist したサブツリー内でも常に無視）
 .DS_Store
