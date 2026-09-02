@@ -53,6 +53,14 @@ dotdir/.codex/config.toml
 !/dotdir/.claude/scripts/
 !/dotdir/.claude/scripts/**
 
+## dotdir/.claude/skills — 追跡するスキルを個別に allowlist（同上の手法）
+!/dotdir/.claude/skills/
+/dotdir/.claude/skills/*
+!/dotdir/.claude/skills/stop-ai-slop/
+!/dotdir/.claude/skills/stop-ai-slop/**
+!/dotdir/.claude/skills/humanize-ja/
+!/dotdir/.claude/skills/humanize-ja/**
+
 # macOS メタデータ（allowlist したサブツリー内でも常に無視）
 .DS_Store
 
