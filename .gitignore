@@ -53,6 +53,13 @@ dotdir/.codex/config.toml
 !/dotdir/.claude/scripts/
 !/dotdir/.claude/scripts/**
 
+## dotdir/.claude/agents・workflows (自作 Agent 定義・Workflow スクリプト)
+# ツール自動生成物が入らないためディレクトリごと allowlist（skills のような個別指定は不要）
+!/dotdir/.claude/agents/
+!/dotdir/.claude/agents/**
+!/dotdir/.claude/workflows/
+!/dotdir/.claude/workflows/**
+
 ## dotdir/.claude/skills — 追跡するスキルを個別に allowlist（同上の手法）
 !/dotdir/.claude/skills/
 /dotdir/.claude/skills/*
