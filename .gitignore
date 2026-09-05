@@ -74,3 +74,6 @@ dotdir/.codex/config.toml
 # macOS メタデータ（allowlist したサブツリー内でも常に無視）
 .DS_Store
 
+
+# 秘密情報（万一リポジトリ内に置かれた場合の保険。正規の置き場所は ~/.zshrc.secrets）
+.zshrc.secrets
