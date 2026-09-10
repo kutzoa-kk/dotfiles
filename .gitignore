@@ -70,6 +70,16 @@ dotdir/.codex/config.toml
 !/dotdir/.claude/skills/slack-dm-summary/**
 !/dotdir/.claude/skills/mvh-setup/
 !/dotdir/.claude/skills/mvh-setup/**
+!/dotdir/.claude/skills/mclab-slide-design/
+!/dotdir/.claude/skills/mclab-slide-design/**
+
+## dotdir/.codex — スキルの symlink のみ追跡（config.toml は稼働設定のため除外）
+!/dotdir/.codex/
+/dotdir/.codex/*
+!/dotdir/.codex/README.md
+!/dotdir/.codex/skills/
+/dotdir/.codex/skills/*
+!/dotdir/.codex/skills/mclab-slide-design
 
 # macOS メタデータ（allowlist したサブツリー内でも常に無視）
 .DS_Store
