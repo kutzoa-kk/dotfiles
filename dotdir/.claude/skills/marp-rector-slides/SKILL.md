@@ -1,6 +1,6 @@
 ---
 name: marp-rector-slides
-description: Marpでレクタースライドスタイルガイドに基づいた美しいスライドを作成・整形する。frontmatter埋め込みCSSでグリッドレイアウトと視覚的一貫性を実現。使用タイミング：(1) Marpスライド新規作成、(2) 既存スライドのレイアウト整形、(3) プレゼン資料のデザイン改善、(4) スライドの視覚的品質向上。
+description: Marpでレクタースライドスタイルガイドに基づいた美しいスライドを作成・整形する。frontmatter埋め込みCSSでグリッドレイアウトと視覚的一貫性を実現。使用タイミング：(1) Marpスライド新規作成、(2) 既存スライドのレイアウト整形、(3) プレゼン資料のデザイン改善、(4) スライドの視覚的品質向上。 Do NOT trigger for: PowerPoint（.pptx）を直接作る依頼、MCLabの書式・膝OA計画と同じ書式の指定（それは mclab-slide-design）。
 ---
 
 # Marp Rector Slides

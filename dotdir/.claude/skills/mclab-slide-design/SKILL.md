@@ -1,6 +1,6 @@
 ---
 name: mclab-slide-design
-description: "MCLabの白背景・ティール基調で、編集可能なPowerPointを作成・デザイン統一する。MCLabのスライドデザイン、膝OAデータ取得計画と同じ書式、または mclab-slide-design が指定された場合に使う。"
+description: "MCLabの白背景・ティール基調で、編集可能なPowerPoint（.pptx）を作成・デザイン統一する。トリガー：「スライドを作って」「PowerPointで資料を」「pptxにして」「提案資料」「報告スライド」「発表資料」、MCLabのスライドデザイン、膝OAデータ取得計画と同じ書式、mclab-slide-design の明示指定。Do NOT trigger for: Marp・Markdown でスライドを書く依頼（それは marp-rector-slides）、Marp から PPTX への変換（それは marp-to-pptx）、HTMLのレポート・ダッシュボード（それは html-report-generator）。"
 ---
 
 # MCLab スライドデザイン

@@ -72,6 +72,8 @@ dotdir/.codex/config.toml
 !/dotdir/.claude/skills/mvh-setup/**
 !/dotdir/.claude/skills/mclab-slide-design/
 !/dotdir/.claude/skills/mclab-slide-design/**
+!/dotdir/.claude/skills/marp-rector-slides/
+!/dotdir/.claude/skills/marp-rector-slides/**
 
 ## dotdir/.codex — スキルの symlink のみ追跡（config.toml は稼働設定のため除外）
 !/dotdir/.codex/
