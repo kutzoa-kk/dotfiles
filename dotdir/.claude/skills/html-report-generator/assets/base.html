@@ -55,7 +55,7 @@
       --font-mono: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
     }
 
-    :where(.is-dark) {
+    :root.is-dark {
       --color-bg:            oklch(14% 0 0);
       --color-surface:       oklch(17% 0 0);
       --color-surface-2:     oklch(20% 0 0);
@@ -487,7 +487,14 @@
        Print
        ========================================================================= */
     @media print {
-      :root { --color-bg: white; --color-surface: white; --color-surface-2: white; }
+      /* 暗い面のまま印刷されても読めるよう、:root.is-dark が上書きする値を
+         明るい面の値へ戻す。背景だけ戻すと、白地に白い文字が残る。 */
+      :root, :root.is-dark {
+        --color-bg: white; --color-surface: white; --color-surface-2: white;
+        --color-border: oklch(85% 0 0); --color-border-strong: oklch(70% 0 0);
+        --color-ink: oklch(18% 0 0); --color-muted: oklch(45% 0 0); --color-faint: oklch(55% 0 0);
+        --color-accent: oklch(55% 0.18 255); --color-accent-2: oklch(62% 0.14 195);
+      }
       .report-shell { display: block; padding: 0; }
       .toc, .theme-toggle, .no-print { display: none !important; }
       main { padding: 0; max-width: none; }
