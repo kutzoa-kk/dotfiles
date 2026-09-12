@@ -1,0 +1,4 @@
+interface:
+  display_name: "MCLab スライドデザイン"
+  short_description: "白背景・ティールの既存書式で編集可能なPPTXを作成・統一する"
+  default_prompt: "$mclab-slide-design を使って、MCLabのデザインで編集可能なスライドを作成・修正してください。"

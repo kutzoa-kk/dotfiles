@@ -1,0 +1,1593 @@
+{
+  "name": "MCLab Teal",
+  "version": "1.0",
+  "canvas": {
+    "width": 1280,
+    "height": 720,
+    "unit": "px",
+    "dpi": 96
+  },
+  "themeColors": {
+    "accent1": "#28B5A2",
+    "accent2": "#1E8C7D",
+    "accent3": "#01579B",
+    "accent4": "#ED6C02",
+    "accent5": "#C62828",
+    "accent6": "#2E7D32",
+    "bg1": "#FFFFFF",
+    "bg2": "#F5F5F5",
+    "tx1": "#212121",
+    "tx2": "#666666",
+    "dk1": "#212121",
+    "dk2": "#666666",
+    "lt1": "#FFFFFF",
+    "lt2": "#F5F5F5",
+    "hlink": "#01579B",
+    "folHlink": "#6A3D9A"
+  },
+  "surfaces": {
+    "teal": "#DDF4F0",
+    "blue": "#D8EEF8",
+    "orange": "#FFF0D8",
+    "green": "#E0F1E1",
+    "red": "#FDE8E7"
+  },
+  "fonts": {
+    "japanese": "Hiragino Sans",
+    "latin": "Roboto"
+  },
+  "fontSizesPt": {
+    "cover": 36,
+    "title": 25.5,
+    "body": 16.5,
+    "table": 13.5,
+    "note": 9.75
+  },
+  "geometry": {
+    "margin": 52,
+    "title": {
+      "x": 52,
+      "y": 78,
+      "width": 1176,
+      "height": 54
+    },
+    "accent": {
+      "x": 52,
+      "y": 144,
+      "width": 88,
+      "height": 4
+    },
+    "body": {
+      "x": 52,
+      "y": 184,
+      "width": 1176,
+      "height": 378
+    },
+    "band": {
+      "x": 52,
+      "y": 594,
+      "width": 1176,
+      "height": 68
+    },
+    "footnote": {
+      "x": 52,
+      "y": 674,
+      "width": 1176,
+      "height": 26
+    }
+  },
+  "layouts": [
+    {
+      "name": "01 表紙",
+      "placeholders": [
+        {
+          "name": "タイトル",
+          "type": "title",
+          "index": 0,
+          "framePx": {
+            "x": 58,
+            "y": 138,
+            "width": 1164,
+            "height": 78
+          },
+          "fontSizePt": 36
+        },
+        {
+          "name": "脚注",
+          "type": "body",
+          "index": 90,
+          "framePx": {
+            "x": 52,
+            "y": 674,
+            "width": 1176,
+            "height": 26
+          },
+          "fontSizePt": 9.75
+        },
+        {
+          "name": "資料区分",
+          "type": "body",
+          "index": 1,
+          "framePx": {
+            "x": 58,
+            "y": 94,
+            "width": 1164,
+            "height": 28
+          },
+          "fontSizePt": 11.25
+        },
+        {
+          "name": "サブタイトル",
+          "type": "subTitle",
+          "index": 2,
+          "framePx": {
+            "x": 60,
+            "y": 242,
+            "width": 1140,
+            "height": 86
+          },
+          "fontSizePt": 18.75
+        },
+        {
+          "name": "表紙本文",
+          "type": "body",
+          "index": 3,
+          "framePx": {
+            "x": 60,
+            "y": 386,
+            "width": 1100,
+            "height": 128
+          },
+          "fontSizePt": 18
+        },
+        {
+          "name": "日付・作成者",
+          "type": "body",
+          "index": 4,
+          "framePx": {
+            "x": 60,
+            "y": 558,
+            "width": 1100,
+            "height": 32
+          },
+          "fontSizePt": 12.75
+        },
+        {
+          "name": "結論ラベル",
+          "type": "body",
+          "index": 80,
+          "framePx": {
+            "x": 76,
+            "y": 632,
+            "width": 190,
+            "height": 38
+          },
+          "fontSizePt": 16.5
+        },
+        {
+          "name": "結論本文",
+          "type": "body",
+          "index": 81,
+          "framePx": {
+            "x": 278,
+            "y": 628,
+            "width": 926,
+            "height": 48
+          },
+          "fontSizePt": 14.25
+        }
+      ]
+    },
+    {
+      "name": "02 標準・本文",
+      "placeholders": [
+        {
+          "name": "タイトル",
+          "type": "title",
+          "index": 0,
+          "framePx": {
+            "x": 52,
+            "y": 78,
+            "width": 1176,
+            "height": 54
+          },
+          "fontSizePt": 25.5
+        },
+        {
+          "name": "脚注",
+          "type": "body",
+          "index": 90,
+          "framePx": {
+            "x": 52,
+            "y": 674,
+            "width": 1176,
+            "height": 26
+          },
+          "fontSizePt": 9.75
+        },
+        {
+          "name": "本文見出し",
+          "type": "body",
+          "index": 1,
+          "framePx": {
+            "x": 52,
+            "y": 186,
+            "width": 1176,
+            "height": 42
+          },
+          "fontSizePt": 19.5
+        },
+        {
+          "name": "本文",
+          "type": "body",
+          "index": 2,
+          "framePx": {
+            "x": 52,
+            "y": 258,
+            "width": 1176,
+            "height": 298
+          },
+          "fontSizePt": 18
+        },
+        {
+          "name": "結論ラベル",
+          "type": "body",
+          "index": 80,
+          "framePx": {
+            "x": 76,
+            "y": 612,
+            "width": 190,
+            "height": 38
+          },
+          "fontSizePt": 16.5
+        },
+        {
+          "name": "結論本文",
+          "type": "body",
+          "index": 81,
+          "framePx": {
+            "x": 278,
+            "y": 608,
+            "width": 926,
+            "height": 48
+          },
+          "fontSizePt": 14.25
+        }
+      ]
+    },
+    {
+      "name": "03 表・全幅",
+      "placeholders": [
+        {
+          "name": "タイトル",
+          "type": "title",
+          "index": 0,
+          "framePx": {
+            "x": 52,
+            "y": 78,
+            "width": 1176,
+            "height": 54
+          },
+          "fontSizePt": 25.5
+        },
+        {
+          "name": "脚注",
+          "type": "body",
+          "index": 90,
+          "framePx": {
+            "x": 52,
+            "y": 674,
+            "width": 1176,
+            "height": 26
+          },
+          "fontSizePt": 9.75
+        },
+        {
+          "name": "全幅の表",
+          "type": "tbl",
+          "index": 1,
+          "framePx": {
+            "x": 52,
+            "y": 184,
+            "width": 1176,
+            "height": 378
+          },
+          "fontSizePt": 13.5
+        },
+        {
+          "name": "結論ラベル",
+          "type": "body",
+          "index": 80,
+          "framePx": {
+            "x": 76,
+            "y": 612,
+            "width": 190,
+            "height": 38
+          },
+          "fontSizePt": 16.5
+        },
+        {
+          "name": "結論本文",
+          "type": "body",
+          "index": 81,
+          "framePx": {
+            "x": 278,
+            "y": 608,
+            "width": 926,
+            "height": 48
+          },
+          "fontSizePt": 14.25
+        }
+      ]
+    },
+    {
+      "name": "04 比較・2列",
+      "placeholders": [
+        {
+          "name": "タイトル",
+          "type": "title",
+          "index": 0,
+          "framePx": {
+            "x": 52,
+            "y": 78,
+            "width": 1176,
+            "height": 54
+          },
+          "fontSizePt": 25.5
+        },
+        {
+          "name": "脚注",
+          "type": "body",
+          "index": 90,
+          "framePx": {
+            "x": 52,
+            "y": 674,
+            "width": 1176,
+            "height": 26
+          },
+          "fontSizePt": 9.75
+        },
+        {
+          "name": "左見出し",
+          "type": "body",
+          "index": 1,
+          "framePx": {
+            "x": 76,
+            "y": 210,
+            "width": 522,
+            "height": 44
+          },
+          "fontSizePt": 18.75
+        },
+        {
+          "name": "左本文",
+          "type": "body",
+          "index": 2,
+          "framePx": {
+            "x": 76,
+            "y": 274,
+            "width": 522,
+            "height": 260
+          },
+          "fontSizePt": 16.5
+        },
+        {
+          "name": "右見出し",
+          "type": "body",
+          "index": 3,
+          "framePx": {
+            "x": 682,
+            "y": 210,
+            "width": 522,
+            "height": 44
+          },
+          "fontSizePt": 18.75
+        },
+        {
+          "name": "右本文",
+          "type": "body",
+          "index": 4,
+          "framePx": {
+            "x": 682,
+            "y": 274,
+            "width": 522,
+            "height": 260
+          },
+          "fontSizePt": 16.5
+        },
+        {
+          "name": "結論ラベル",
+          "type": "body",
+          "index": 80,
+          "framePx": {
+            "x": 76,
+            "y": 612,
+            "width": 190,
+            "height": 38
+          },
+          "fontSizePt": 16.5
+        },
+        {
+          "name": "結論本文",
+          "type": "body",
+          "index": 81,
+          "framePx": {
+            "x": 278,
+            "y": 608,
+            "width": 926,
+            "height": 48
+          },
+          "fontSizePt": 14.25
+        }
+      ]
+    },
+    {
+      "name": "05 比較・3列",
+      "placeholders": [
+        {
+          "name": "タイトル",
+          "type": "title",
+          "index": 0,
+          "framePx": {
+            "x": 52,
+            "y": 78,
+            "width": 1176,
+            "height": 54
+          },
+          "fontSizePt": 25.5
+        },
+        {
+          "name": "脚注",
+          "type": "body",
+          "index": 90,
+          "framePx": {
+            "x": 52,
+            "y": 674,
+            "width": 1176,
+            "height": 26
+          },
+          "fontSizePt": 9.75
+        },
+        {
+          "name": "案1見出し",
+          "type": "body",
+          "index": 1,
+          "framePx": {
+            "x": 76,
+            "y": 210,
+            "width": 324,
+            "height": 44
+          },
+          "fontSizePt": 18.75
+        },
+        {
+          "name": "案1本文",
+          "type": "body",
+          "index": 2,
+          "framePx": {
+            "x": 76,
+            "y": 274,
+            "width": 324,
+            "height": 260
+          },
+          "fontSizePt": 16.5
+        },
+        {
+          "name": "案2見出し",
+          "type": "body",
+          "index": 3,
+          "framePx": {
+            "x": 478,
+            "y": 210,
+            "width": 324,
+            "height": 44
+          },
+          "fontSizePt": 18.75
+        },
+        {
+          "name": "案2本文",
+          "type": "body",
+          "index": 4,
+          "framePx": {
+            "x": 478,
+            "y": 274,
+            "width": 324,
+            "height": 260
+          },
+          "fontSizePt": 16.5
+        },
+        {
+          "name": "案3見出し",
+          "type": "body",
+          "index": 5,
+          "framePx": {
+            "x": 880,
+            "y": 210,
+            "width": 324,
+            "height": 44
+          },
+          "fontSizePt": 18.75
+        },
+        {
+          "name": "案3本文",
+          "type": "body",
+          "index": 6,
+          "framePx": {
+            "x": 880,
+            "y": 274,
+            "width": 324,
+            "height": 260
+          },
+          "fontSizePt": 16.5
+        },
+        {
+          "name": "結論ラベル",
+          "type": "body",
+          "index": 80,
+          "framePx": {
+            "x": 76,
+            "y": 612,
+            "width": 190,
+            "height": 38
+          },
+          "fontSizePt": 16.5
+        },
+        {
+          "name": "結論本文",
+          "type": "body",
+          "index": 81,
+          "framePx": {
+            "x": 278,
+            "y": 608,
+            "width": 926,
+            "height": 48
+          },
+          "fontSizePt": 14.25
+        }
+      ]
+    },
+    {
+      "name": "06 計画・4段階",
+      "placeholders": [
+        {
+          "name": "タイトル",
+          "type": "title",
+          "index": 0,
+          "framePx": {
+            "x": 52,
+            "y": 78,
+            "width": 1176,
+            "height": 54
+          },
+          "fontSizePt": 25.5
+        },
+        {
+          "name": "脚注",
+          "type": "body",
+          "index": 90,
+          "framePx": {
+            "x": 52,
+            "y": 674,
+            "width": 1176,
+            "height": 26
+          },
+          "fontSizePt": 9.75
+        },
+        {
+          "name": "段階1見出し",
+          "type": "body",
+          "index": 1,
+          "framePx": {
+            "x": 76,
+            "y": 210,
+            "width": 228,
+            "height": 44
+          },
+          "fontSizePt": 18.75
+        },
+        {
+          "name": "段階1本文",
+          "type": "body",
+          "index": 2,
+          "framePx": {
+            "x": 76,
+            "y": 274,
+            "width": 228,
+            "height": 188
+          },
+          "fontSizePt": 16.5
+        },
+        {
+          "name": "移行条件1",
+          "type": "body",
+          "index": 20,
+          "framePx": {
+            "x": 52,
+            "y": 506,
+            "width": 276,
+            "height": 64
+          },
+          "fontSizePt": 13.5
+        },
+        {
+          "name": "段階2見出し",
+          "type": "body",
+          "index": 3,
+          "framePx": {
+            "x": 376,
+            "y": 210,
+            "width": 228,
+            "height": 44
+          },
+          "fontSizePt": 18.75
+        },
+        {
+          "name": "段階2本文",
+          "type": "body",
+          "index": 4,
+          "framePx": {
+            "x": 376,
+            "y": 274,
+            "width": 228,
+            "height": 188
+          },
+          "fontSizePt": 16.5
+        },
+        {
+          "name": "移行条件2",
+          "type": "body",
+          "index": 21,
+          "framePx": {
+            "x": 352,
+            "y": 506,
+            "width": 276,
+            "height": 64
+          },
+          "fontSizePt": 13.5
+        },
+        {
+          "name": "段階3見出し",
+          "type": "body",
+          "index": 5,
+          "framePx": {
+            "x": 676,
+            "y": 210,
+            "width": 228,
+            "height": 44
+          },
+          "fontSizePt": 18.75
+        },
+        {
+          "name": "段階3本文",
+          "type": "body",
+          "index": 6,
+          "framePx": {
+            "x": 676,
+            "y": 274,
+            "width": 228,
+            "height": 188
+          },
+          "fontSizePt": 16.5
+        },
+        {
+          "name": "移行条件3",
+          "type": "body",
+          "index": 22,
+          "framePx": {
+            "x": 652,
+            "y": 506,
+            "width": 276,
+            "height": 64
+          },
+          "fontSizePt": 13.5
+        },
+        {
+          "name": "段階4見出し",
+          "type": "body",
+          "index": 7,
+          "framePx": {
+            "x": 976,
+            "y": 210,
+            "width": 228,
+            "height": 44
+          },
+          "fontSizePt": 18.75
+        },
+        {
+          "name": "段階4本文",
+          "type": "body",
+          "index": 8,
+          "framePx": {
+            "x": 976,
+            "y": 274,
+            "width": 228,
+            "height": 188
+          },
+          "fontSizePt": 16.5
+        },
+        {
+          "name": "移行条件4",
+          "type": "body",
+          "index": 23,
+          "framePx": {
+            "x": 952,
+            "y": 506,
+            "width": 276,
+            "height": 64
+          },
+          "fontSizePt": 13.5
+        },
+        {
+          "name": "結論ラベル",
+          "type": "body",
+          "index": 80,
+          "framePx": {
+            "x": 76,
+            "y": 612,
+            "width": 190,
+            "height": 38
+          },
+          "fontSizePt": 16.5
+        },
+        {
+          "name": "結論本文",
+          "type": "body",
+          "index": 81,
+          "framePx": {
+            "x": 278,
+            "y": 608,
+            "width": 926,
+            "height": 48
+          },
+          "fontSizePt": 14.25
+        }
+      ]
+    },
+    {
+      "name": "07 分類・2軸4区分",
+      "placeholders": [
+        {
+          "name": "タイトル",
+          "type": "title",
+          "index": 0,
+          "framePx": {
+            "x": 52,
+            "y": 78,
+            "width": 1176,
+            "height": 54
+          },
+          "fontSizePt": 25.5
+        },
+        {
+          "name": "脚注",
+          "type": "body",
+          "index": 90,
+          "framePx": {
+            "x": 52,
+            "y": 674,
+            "width": 1176,
+            "height": 26
+          },
+          "fontSizePt": 9.75
+        },
+        {
+          "name": "分類表",
+          "type": "tbl",
+          "index": 1,
+          "framePx": {
+            "x": 52,
+            "y": 184,
+            "width": 1176,
+            "height": 378
+          },
+          "fontSizePt": 13.5
+        },
+        {
+          "name": "結論ラベル",
+          "type": "body",
+          "index": 80,
+          "framePx": {
+            "x": 76,
+            "y": 612,
+            "width": 190,
+            "height": 38
+          },
+          "fontSizePt": 16.5
+        },
+        {
+          "name": "結論本文",
+          "type": "body",
+          "index": 81,
+          "framePx": {
+            "x": 278,
+            "y": 608,
+            "width": 926,
+            "height": 48
+          },
+          "fontSizePt": 14.25
+        }
+      ]
+    },
+    {
+      "name": "08 数値・集計表",
+      "placeholders": [
+        {
+          "name": "タイトル",
+          "type": "title",
+          "index": 0,
+          "framePx": {
+            "x": 52,
+            "y": 78,
+            "width": 1176,
+            "height": 54
+          },
+          "fontSizePt": 25.5
+        },
+        {
+          "name": "脚注",
+          "type": "body",
+          "index": 90,
+          "framePx": {
+            "x": 52,
+            "y": 674,
+            "width": 1176,
+            "height": 26
+          },
+          "fontSizePt": 9.75
+        },
+        {
+          "name": "指標1値",
+          "type": "body",
+          "index": 1,
+          "framePx": {
+            "x": 72,
+            "y": 188,
+            "width": 236,
+            "height": 52
+          },
+          "fontSizePt": 28.5
+        },
+        {
+          "name": "指標1名",
+          "type": "body",
+          "index": 2,
+          "framePx": {
+            "x": 72,
+            "y": 248,
+            "width": 236,
+            "height": 26
+          },
+          "fontSizePt": 13.5
+        },
+        {
+          "name": "指標2値",
+          "type": "body",
+          "index": 3,
+          "framePx": {
+            "x": 372,
+            "y": 188,
+            "width": 236,
+            "height": 52
+          },
+          "fontSizePt": 28.5
+        },
+        {
+          "name": "指標2名",
+          "type": "body",
+          "index": 4,
+          "framePx": {
+            "x": 372,
+            "y": 248,
+            "width": 236,
+            "height": 26
+          },
+          "fontSizePt": 13.5
+        },
+        {
+          "name": "指標3値",
+          "type": "body",
+          "index": 5,
+          "framePx": {
+            "x": 672,
+            "y": 188,
+            "width": 236,
+            "height": 52
+          },
+          "fontSizePt": 28.5
+        },
+        {
+          "name": "指標3名",
+          "type": "body",
+          "index": 6,
+          "framePx": {
+            "x": 672,
+            "y": 248,
+            "width": 236,
+            "height": 26
+          },
+          "fontSizePt": 13.5
+        },
+        {
+          "name": "指標4値",
+          "type": "body",
+          "index": 7,
+          "framePx": {
+            "x": 972,
+            "y": 188,
+            "width": 236,
+            "height": 52
+          },
+          "fontSizePt": 28.5
+        },
+        {
+          "name": "指標4名",
+          "type": "body",
+          "index": 8,
+          "framePx": {
+            "x": 972,
+            "y": 248,
+            "width": 236,
+            "height": 26
+          },
+          "fontSizePt": 13.5
+        },
+        {
+          "name": "集計表",
+          "type": "tbl",
+          "index": 20,
+          "framePx": {
+            "x": 52,
+            "y": 318,
+            "width": 1176,
+            "height": 242
+          },
+          "fontSizePt": 13.5
+        },
+        {
+          "name": "結論ラベル",
+          "type": "body",
+          "index": 80,
+          "framePx": {
+            "x": 76,
+            "y": 612,
+            "width": 190,
+            "height": 38
+          },
+          "fontSizePt": 16.5
+        },
+        {
+          "name": "結論本文",
+          "type": "body",
+          "index": 81,
+          "framePx": {
+            "x": 278,
+            "y": 608,
+            "width": 926,
+            "height": 48
+          },
+          "fontSizePt": 14.25
+        }
+      ]
+    },
+    {
+      "name": "09 数値・内訳",
+      "placeholders": [
+        {
+          "name": "タイトル",
+          "type": "title",
+          "index": 0,
+          "framePx": {
+            "x": 52,
+            "y": 78,
+            "width": 1176,
+            "height": 54
+          },
+          "fontSizePt": 25.5
+        },
+        {
+          "name": "脚注",
+          "type": "body",
+          "index": 90,
+          "framePx": {
+            "x": 52,
+            "y": 674,
+            "width": 1176,
+            "height": 26
+          },
+          "fontSizePt": 9.75
+        },
+        {
+          "name": "内訳1名",
+          "type": "body",
+          "index": 1,
+          "framePx": {
+            "x": 52,
+            "y": 192,
+            "width": 350,
+            "height": 44
+          },
+          "fontSizePt": 18
+        },
+        {
+          "name": "内訳1値",
+          "type": "body",
+          "index": 2,
+          "framePx": {
+            "x": 52,
+            "y": 264,
+            "width": 350,
+            "height": 72
+          },
+          "fontSizePt": 36
+        },
+        {
+          "name": "内訳1説明",
+          "type": "body",
+          "index": 3,
+          "framePx": {
+            "x": 52,
+            "y": 350,
+            "width": 350,
+            "height": 68
+          },
+          "fontSizePt": 15.75
+        },
+        {
+          "name": "内訳2名",
+          "type": "body",
+          "index": 4,
+          "framePx": {
+            "x": 454,
+            "y": 192,
+            "width": 350,
+            "height": 44
+          },
+          "fontSizePt": 18
+        },
+        {
+          "name": "内訳2値",
+          "type": "body",
+          "index": 5,
+          "framePx": {
+            "x": 454,
+            "y": 264,
+            "width": 350,
+            "height": 72
+          },
+          "fontSizePt": 36
+        },
+        {
+          "name": "内訳2説明",
+          "type": "body",
+          "index": 6,
+          "framePx": {
+            "x": 454,
+            "y": 350,
+            "width": 350,
+            "height": 68
+          },
+          "fontSizePt": 15.75
+        },
+        {
+          "name": "内訳3名",
+          "type": "body",
+          "index": 7,
+          "framePx": {
+            "x": 856,
+            "y": 192,
+            "width": 350,
+            "height": 44
+          },
+          "fontSizePt": 18
+        },
+        {
+          "name": "内訳3値",
+          "type": "body",
+          "index": 8,
+          "framePx": {
+            "x": 856,
+            "y": 264,
+            "width": 350,
+            "height": 72
+          },
+          "fontSizePt": 36
+        },
+        {
+          "name": "内訳3説明",
+          "type": "body",
+          "index": 9,
+          "framePx": {
+            "x": 856,
+            "y": 350,
+            "width": 350,
+            "height": 68
+          },
+          "fontSizePt": 15.75
+        },
+        {
+          "name": "合計",
+          "type": "body",
+          "index": 20,
+          "framePx": {
+            "x": 750,
+            "y": 492,
+            "width": 478,
+            "height": 62
+          },
+          "fontSizePt": 28.5
+        },
+        {
+          "name": "結論ラベル",
+          "type": "body",
+          "index": 80,
+          "framePx": {
+            "x": 76,
+            "y": 612,
+            "width": 190,
+            "height": 38
+          },
+          "fontSizePt": 16.5
+        },
+        {
+          "name": "結論本文",
+          "type": "body",
+          "index": 81,
+          "framePx": {
+            "x": 278,
+            "y": 608,
+            "width": 926,
+            "height": 48
+          },
+          "fontSizePt": 14.25
+        }
+      ]
+    },
+    {
+      "name": "10 表・二段",
+      "placeholders": [
+        {
+          "name": "タイトル",
+          "type": "title",
+          "index": 0,
+          "framePx": {
+            "x": 52,
+            "y": 78,
+            "width": 1176,
+            "height": 54
+          },
+          "fontSizePt": 25.5
+        },
+        {
+          "name": "脚注",
+          "type": "body",
+          "index": 90,
+          "framePx": {
+            "x": 52,
+            "y": 674,
+            "width": 1176,
+            "height": 26
+          },
+          "fontSizePt": 9.75
+        },
+        {
+          "name": "上表見出し",
+          "type": "body",
+          "index": 1,
+          "framePx": {
+            "x": 52,
+            "y": 172,
+            "width": 1176,
+            "height": 30
+          },
+          "fontSizePt": 13.5
+        },
+        {
+          "name": "上の表",
+          "type": "tbl",
+          "index": 2,
+          "framePx": {
+            "x": 52,
+            "y": 214,
+            "width": 1176,
+            "height": 192
+          },
+          "fontSizePt": 13.5
+        },
+        {
+          "name": "下表見出し",
+          "type": "body",
+          "index": 3,
+          "framePx": {
+            "x": 52,
+            "y": 432,
+            "width": 1176,
+            "height": 30
+          },
+          "fontSizePt": 13.5
+        },
+        {
+          "name": "下の表",
+          "type": "tbl",
+          "index": 4,
+          "framePx": {
+            "x": 52,
+            "y": 474,
+            "width": 1176,
+            "height": 90
+          },
+          "fontSizePt": 13.5
+        },
+        {
+          "name": "結論ラベル",
+          "type": "body",
+          "index": 80,
+          "framePx": {
+            "x": 76,
+            "y": 612,
+            "width": 190,
+            "height": 38
+          },
+          "fontSizePt": 16.5
+        },
+        {
+          "name": "結論本文",
+          "type": "body",
+          "index": 81,
+          "framePx": {
+            "x": 278,
+            "y": 608,
+            "width": 926,
+            "height": 48
+          },
+          "fontSizePt": 14.25
+        }
+      ]
+    },
+    {
+      "name": "11 工程表・5時点",
+      "placeholders": [
+        {
+          "name": "タイトル",
+          "type": "title",
+          "index": 0,
+          "framePx": {
+            "x": 52,
+            "y": 78,
+            "width": 1176,
+            "height": 54
+          },
+          "fontSizePt": 25.5
+        },
+        {
+          "name": "脚注",
+          "type": "body",
+          "index": 90,
+          "framePx": {
+            "x": 52,
+            "y": 674,
+            "width": 1176,
+            "height": 26
+          },
+          "fontSizePt": 9.75
+        },
+        {
+          "name": "時点1",
+          "type": "body",
+          "index": 1,
+          "framePx": {
+            "x": 52,
+            "y": 198,
+            "width": 216,
+            "height": 34
+          },
+          "fontSizePt": 15.75
+        },
+        {
+          "name": "工程1",
+          "type": "body",
+          "index": 2,
+          "framePx": {
+            "x": 52,
+            "y": 274,
+            "width": 216,
+            "height": 64
+          },
+          "fontSizePt": 17.25
+        },
+        {
+          "name": "工程説明1",
+          "type": "body",
+          "index": 3,
+          "framePx": {
+            "x": 52,
+            "y": 356,
+            "width": 216,
+            "height": 110
+          },
+          "fontSizePt": 14.25
+        },
+        {
+          "name": "時点2",
+          "type": "body",
+          "index": 4,
+          "framePx": {
+            "x": 292,
+            "y": 198,
+            "width": 216,
+            "height": 34
+          },
+          "fontSizePt": 15.75
+        },
+        {
+          "name": "工程2",
+          "type": "body",
+          "index": 5,
+          "framePx": {
+            "x": 292,
+            "y": 274,
+            "width": 216,
+            "height": 64
+          },
+          "fontSizePt": 17.25
+        },
+        {
+          "name": "工程説明2",
+          "type": "body",
+          "index": 6,
+          "framePx": {
+            "x": 292,
+            "y": 356,
+            "width": 216,
+            "height": 110
+          },
+          "fontSizePt": 14.25
+        },
+        {
+          "name": "時点3",
+          "type": "body",
+          "index": 7,
+          "framePx": {
+            "x": 532,
+            "y": 198,
+            "width": 216,
+            "height": 34
+          },
+          "fontSizePt": 15.75
+        },
+        {
+          "name": "工程3",
+          "type": "body",
+          "index": 8,
+          "framePx": {
+            "x": 532,
+            "y": 274,
+            "width": 216,
+            "height": 64
+          },
+          "fontSizePt": 17.25
+        },
+        {
+          "name": "工程説明3",
+          "type": "body",
+          "index": 9,
+          "framePx": {
+            "x": 532,
+            "y": 356,
+            "width": 216,
+            "height": 110
+          },
+          "fontSizePt": 14.25
+        },
+        {
+          "name": "時点4",
+          "type": "body",
+          "index": 10,
+          "framePx": {
+            "x": 772,
+            "y": 198,
+            "width": 216,
+            "height": 34
+          },
+          "fontSizePt": 15.75
+        },
+        {
+          "name": "工程4",
+          "type": "body",
+          "index": 11,
+          "framePx": {
+            "x": 772,
+            "y": 274,
+            "width": 216,
+            "height": 64
+          },
+          "fontSizePt": 17.25
+        },
+        {
+          "name": "工程説明4",
+          "type": "body",
+          "index": 12,
+          "framePx": {
+            "x": 772,
+            "y": 356,
+            "width": 216,
+            "height": 110
+          },
+          "fontSizePt": 14.25
+        },
+        {
+          "name": "時点5",
+          "type": "body",
+          "index": 13,
+          "framePx": {
+            "x": 1012,
+            "y": 198,
+            "width": 216,
+            "height": 34
+          },
+          "fontSizePt": 15.75
+        },
+        {
+          "name": "工程5",
+          "type": "body",
+          "index": 14,
+          "framePx": {
+            "x": 1012,
+            "y": 274,
+            "width": 216,
+            "height": 64
+          },
+          "fontSizePt": 17.25
+        },
+        {
+          "name": "工程説明5",
+          "type": "body",
+          "index": 15,
+          "framePx": {
+            "x": 1012,
+            "y": 356,
+            "width": 216,
+            "height": 110
+          },
+          "fontSizePt": 14.25
+        },
+        {
+          "name": "意思決定",
+          "type": "body",
+          "index": 30,
+          "framePx": {
+            "x": 52,
+            "y": 508,
+            "width": 1176,
+            "height": 68
+          },
+          "fontSizePt": 15.75
+        },
+        {
+          "name": "結論ラベル",
+          "type": "body",
+          "index": 80,
+          "framePx": {
+            "x": 76,
+            "y": 612,
+            "width": 190,
+            "height": 38
+          },
+          "fontSizePt": 16.5
+        },
+        {
+          "name": "結論本文",
+          "type": "body",
+          "index": 81,
+          "framePx": {
+            "x": 278,
+            "y": 608,
+            "width": 926,
+            "height": 48
+          },
+          "fontSizePt": 14.25
+        }
+      ]
+    },
+    {
+      "name": "12 長いタイトル・2列",
+      "placeholders": [
+        {
+          "name": "タイトル",
+          "type": "title",
+          "index": 0,
+          "framePx": {
+            "x": 52,
+            "y": 78,
+            "width": 1176,
+            "height": 96
+          },
+          "fontSizePt": 25.5
+        },
+        {
+          "name": "脚注",
+          "type": "body",
+          "index": 90,
+          "framePx": {
+            "x": 52,
+            "y": 674,
+            "width": 1176,
+            "height": 26
+          },
+          "fontSizePt": 9.75
+        },
+        {
+          "name": "左見出し",
+          "type": "body",
+          "index": 1,
+          "framePx": {
+            "x": 76,
+            "y": 238,
+            "width": 522,
+            "height": 44
+          },
+          "fontSizePt": 18.75
+        },
+        {
+          "name": "左本文",
+          "type": "body",
+          "index": 2,
+          "framePx": {
+            "x": 76,
+            "y": 302,
+            "width": 522,
+            "height": 240
+          },
+          "fontSizePt": 16.5
+        },
+        {
+          "name": "右見出し",
+          "type": "body",
+          "index": 3,
+          "framePx": {
+            "x": 682,
+            "y": 238,
+            "width": 522,
+            "height": 44
+          },
+          "fontSizePt": 18.75
+        },
+        {
+          "name": "右本文",
+          "type": "body",
+          "index": 4,
+          "framePx": {
+            "x": 682,
+            "y": 302,
+            "width": 522,
+            "height": 240
+          },
+          "fontSizePt": 16.5
+        },
+        {
+          "name": "結論ラベル",
+          "type": "body",
+          "index": 80,
+          "framePx": {
+            "x": 76,
+            "y": 612,
+            "width": 190,
+            "height": 38
+          },
+          "fontSizePt": 16.5
+        },
+        {
+          "name": "結論本文",
+          "type": "body",
+          "index": 81,
+          "framePx": {
+            "x": 278,
+            "y": 608,
+            "width": 926,
+            "height": 48
+          },
+          "fontSizePt": 14.25
+        }
+      ]
+    }
+  ]
+}

@@ -49,10 +49,13 @@ perceptually consistent.
 ### Dark mode
 
 The base scaffold toggles a `.is-dark` class on `<html>` via JS. Color
-tokens get redeclared under that class.
+tokens get redeclared under that class. The selector must out-specify the
+light `:root` block — `:root.is-dark` (0-2-0) beats `:root` (0-1-0).
+`:where(.is-dark)` carries zero specificity and silently loses, leaving the
+page light no matter what the toggle says.
 
 ```css
-:where(.is-dark) {
+:root.is-dark {
   --color-bg:            oklch(14% 0 0);
   --color-surface:       oklch(17% 0 0);
   --color-surface-2:     oklch(20% 0 0);
