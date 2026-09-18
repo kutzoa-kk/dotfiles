@@ -26,6 +26,7 @@ dotdir/.codex/config.toml
 !/.bin/**
 
 !/README.md
+!/AGENTS.md
 !/LICENCE
 !.gitignore
 !.gitkeep
@@ -77,10 +78,11 @@ dotdir/.codex/config.toml
 !/dotdir/.claude/skills/html-report-generator/
 !/dotdir/.claude/skills/html-report-generator/**
 
-## dotdir/.codex — スキルの symlink のみ追跡（config.toml は稼働設定のため除外）
+## dotdir/.codex — 共通指示・README・選択したスキルを追跡（config.toml は機械固有の稼働設定）
 !/dotdir/.codex/
 /dotdir/.codex/*
 !/dotdir/.codex/README.md
+!/dotdir/.codex/AGENTS.md
 !/dotdir/.codex/skills/
 /dotdir/.codex/skills/*
 !/dotdir/.codex/skills/mclab-slide-design

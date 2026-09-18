@@ -1,12 +1,11 @@
-# Codex Configuration Directory
+# Codex の共通設定
 
-This directory contains Codex configuration files.
+- `AGENTS.md`: Codex の共通指示です。リポジトリ固有の指示は各リポジトリの `AGENTS.md` に置きます。
+- `skills/`: 選択したユーザースキルを管理します。Codex が管理するシステムスキルは含めません。
+- `config.toml`: モデル選択、ローカルパス、信頼履歴などを含む機械固有の稼働設定です。git の追跡対象外です。
 
-## Structure
+リポジトリルートで `make link` を実行すると、[`.bin/link.sh`](../../.bin/link.sh) が `AGENTS.md` などの通常ファイルを `~/.codex/` へリンクします。`README.md` は除外され、ユーザースキルは個別にリンクされます。既存の `~/.codex/` ディレクトリは維持されます。
 
-- `config.json` - Codex configuration file (if you have custom settings)
-- `skills/` - User-installed Codex skills (system skills are managed by Codex itself)
+`make link` は他ツールの設定も反映します。共通指示だけを更新する場合は、既存の `~/.codex/AGENTS.md` を退避したうえで、この `AGENTS.md` だけをリンクします。リンク後は、このファイルの編集が稼働側にも反映されます。
 
-## Setup
-
-Configuration files in this directory will be automatically linked to `~/.codex/` when you run `make link`.
+更新した共通指示は新しい Codex セッションで確認してください。現在のセッションへの再読み込みは前提にしません。
