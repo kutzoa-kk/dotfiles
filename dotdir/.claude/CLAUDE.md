@@ -22,12 +22,14 @@
 
 ## ツール
 
-| ツール | 用途 |
-|--------|------|
-| gog CLI | Gmail・Calendar・Drive操作 |
-| gh CLI | Issue管理・コード管理 |
-| Codex CLI | セカンドオピニオン・レビュアー・実装・調査 codex|
-| Antigravity CLI | セカンドオピニオン・レビュアー・実装・調査 agy |
+
+| ツール             | 用途                          |
+| --------------- | --------------------------- |
+| gog CLI         | Gmail・Calendar・Drive操作      |
+| gh CLI          | Issue管理・コード管理               |
+| Codex CLI       | セカンドオピニオン・レビュアー・実装・調査 codex |
+| Antigravity CLI | セカンドオピニオン・レビュアー・実装・調査 agy   |
+
 
 ## 行動原則
 
@@ -79,6 +81,21 @@
 @RTK.md
 @japanese-style-guide.md
 @decision-patterns.md
+
 # graphify
+
 - **graphify** (`~/.claude/skills/graphify/SKILL.md`) - any input to knowledge graph. Trigger: `/graphify`
 When the user types `/graphify`, use the installed graphify skill or instructions before doing anything else.
+
+# Orcaの利用方針
+
+Orca管理下のworktree、ターミナル、内蔵ブラウザを操作する場合は、
+orca-cli Skillを使用する。
+
+- 最初にSkillの指示に従い、実行環境に対応した操作ガイドを読む。
+- 対象のruntime、repository、worktreeを確認してから操作する。
+- コマンドやフラグを記憶から推測しない。
+- 他エージェントへの単発依頼と、継続的な監督を区別する。
+- 担当・依存関係・完了通知を管理する場合はorchestration Skillを使用する。
+- worktree削除、外部公開、push、mergeは事前承認なしで実行しない。
+- 実行していない操作を、実行済みとして報告しない。

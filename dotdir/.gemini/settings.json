@@ -44,6 +44,15 @@
             "command": "/Users/kkmac/.superset/hooks/gemini-hook.sh"
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -f '/Users/kkmclab/.orca/agent-hooks/gemini-hook.sh' ] && [ -r '/Users/kkmclab/.orca/agent-hooks/gemini-hook.sh' ] && [ -x '/Users/kkmclab/.orca/agent-hooks/gemini-hook.sh' ]; then /bin/sh '/Users/kkmclab/.orca/agent-hooks/gemini-hook.sh'; else { command -p cat 2>/dev/null || cat; } >/dev/null 2>&1 || :; fi",
+            "timeout": 10000
+          }
+        ]
       }
     ],
     "AfterAgent": [
@@ -54,6 +63,15 @@
             "command": "/Users/kkmac/.superset/hooks/gemini-hook.sh"
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -f '/Users/kkmclab/.orca/agent-hooks/gemini-hook.sh' ] && [ -r '/Users/kkmclab/.orca/agent-hooks/gemini-hook.sh' ] && [ -x '/Users/kkmclab/.orca/agent-hooks/gemini-hook.sh' ]; then /bin/sh '/Users/kkmclab/.orca/agent-hooks/gemini-hook.sh'; else { command -p cat 2>/dev/null || cat; } >/dev/null 2>&1 || :; fi",
+            "timeout": 10000
+          }
+        ]
       }
     ],
     "AfterTool": [
@@ -62,6 +80,15 @@
           {
             "type": "command",
             "command": "/Users/kkmac/.superset/hooks/gemini-hook.sh"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -f '/Users/kkmclab/.orca/agent-hooks/gemini-hook.sh' ] && [ -r '/Users/kkmclab/.orca/agent-hooks/gemini-hook.sh' ] && [ -x '/Users/kkmclab/.orca/agent-hooks/gemini-hook.sh' ]; then /bin/sh '/Users/kkmclab/.orca/agent-hooks/gemini-hook.sh'; else { command -p cat 2>/dev/null || cat; } >/dev/null 2>&1 || :; fi",
+            "timeout": 10000
           }
         ]
       }
@@ -82,6 +109,17 @@
           {
             "type": "command",
             "command": "/Users/kkmac/.superset/hooks/gemini-hook.sh"
+          }
+        ]
+      }
+    ],
+    "BeforeTool": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -f '/Users/kkmclab/.orca/agent-hooks/gemini-hook.sh' ] && [ -r '/Users/kkmclab/.orca/agent-hooks/gemini-hook.sh' ] && [ -x '/Users/kkmclab/.orca/agent-hooks/gemini-hook.sh' ]; then /bin/sh '/Users/kkmclab/.orca/agent-hooks/gemini-hook.sh'; else { command -p cat 2>/dev/null || cat; } >/dev/null 2>&1 || :; fi",
+            "timeout": 10000
           }
         ]
       }
