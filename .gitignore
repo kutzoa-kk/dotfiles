@@ -90,12 +90,18 @@ dotdir/.codex/config.toml
 /dotdir/.codex/*
 !/dotdir/.codex/README.md
 !/dotdir/.codex/AGENTS.md
+!/dotdir/.codex/scripts/
+/dotdir/.codex/scripts/*
+!/dotdir/.codex/scripts/security-guidance-adapter.py
 !/dotdir/.codex/skills/
 /dotdir/.codex/skills/*
 !/dotdir/.codex/skills/mclab-slide-design
 
 # macOS メタデータ（allowlist したサブツリー内でも常に無視）
 .DS_Store
+
+# Python bytecode caches, including allowlisted script and test directories.
+__pycache__/
 
 
 # 秘密情報（万一リポジトリ内に置かれた場合の保険。正規の置き場所は ~/.zshrc.secrets）

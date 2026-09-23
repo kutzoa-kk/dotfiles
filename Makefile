@@ -19,6 +19,20 @@ link:
 	@.bin/link.sh
 	@echo "\033[0;34mDone.\033[0m"
 
+# Apply only the Codex security-guidance hook adapter (safe to repeat after updates)
+.PHONY: codex-security-hooks codex-security-hooks-check codex-security-hooks-dry-run test-codex-security-hooks
+codex-security-hooks:
+	@python3 .bin/apply-codex-security-guidance.py
+
+codex-security-hooks-check:
+	@python3 .bin/apply-codex-security-guidance.py --check
+
+codex-security-hooks-dry-run:
+	@python3 .bin/apply-codex-security-guidance.py --dry-run
+
+test-codex-security-hooks:
+	@python3 -m unittest discover -s .bin/tests -p 'test_codex_security_guidance.py' -v
+
 # Pull permanent settings from live ~/.claude into git (dotdir)
 settings-pull:
 	@echo "\033[0;34mRun settings-pull.sh\033[0m"

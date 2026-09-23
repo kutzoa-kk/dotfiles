@@ -258,3 +258,5 @@ if [ -d "${DOTDIR_ROOT}/.gemini" ]; then
     done
 fi
 
+# Rebuild the Codex-only security-guidance boundary after plugin updates.
+python3 "${SCRIPT_DIR}/apply-codex-security-guidance.py" || exit $?

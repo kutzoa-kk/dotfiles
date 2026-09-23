@@ -42,6 +42,7 @@ make all
 
 - `make init` - HomebrewとXcode Command Line Toolsのインストール
 - `make link` - dotfileのシンボリックリンク作成
+- `make codex-security-hooks` - Codex側のsecurity-guidance互換hookを適用（plugin更新後にも再実行）
 - `make brew` - Homebrewパッケージのインストール
 - `make macos_setup` - macOSシステム設定の適用
 - `make iterm2` - iTerm2設定の適用
@@ -115,6 +116,7 @@ dotfiles/
 - `.codex/`ディレクトリ内の設定ファイル（`config.json`など）をリンクします
 - `.codex/skills/`ディレクトリ内のユーザー定義スキルをリンクします（システムスキルは除外）
 - 既存の`~/.codex`ディレクトリがある場合、設定ファイルのみをマージしてリンクします
+- security-guidanceは共通の検査本体を利用し、Codex用の入出力adapterを専用manifestで登録します。`make codex-security-hooks-dry-run` で差分確認、`make codex-security-hooks` で対象pluginだけを適用できます。更新・再インストール後の再適用と復元方法は [Codex README](dotdir/.codex/README.md) を参照してください。
 
 ### ClaudeCode設定について
 - `.claude/`ディレクトリ内の設定ファイルをリンクします
