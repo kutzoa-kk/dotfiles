@@ -9,7 +9,6 @@
   "includeCoAuthoredBy": false,
   "permissions": {
     "allow": [
-      "Bash",
       "Edit(**)",
       "GlobTool(**)",
       "Grep(**)",
@@ -261,8 +260,7 @@
     "academic-research-skills@academic-research-skills": true,
     "deploy-on-aws@claude-plugins-official": true,
     "aws-serverless@claude-plugins-official": true,
-    "data-engineering@claude-plugins-official": false,
-    "toolcall-recover@nam-tech-studio": true
+    "data-engineering@claude-plugins-official": false
   },
   "extraKnownMarketplaces": {
     "nyldn-plugins": {
@@ -298,16 +296,10 @@
         "source": "github",
         "repo": "Imbad0202/academic-research-skills"
       }
-    },
-    "nam-tech-studio": {
-      "source": {
-        "source": "github",
-        "repo": "nam-tech-studio/toolcall-recover"
-      }
     }
   },
   "language": "Japanese",
-  "effortLevel": "xhigh",
+  "effortLevel": "high",
   "pluginConfigs": {},
   "tui": "fullscreen",
   "voice": {

@@ -1,6 +1,7 @@
 #!/bin/zsh
 # settings-pull.sh — 稼働 settings.json から恒久設定(③)だけを git(dotdir) へ吸い上げる。
 # 除外: orca hooks(command が .orca/ を参照) / model / 通知2フラグ / effortLevel(セッション値の逆流防止)。
+# modelSettings(/effort が書くモデル別 effort)・advisorModel は既定値の保存なので吸い上げる。
 set -e
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 DOTDIR_ROOT="$(cd "${SCRIPT_DIR}/../dotdir" && pwd)"
