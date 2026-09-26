@@ -16,8 +16,6 @@
       "GrepTool(**)",
       "LS(**)",
       "Read(**)",
-      "TodoRead",
-      "TodoWrite(**)",
       "WebFetch(domain:*)",
       "mcp__plugin_ecc_playwright__browser_navigate",
       "mcp__plugin_ecc_playwright__browser_press_key",
