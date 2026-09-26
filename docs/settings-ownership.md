@@ -7,7 +7,7 @@ Claude Code の `settings.json` は git・orca・Claude Code の3者が関わる
 | 層 | キー | 所有者 | git 追跡 |
 |----|------|--------|:---:|
 | ① orca 注入 | hooks の `.orca/` 参照（7イベント）+ StopFailure | orca が起動時に注入 | ✕ |
-| ② 個人・可変 | `model`・`agentPushNotifEnabled`・`inputNeededNotifEnabled` | Claude Code がセッションで書く | ✕ |
+| ② 個人・可変 | `model`・`agentPushNotifEnabled`・`inputNeededNotifEnabled`・`autoMode`（`/auto-mode-setup` が書くマシンごとの自動モード設定） | Claude Code が書く | ✕ |
 | ③ 恒久・意図 | `enabledPlugins`・`extraKnownMarketplaces`・非 orca hooks・`permissions`・`effortLevel`・`modelSettings`・`advisorModel` | 人が意図して決める | ○ git が正 |
 
 ## 鉄則
@@ -23,7 +23,7 @@ Claude Code の `settings.json` は git・orca・Claude Code の3者が関わる
     make settings-pull                # 差分を見て確認して dotdir へ書き込み（対話）
     .bin/settings-pull.sh --dry-run   # 確認のみ
 
-`settings-pull` は orca hooks と②（model・通知）を自動除外する。トップレベルの `effortLevel` はセッション中の切り替えが逆流しないよう git の値を保持する。モデルごとの effort（`/effort` が書く `modelSettings`）と `advisorModel`（`/advisor` が書く）は既定値の保存なので吸い上げる。書き込み後は `git diff` を確認してコミット。誤りは `git checkout dotdir/.claude/settings.json` で戻せる。
+`settings-pull` は orca hooks と②（model・通知・autoMode）を自動除外する。トップレベルの `effortLevel` はセッション中の切り替えが逆流しないよう git の値を保持する。モデルごとの effort（`/effort` が書く `modelSettings`）と `advisorModel`（`/advisor` が書く）は既定値の保存なので吸い上げる。書き込み後は `git diff` を確認してコミット。誤りは `git checkout dotdir/.claude/settings.json` で戻せる。
 
 ## 既知の制限
 

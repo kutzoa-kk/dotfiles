@@ -1,6 +1,6 @@
 #!/bin/zsh
 # settings-pull.sh — 稼働 settings.json から恒久設定(③)だけを git(dotdir) へ吸い上げる。
-# 除外: orca hooks(command が .orca/ を参照) / model / 通知2フラグ / effortLevel(セッション値の逆流防止)。
+# 除外: orca hooks(command が .orca/ を参照) / model / 通知2フラグ / autoMode(マシンごとの設定) / effortLevel(セッション値の逆流防止)。
 # modelSettings(/effort が書くモデル別 effort)・advisorModel は既定値の保存なので吸い上げる。
 set -e
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -14,7 +14,8 @@ MODE="interactive"
 python3 - "$RUNTIME" "$GIT_SETTINGS" "$MODE" <<'PY'
 import json, sys, copy, difflib
 runtime_p, git_p, mode = sys.argv[1], sys.argv[2], sys.argv[3]
-EXCLUDE = {'model','agentPushNotifEnabled','inputNeededNotifEnabled','effortLevel'}
+MACHINE_LOCAL = ('model','agentPushNotifEnabled','inputNeededNotifEnabled','autoMode')
+EXCLUDE = set(MACHINE_LOCAL) | {'effortLevel'}
 runtime = json.load(open(runtime_p))
 git = json.load(open(git_p))
 
@@ -38,7 +39,7 @@ result = dict(git)
 for k, v in clean.items():
     result[k] = v
 result['effortLevel'] = git.get('effortLevel', result.get('effortLevel'))
-for k in ('model','agentPushNotifEnabled','inputNeededNotifEnabled'):
+for k in MACHINE_LOCAL:
     result.pop(k, None)
 
 def dump(o): return json.dumps(o, indent=2, ensure_ascii=False).splitlines()
