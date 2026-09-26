@@ -14,7 +14,7 @@ Codex（コード・実装視点）と agy/Gemini（調査・仕様視点）へ�
    - 問い（明確な1問。選択肢があるなら列挙）
    - 回答形式の指定（例:「推奨案と根拠を5行以内で」）
 2. **並列外注** — Bash で実行:
-   `echo "$PROMPT" | ~/dotfiles/.bin/llm-worker.sh both --timeout 300`
+   `echo "$PROMPT" | "$(git -C "$(dirname "$(readlink ~/.claude/agents)")" rev-parse --show-toplevel)/.bin/llm-worker.sh" both --timeout 300`
    - コードの検証・レビューなら `--role reviewer`、調査なら `--role researcher` を付ける
    - 対象リポジトリのコードを読ませたい場合は `--cd <リポジトリ絶対パス>` を付ける（両 worker がその作業ディレクトリで実行される）
 3. **裁定** — 両回答を読み、次の形式で報告する:

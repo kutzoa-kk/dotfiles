@@ -9,9 +9,6 @@ description: リポジトリの「ドキュメント腐敗」を監査する。�
 
 ## Background
 
-> "Agents grep/find/cat the repo freely and treat discovered text as equally authoritative. They can't intuitively judge 'this is a 3-month-old memo'."
-> "18 frontier models all showed performance degradation with increased context length. Stale/irrelevant info accumulation directly causes performance degradation."
-
 Agent はリポジトリ内のテキストを等しく信頼する。古い prose ドキュメントが残っていると、agent の判断精度が低下する。このスキルはその腐敗を体系的に検出する。
 
 ## Workflow

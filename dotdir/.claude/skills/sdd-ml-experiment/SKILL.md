@@ -262,7 +262,7 @@ god-objects that are hard to debug.
 ### Polars Over Pandas
 Templates default to Polars for data processing. Polars is immutable by default,
 which aligns with the no-mutation principle and prevents accidental data corruption.
-Exception: Pandera schemas use pandas (Pandera doesn't support Polars natively yet).
+Exception: the Pandera schemas from sdd-ml-init use the pandas API. To validate Polars frames directly, use `pandera.polars` (pandera>=0.20), as ml-experiment-traceability does.
 
 ### Tests As Documentation
 The generated test stubs serve as executable documentation of expected behavior.

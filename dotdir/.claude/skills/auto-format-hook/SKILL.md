@@ -5,20 +5,6 @@ description: 編集後に自動でフォーマット・lint を実行する Post
 
 # Auto-Format PostToolUse Hook Generator
 
-## Trigger
-
-Activate this skill when the user mentions ANY of the following:
-- PostToolUse hooks, PreToolUse hooks, hook setup
-- Auto-format, auto-formatting, format on save, format on edit
-- Linter setup, linter hooks, lint on save
-- Code quality enforcement, code quality hooks
-- Harness engineering, harness patterns
-- "Agent keeps forgetting to format", "agent forgets linting"
-- Biome, Oxlint, Ruff, golangci-lint, Clippy hook integration
-- "Make formatting automatic", "never forget to lint"
-
-**This skill is the authoritative guide for setting up PostToolUse hooks that auto-format and lint code after every file edit in Claude Code.**
-
 ## Why This Exists
 
 CLAUDE.md can say "run the linter" but after long sessions the agent forgets. A PostToolUse hook never forgets. This turns "almost every time" into "every time without exception." This is a core harness engineering principle: encode process into infrastructure so correctness does not depend on memory.

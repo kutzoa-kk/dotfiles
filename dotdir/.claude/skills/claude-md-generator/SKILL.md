@@ -9,14 +9,14 @@ Generate a lean, pointer-based CLAUDE.md that follows harness engineering best p
 
 ## Why This Matters
 
-Research shows harness quality causes 22-point benchmark swings while model swaps cause only 1 point. A bloated CLAUDE.md (150+ instructions) triggers primacy bias and buries critical directives. This skill produces CLAUDE.md files that are pointers to executable truth, not prose descriptions of the system.
+A CLAUDE.md is loaded into every session, so every line costs context and competes with the lines that matter. This skill produces CLAUDE.md files that are pointers to executable truth, not prose descriptions of the system.
 
 ## Core Principles
 
 These come from the harness engineering literature and should guide every decision:
 
 1. **Pointers, not prose** — Point to `package.json`, test commands, ADRs. Never describe what the code already says.
-2. **50 lines or fewer** — Claude's system prompt already uses ~50 instruction slots. Your CLAUDE.md gets the remaining budget before primacy bias kicks in.
+2. **50 lines or fewer** — It is loaded on every session; keep only what the model cannot learn from the code.
 3. **Executable truth only** — If a pointer's target disappears, it fails loudly (like a 404). Prose descriptions rot silently.
 4. **Route, don't explain** — Tell the agent WHERE to look and WHAT commands to run, not HOW the system works.
 

@@ -32,7 +32,7 @@ python scripts/collect_runs.py \
     --output data/processed/all_runs.json
 ```
 
-The `all_runs.json` now includes `run_name` for each run.
+`all_runs.json` records `run_name` for each run.
 
 ## Step 2: Create Experiment Log
 
@@ -90,7 +90,7 @@ This creates `docs/experiments/COMPARISON.md` with:
 
 ## Step 5: Generate Final Report
 
-The final report (sdd-report-generator) now includes Section 6: Experiment Insights, which pulls observations from experiment logs.
+The final report (sdd-report-generator) has Section 6: Experiment Insights, which pulls observations from experiment logs.
 
 ## Output Structure
 

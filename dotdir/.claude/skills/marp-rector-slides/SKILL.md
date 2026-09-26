@@ -15,13 +15,7 @@ description: "Marpでレクタースライドスタイルガイドに基づい�
 
 ### CSS Setup — frontmatter `style:` に埋め込み
 
-> **⚠️ 重要: Tailwind CDN (`<script>`) は使用禁止**
->
-> Marpは `html: true` でも **`<script>` タグをストリップする**。
-> Tailwind CDN を `<script>` で読み込んでも、Marpプレビュー（VS Code拡張、`marp -p`）では
-> **全CSSクラスが無効になる**。HTMLビルド時にNode.jsで注入しても `.md` 直接表示では動かない。
->
-> **解決策**: frontmatter の `style:` プロパティにCSSを直接定義する。
+Marp は `<script>` タグを除去するため、CSS は frontmatter の `style:` に直接書く（Tailwind CDN は読み込めない）。
 
 frontmatter に以下の `style:` ブロックを配置：
 
@@ -147,7 +141,7 @@ fs.writeFileSync('slide.html', fullHtml);
 
 | 問題 | 原因 | 対策 |
 |------|------|------|
-| CSSクラスが効かない | `<script>`タグがMarpにストリップされた | frontmatter `style:` にCSS埋め込み（**絶対に`<script>`を使わない**） |
+| CSSクラスが効かない | `<script>`タグがMarpにストリップされた | frontmatter `style:` にCSS埋め込み |
 | テーブルが半分の幅になる | Marpがtable要素に`display:block`を設定 | `section table { display: table !important; }` 等のCSS上書き |
 | `overflow: hidden`で切れが検出できない | Marpのsectionに`overflow:hidden`が設定されている | scrollHeightでなくgetBoundingClientRect()で検証 |
 | Marpプレビューで崩れるがHTMLは正常 | HTMLビルド時のみCDN注入していた | 必ず `.md` 直接プレビューで確認 |
@@ -196,8 +190,7 @@ fs.writeFileSync('slide.html', fullHtml);
 3. **グリッドレイアウト活用** — `grid-cols-{n}` で一貫した配置
 4. **余白を恐れない** — 詰め込みより空白
 5. **`--html`必須** — HTMLタグを有効にするため
-6. **`<script>`タグ禁止** — Marpがストリップするため、frontmatter `style:` を使う
-7. **テーブルにはCSS上書き必須** — `display: table !important` をstyleに含める
+6. **テーブルにはCSS上書き必須** — `display: table !important` をstyleに含める
 
 ## CSSクラス追加方法
 
