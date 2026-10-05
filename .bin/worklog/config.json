@@ -1,0 +1,38 @@
+{
+  "timezone": "Asia/Tokyo",
+  "calendar_name": "作業ログ",
+  "project_apps": [
+    "com.stablyai.orca",
+    "com.apple.Safari",
+    "com.apple.Preview",
+    "com.microsoft.Word",
+    "com.adobe.Acrobat.Pro",
+    "com.adobe.Reader",
+    "md.obsidian"
+  ],
+  "other_apps": [
+    "com.google.Chrome",
+    "com.microsoft.VSCode",
+    "com.microsoft.Powerpoint",
+    "com.microsoft.Excel"
+  ],
+  "exclude_title_patterns": [
+    "YouTube",
+    "TVer",
+    "Netflix",
+    "Prime Video",
+    "ABEMA",
+    "U-NEXT",
+    "Disney+"
+  ],
+  "thresholds": {
+    "active_idle_sec": 60,
+    "reading_max_min": 30,
+    "grace_min": 2,
+    "sample_gap_sec": 120,
+    "merge_gap_min": 5,
+    "min_event_min": 3,
+    "window_hours": 48,
+    "retention_days": 30
+  }
+}

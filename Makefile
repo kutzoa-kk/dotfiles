@@ -73,3 +73,14 @@ cursor:
 	@echo "\033[0;34mRun cursor_setup.sh\033[0m"
 	@.bin/cursor_setup.sh
 	@echo "\033[0;32mDone.\033[0m"
+
+# Record human/agent working time to Google Calendar (see .bin/worklog)
+.PHONY: worklog-install worklog-uninstall test-worklog
+worklog-install:
+	@.bin/worklog/install.sh install
+
+worklog-uninstall:
+	@.bin/worklog/install.sh uninstall
+
+test-worklog:
+	@/usr/bin/python3 -m unittest discover -s .bin/tests -p 'test_worklog_*.py' -v

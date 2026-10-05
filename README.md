@@ -48,6 +48,7 @@ make all
 - `make iterm2` - iTerm2設定の適用
 - `make npm` - npmグローバルパッケージのインストール
 - `make github` - GitHub SSH設定（オプション）
+- `make worklog-install` - 人とエージェントの作業時間を Google カレンダーに記録する仕組みを launchd に登録（事前準備は [.bin/worklog/README.md](.bin/worklog/README.md)）
 
 ## ファイル構成
 
