@@ -83,6 +83,16 @@ class StoreTest(unittest.TestCase):
         wl_store.prune_samples(date(2026, 9, 5), self.dir)
         self.assertEqual([p.name for p in self.dir.iterdir()], ["samples-2026-10-05.jsonl"])
 
+    def test_state_dir_is_private(self):
+        # Samples hold window titles (mail subjects, document names).
+        for name, write in (("samples", lambda d: wl_store.append_sample(stored(sample(0)), d)),
+                            ("ledger", lambda d: wl_store.save_ledger({}, d)),
+                            ("errors", lambda d: wl_store.log_error("x", BASE, d))):
+            target = self.dir / name
+            target.mkdir(mode=0o755)
+            write(target)
+            self.assertEqual(target.stat().st_mode & 0o777, 0o700, name)
+
     def test_log_error_appends_with_timestamp(self):
         wl_store.log_error("first", BASE, self.dir)
         wl_store.log_error("second", BASE, self.dir)

@@ -6,14 +6,21 @@ from pathlib import Path
 STATE_DIR = Path.home() / ".local/state/worklog"
 SAMPLE_PREFIX = "samples-"
 LEDGER_NAME = "events.json"
+PRIVATE_DIR_MODE = 0o700
 
 
 def _sample_day(path):
     return path.stem[len(SAMPLE_PREFIX):]
 
 
-def append_sample(sample, state_dir=STATE_DIR):
+def _ensure_private_dir(state_dir):
+    # Samples hold window titles (mail subjects, document names): owner only.
     state_dir.mkdir(parents=True, exist_ok=True)
+    state_dir.chmod(PRIVATE_DIR_MODE)
+
+
+def append_sample(sample, state_dir=STATE_DIR):
+    _ensure_private_dir(state_dir)
     line = json.dumps(sample, ensure_ascii=False) + "\n"
     # One write per line keeps a concurrent reader from seeing half a record.
     with open(state_dir / f"{SAMPLE_PREFIX}{sample['ts'][:10]}.jsonl", "a", encoding="utf-8") as f:
@@ -47,14 +54,14 @@ def load_ledger(state_dir=STATE_DIR):
 
 
 def save_ledger(ledger, state_dir=STATE_DIR):
-    state_dir.mkdir(parents=True, exist_ok=True)
+    _ensure_private_dir(state_dir)
     tmp = state_dir / (LEDGER_NAME + ".tmp")
     tmp.write_text(json.dumps(ledger, ensure_ascii=False, indent=1, sort_keys=True), encoding="utf-8")
     tmp.replace(state_dir / LEDGER_NAME)
 
 
 def log_error(message, now, state_dir=STATE_DIR):
-    state_dir.mkdir(parents=True, exist_ok=True)
+    _ensure_private_dir(state_dir)
     with open(state_dir / "errors.log", "a", encoding="utf-8") as f:
         f.write(f"{now.isoformat(timespec='seconds')} {message}\n")
 

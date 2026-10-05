@@ -12,6 +12,8 @@ DOMAIN="gui/$(id -u)"
 case "${1:-}" in
   install)
     mkdir -p "$AGENTS_DIR" "$STATE_DIR"
+    # 観測ログにはウィンドウ名が入るので、自分だけが開けるようにする。
+    chmod 700 "$STATE_DIR"
     for label in $LABELS; do
       dest="$AGENTS_DIR/$label.plist"
       # 再登録に備えて外す。未登録なら失敗するので結果は見ない。

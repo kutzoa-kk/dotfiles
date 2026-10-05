@@ -24,7 +24,7 @@ gog auth doctor --check
 
 ### 3. 個人設定ファイルを作る
 
-アカウントとカレンダー ID は公開リポジトリに入れないため、PC ごとに `~/.config/worklog/local.json` を作る。カレンダー ID は、次のコマンドの出力から「作業ログ」の行を探して確かめる。
+アカウントとカレンダー ID は公開リポジトリに入れないため、PC ごとに `~/.config/worklog/local.json` を作る（フォルダは `mkdir -m 700 -p ~/.config/worklog` で、自分だけが開けるように作る）。カレンダー ID は、次のコマンドの出力から「作業ログ」の行を探して確かめる。
 
 ```bash
 gog calendar calendars --account=<Google アカウント>
