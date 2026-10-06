@@ -6,7 +6,8 @@ description: |
   parameter-tuning playground, a research synthesis — and would otherwise default to Markdown.
   HTML carries richer information (real tables, charts, SVG, interaction, color, layout) and
   is what people will actually open and read. Trigger on phrases like "make a report", "HTML
-  artifact", "HTML file", "ダッシュボード", "可視化したい", "this would be nice as HTML", "I want
+  artifact", "HTML file", "ダッシュボード", "可視化したい", "動的レポート", "インタラクティブなレポート",
+  "絞り込めるレポート", "データを差し替えて更新できるレポート", "this would be nice as HTML", "I want
   to share this", "compare these options side by side", "let me tweak this", "review this PR",
   "explain this code", or whenever a deliverable would benefit from being interactive,
   visually structured, or shareable as a single URL. Skip for raw data dumps, README files,
@@ -46,6 +47,7 @@ polished deliverable, or a pattern you haven't built before.
 | Side-by-side comparison of N options or variants | `references/comparison-grids.md` |
 | PR review, code explainer, diff with annotations | `references/code-review.md` |
 | Interactive parameter / prompt / animation tuner | `references/interactive-playgrounds.md` |
+| Dynamic report: reader filters / drills down / recomputes, data refreshed via `scripts/inject_data.py` | `references/dynamic-reports.md` |
 | Throwaway editor with "export when done" | `references/editing-interfaces.md` |
 | Architecture / flow / data diagram | `references/svg-and-diagrams.md` |
 | Raster cover, hero banner, eyecatch, or conceptual illustration | the **`codex-image-gen`** skill (generates via Codex CLI, no API key) |
@@ -85,6 +87,9 @@ sections and follow the whole arc. See `references/recipes/data-analysis.md`.
    - For an interactive playground / editor / comparison grid: read the relevant reference
      and the matching snippets in `assets/components/`. The base scaffold is often
      overkill for these.
+   - For a dynamic report (the reader explores and recomputes, the data gets refreshed):
+     read `references/dynamic-reports.md` first — it changes how data, state, and
+     rendering are wired. Start from `assets/base.html` for tokens and components.
    - For a single explainer with a diagram: just write the HTML, pulling the design
      tokens from `references/design-system.md`.
 

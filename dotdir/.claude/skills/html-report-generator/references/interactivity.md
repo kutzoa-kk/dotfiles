@@ -195,6 +195,10 @@ this scale and keeps the file genuinely self-contained.
 
 ## What NOT to wire up
 
+These apply to static reports. For a report the reader explores and whose data
+gets refreshed, see [dynamic-reports.md](dynamic-reports.md) — it embeds the
+data in one replaceable JSON block instead of fetching it.
+
 - **Live data refresh.** Reports are snapshots. If the user wants live data,
   they need a real dashboard, not an HTML file.
 - **Auth-gated content.** Don't hide sections behind a login. If something is
