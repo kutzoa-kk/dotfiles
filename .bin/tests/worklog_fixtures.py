@@ -14,7 +14,7 @@ VSCODE = "com.microsoft.VSCode"
 
 CFG = {
     "timezone": "Asia/Tokyo",
-    "calendar_name": "作業ログ",
+    "calendar_names": {"human": "作業ログ（人）", "agent": "作業ログ（AI）"},
     "project_apps": [ORCA, CHROME],
     "other_apps": [VSCODE],
     "exclude_title_patterns": ["YouTube"],
@@ -25,6 +25,7 @@ CFG = {
     },
     "account": "me@example.com",
     "calendar_id": "cal@example.com",
+    "agent_calendar_id": "agent-cal@example.com",
     "project_colors": {"dotfiles2": "9"},
 }
 
@@ -68,8 +69,17 @@ class FakeGog:
         self.created += 1
         return f"ev{self.created}"
 
-    def update(self, event_id, end, description):
-        self._record("update", event_id, end, description)
+    def update(self, event_id, end, description, summary):
+        self._record("update", event_id, end, description, summary)
 
     def delete(self, event_id):
         self._record("delete", event_id)
+
+    def create_calendar(self, name, timezone):
+        self._record("create_calendar", name, timezone)
+        return f"{name}@group.calendar.google.com"
+
+
+def fake_gogs(fail_on=()):
+    """One fake per calendar, keyed like worklog.CALENDAR_KEYS."""
+    return {"human": FakeGog(fail_on), "agent": FakeGog(fail_on)}

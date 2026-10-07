@@ -5,7 +5,8 @@ from pathlib import Path
 REPO_CONFIG = Path(__file__).resolve().parent / "config.json"
 LOCAL_CONFIG = Path.home() / ".config/worklog/local.json"
 # The dotfiles repo is public: personal values live only in local.json.
-LOCAL_DEFAULTS = {"account": "", "calendar_id": "", "project_colors": {}}
+# calendar_id holds human work; agent_calendar_id holds agent work.
+LOCAL_DEFAULTS = {"account": "", "calendar_id": "", "agent_calendar_id": "", "project_colors": {}}
 
 
 class ConfigError(Exception):

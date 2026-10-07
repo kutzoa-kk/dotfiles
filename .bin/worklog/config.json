@@ -1,6 +1,6 @@
 {
   "timezone": "Asia/Tokyo",
-  "calendar_name": "作業ログ",
+  "calendar_names": {"human": "作業ログ（人）", "agent": "作業ログ（AI）"},
   "project_apps": [
     "com.stablyai.orca",
     "com.apple.Safari",

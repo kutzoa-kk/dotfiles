@@ -95,6 +95,22 @@ class AgentTest(unittest.TestCase):
         self.assertEqual(len(intervals), 1)
         self.assertEqual(intervals[0]["details"][0], Counter({"claude": 2}))
 
+    def test_tasks_in_one_project_are_separate_intervals(self):
+        agents = [{"project": "dotfiles2", "type": "claude", "task": "設計"},
+                  {"project": "dotfiles2", "type": "claude", "task": "レビュー"}]
+        intervals = build_intervals("agent", agent_minutes(active(0, 4, agents=agents)), CFG)
+        self.assertEqual([(i["project"], i["task"]) for i in intervals],
+                         [("dotfiles2", "レビュー"), ("dotfiles2", "設計")])
+
+    def test_samples_without_task_have_no_task(self):
+        agents = [{"project": "dotfiles2", "type": "claude"}]
+        intervals = build_intervals("agent", agent_minutes(active(0, 4, agents=agents)), CFG)
+        self.assertIsNone(intervals[0]["task"])
+
+    def test_human_intervals_have_no_task(self):
+        self.assertTrue(all(i["task"] is None
+                            for i in build_intervals("human", human_minutes(active(0, 4), CFG), CFG)))
+
 
 if __name__ == "__main__":
     unittest.main()

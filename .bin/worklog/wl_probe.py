@@ -49,21 +49,32 @@ def parse_lsappinfo(out):
     return dict(LSAPPINFO_RE.findall(out.decode("utf-8")))
 
 
-def parse_idle_panes(out):
-    """Pane keys (tabId:leafId, as in Orca's agent paneKey) whose title says waiting for input."""
-    return {f"{t['tabId']}:{t['leafId']}" for t in json.loads(out)["result"]["terminals"]
-            if (t.get("title") or "").startswith(IDLE_TITLE_MARK)}
+def parse_pane_titles(out):
+    """Terminal title per pane key (tabId:leafId, as in Orca's agent paneKey)."""
+    return {f"{t['tabId']}:{t['leafId']}": t.get("title") or ""
+            for t in json.loads(out)["result"]["terminals"]}
 
 
-def parse_orca_ps(out, idle_panes=frozenset()):
+def task_name(title):
+    """Claude Code's task name: the terminal title without its leading status glyph."""
+    head, _, rest = title.partition(" ")
+    name = rest if len(head) == 1 and not head.isalnum() else title
+    return name.strip() or None
+
+
+def parse_orca_ps(out, pane_titles=None):
     """Return (selected project, working agents) from `orca worktree ps --json`."""
+    pane_titles = pane_titles or {}
     active, agents = None, []
     for worktree in json.loads(out)["result"]["worktrees"]:
         if worktree.get("isActive"):
             active = worktree["repo"]
-        agents += [{"project": worktree["repo"], "type": agent.get("agentType") or "unknown"}
-                   for agent in worktree.get("agents", [])
-                   if agent.get("state") == "working" and agent.get("paneKey") not in idle_panes]
+        for agent in worktree.get("agents", []):
+            title = pane_titles.get(agent.get("paneKey"), "")
+            if agent.get("state") != "working" or title.startswith(IDLE_TITLE_MARK):
+                continue
+            agents.append({"project": worktree["repo"], "type": agent.get("agentType") or "unknown",
+                           "task": task_name(title)})
     return active, agents
 
 
@@ -84,8 +95,8 @@ def collect_sample(now, runner=run):
     ps = runner(["orca", "worktree", "ps", "--json"])
     # Unreadable titles are no evidence of idleness: fall back to Orca's state alone.
     terminals = runner(["orca", "terminal", "list", "--json"]) if ps else None
-    idle_panes = parse_idle_panes(terminals) if terminals else frozenset()
-    project, agents = parse_orca_ps(ps, idle_panes) if ps else (None, [])
+    pane_titles = parse_pane_titles(terminals) if terminals else {}
+    project, agents = parse_orca_ps(ps, pane_titles) if ps else (None, [])
     windows = runner(["orca", "computer", "list-windows", "--app", bundle, "--json"]) if ps and bundle else None
     return {
         "ts": now.isoformat(timespec="seconds"),

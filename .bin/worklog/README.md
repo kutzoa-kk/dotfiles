@@ -1,6 +1,6 @@
 # worklog
 
-人が作業していた時間と、AI エージェント（Claude Code・Codex）が動いていた時間を、Google カレンダーの専用カレンダー「作業ログ」に記録する。1分ごとに画面の状態を観測し、15分ごとに予定を作成・延長する。仕組みと判定規則は [設計書](../../docs/superpowers/specs/2026-10-04-worklog-calendar-design.md) を参照。
+人が作業していた時間と、AI エージェント（Claude Code・Codex）が動いていた時間を、Google カレンダーの専用カレンダー「作業ログ（人）」と「作業ログ（AI）」に分けて記録する。AI の予定名は Claude Code のタスク名になる。1分ごとに画面の状態を観測し、15分ごとに予定を作成・延長する。仕組みと判定規則は [設計書](../../docs/superpowers/specs/2026-10-04-worklog-calendar-design.md) を参照。
 
 ## 別の PC で使い始める手順
 
@@ -24,7 +24,7 @@ gog auth doctor --check
 
 ### 3. 個人設定ファイルを作る
 
-アカウントとカレンダー ID は公開リポジトリに入れないため、PC ごとに `~/.config/worklog/local.json` を作る（フォルダは `mkdir -m 700 -p ~/.config/worklog` で、自分だけが開けるように作る）。カレンダー ID は、次のコマンドの出力から「作業ログ」の行を探して確かめる。
+アカウントとカレンダー ID は公開リポジトリに入れないため、PC ごとに `~/.config/worklog/local.json` を作る（フォルダは `mkdir -m 700 -p ~/.config/worklog` で、自分だけが開けるように作る）。カレンダー ID は、次のコマンドの出力から「作業ログ（人）」と「作業ログ（AI）」の行を探して確かめる。
 
 ```bash
 gog calendar calendars --account=<Google アカウント>
@@ -34,11 +34,12 @@ gog calendar calendars --account=<Google アカウント>
 {
   "account": "me@example.com",
   "calendar_id": "xxxxxxxx@group.calendar.google.com",
+  "agent_calendar_id": "yyyyyyyy@group.calendar.google.com",
   "project_colors": {}
 }
 ```
 
-`project_colors` には、予定の色をプロジェクトごとに `"dotfiles2": "9"` の形で書ける（1〜11。8 は「その他」用）。書かなければ名前から自動で決まる。`worklog.py init-calendar` はカレンダーを新しく作るコマンドなので、2台目以降では実行しない。
+`project_colors` には、予定の色をプロジェクトごとに `"dotfiles2": "9"` の形で書ける（1〜11。8 は「その他」用）。書かなければ名前から自動で決まる。`calendar_id` には人の、`agent_calendar_id` には AI のカレンダーの ID を書く。`worklog.py init-calendar` は ID が未設定のカレンダーを新しく作るコマンドなので、2台目以降では実行しない。
 
 ### 4. launchd に登録する
 
@@ -54,7 +55,7 @@ tail -3 ~/.local/state/worklog/launchd-sync.log
 tail -3 ~/.local/state/worklog/errors.log
 ```
 
-`sync: N actions, 0 failed` が出ていて、カレンダーに「人｜…」「AI｜…」の予定が入っていれば完了。
+`sync: N actions, 0 failed` が出ていて、2つのカレンダーに予定が入っていれば完了。
 
 ## 日々の扱い
 

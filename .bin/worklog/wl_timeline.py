@@ -76,10 +76,11 @@ def human_minutes(samples, cfg):
 def agent_minutes(samples):
     credits = []
     for s in samples:
-        per_project = defaultdict(Counter)
+        per_task = defaultdict(Counter)
         for agent in s.get("agents", []):
-            per_project[agent["project"]][agent["type"]] += 1
-        credits += [(_minute(s), project, counts) for project, counts in per_project.items()]
+            # Samples taken before task names were recorded have no "task".
+            per_task[(agent["project"], agent.get("task"))][agent["type"]] += 1
+        credits += [(_minute(s), bucket, counts) for bucket, counts in per_task.items()]
     return credits
 
 
@@ -92,6 +93,8 @@ def build_intervals(kind, credits, cfg):
         by_bucket[bucket][minute].append(detail)
     intervals = []
     for bucket, minutes in by_bucket.items():
+        # Agents are counted per (project, task); people per project only.
+        project, task = bucket if kind == "agent" else (bucket, None)
         groups = []
         for minute in sorted(minutes):
             if groups and minute - (groups[-1][-1] + ONE_MIN) < merge_gap:
@@ -103,5 +106,6 @@ def build_intervals(kind, credits, cfg):
             if end - start < min_length:
                 continue
             details = [detail for minute in group for detail in minutes[minute]]
-            intervals.append({"kind": kind, "project": bucket, "start": start, "end": end, "details": details})
-    return sorted(intervals, key=lambda i: (i["start"], i["project"]))
+            intervals.append({"kind": kind, "project": project, "task": task,
+                              "start": start, "end": end, "details": details})
+    return sorted(intervals, key=lambda i: (i["start"], i["project"], i["task"] or ""))

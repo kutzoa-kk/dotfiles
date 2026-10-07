@@ -71,19 +71,27 @@ class ParseTest(unittest.TestCase):
     def test_orca_ps_active_project_and_working_agents(self):
         project, agents = wl_probe.parse_orca_ps(json.dumps(ORCA_PS).encode())
         self.assertEqual(project, "dotfiles2")
-        self.assertEqual(agents, [{"project": "dotfiles2", "type": "claude"},
-                                  {"project": "proj-b", "type": "codex"},
-                                  {"project": "proj-c", "type": "claude"}])
+        self.assertEqual(agents, [{"project": "dotfiles2", "type": "claude", "task": None},
+                                  {"project": "proj-b", "type": "codex", "task": None},
+                                  {"project": "proj-c", "type": "claude", "task": None}])
 
-    def test_idle_panes_are_titles_with_idle_mark(self):
-        self.assertEqual(wl_probe.parse_idle_panes(json.dumps(TERMINALS).encode()),
-                         {"tab1:leaf2", "tab3:leaf1"})
+    def test_pane_titles_by_pane_key(self):
+        titles = wl_probe.parse_pane_titles(json.dumps(TERMINALS).encode())
+        self.assertEqual(titles["tab1:leaf1"], "◑ Pull反映")
+        self.assertEqual(titles["tab5:leaf1"], "")
+
+    def test_task_name_drops_status_glyph(self):
+        self.assertEqual(wl_probe.task_name("◑ Pull反映"), "Pull反映")
+        self.assertEqual(wl_probe.task_name("⠂ Scoremap V2.0.1 設計"), "Scoremap V2.0.1 設計")
+        self.assertEqual(wl_probe.task_name("codex"), "codex")
+        self.assertEqual(wl_probe.task_name("A plan"), "A plan")
+        self.assertIsNone(wl_probe.task_name(""))
 
     def test_working_agent_in_idle_pane_is_dropped(self):
-        _, agents = wl_probe.parse_orca_ps(json.dumps(ORCA_PS).encode(),
-                                           idle_panes={"tab1:leaf2", "tab3:leaf1"})
-        self.assertEqual(agents, [{"project": "dotfiles2", "type": "claude"},
-                                  {"project": "proj-b", "type": "codex"}])
+        titles = wl_probe.parse_pane_titles(json.dumps(TERMINALS).encode())
+        _, agents = wl_probe.parse_orca_ps(json.dumps(ORCA_PS).encode(), titles)
+        self.assertEqual(agents, [{"project": "dotfiles2", "type": "claude", "task": "Pull反映"},
+                                  {"project": "proj-b", "type": "codex", "task": "codex"}])
 
     def test_window_title_is_front_visible_window(self):
         self.assertEqual(wl_probe.parse_window_title(json.dumps(WINDOWS).encode()),
@@ -101,15 +109,15 @@ class CollectTest(unittest.TestCase):
             "ts": "2026-10-05T10:00:00+09:00", "idle_sec": 13, "locked": False,
             "front_bundle": CHROME, "front_app": "Google Chrome",
             "window_title": "paper - Google Scholar", "orca_project": "dotfiles2",
-            "agents": [{"project": "dotfiles2", "type": "claude"},
-                       {"project": "proj-b", "type": "codex"}],
+            "agents": [{"project": "dotfiles2", "type": "claude", "task": "Pull反映"},
+                       {"project": "proj-b", "type": "codex", "task": "codex"}],
         })
 
     def test_unreadable_titles_keep_orca_state(self):
         s = wl_probe.collect_sample(BASE, fake_runner(terminals_up=False))
-        self.assertEqual(s["agents"], [{"project": "dotfiles2", "type": "claude"},
-                                       {"project": "proj-b", "type": "codex"},
-                                       {"project": "proj-c", "type": "claude"}])
+        self.assertEqual(s["agents"], [{"project": "dotfiles2", "type": "claude", "task": None},
+                                       {"project": "proj-b", "type": "codex", "task": None},
+                                       {"project": "proj-c", "type": "claude", "task": None}])
 
     def test_orca_down_leaves_orca_fields_empty(self):
         s = wl_probe.collect_sample(BASE, fake_runner(orca_up=False))
