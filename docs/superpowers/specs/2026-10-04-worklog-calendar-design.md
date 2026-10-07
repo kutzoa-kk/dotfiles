@@ -66,7 +66,7 @@ launchd で次の処理を定期実行する。
 | 分類 | 初期値 | 記録先 |
 |---|---|---|
 | プロジェクト作業 | Orca、Safari、Preview、Word、Acrobat、Obsidian | その時点で Orca が選んでいるプロジェクト |
-| その他の作業 | Chrome、VS Code、PowerPoint、Excel | 「その他」 |
+| その他の作業 | Chrome、VS Code、PowerPoint、Excel、Slack | 「その他」 |
 | 対象外 | 上記以外 | 記録しない |
 
 ウィンドウ名が除外パターン（初期値は YouTube、TVer、Netflix などの動画サイト）に当たる1分は、分類に関係なく記録しない。プロジェクト作業のアプリでも、`orca_project` が `null` の1分は記録しない。

@@ -14,7 +14,8 @@
     "com.google.Chrome",
     "com.microsoft.VSCode",
     "com.microsoft.Powerpoint",
-    "com.microsoft.Excel"
+    "com.microsoft.Excel",
+    "com.tinyspeck.slackmacgap"
   ],
   "exclude_title_patterns": [
     "YouTube",
