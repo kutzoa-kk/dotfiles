@@ -10,11 +10,22 @@ import wl_probe
 ASN = "ASN:0x0-0x2c02c:"
 ORCA_PS = {"result": {"worktrees": [
     {"repo": "dotfiles2", "isActive": True, "agents": [
-        {"agentType": "claude", "state": "working"},
-        {"agentType": "claude", "state": "done"}]},
+        {"paneKey": "tab1:leaf1", "agentType": "claude", "state": "working"},
+        {"paneKey": "tab1:leaf2", "agentType": "claude", "state": "done"}]},
     {"repo": "proj-b", "isActive": False, "agents": [
-        {"agentType": "codex", "state": "working"}]},
-    {"repo": "proj-c", "isActive": False},
+        {"paneKey": "tab2:leaf1", "agentType": "codex", "state": "working"}]},
+    {"repo": "proj-c", "isActive": False, "agents": [
+        {"paneKey": "tab3:leaf1", "agentType": "claude", "state": "working"}]},
+    {"repo": "proj-d", "isActive": False},
+]}}
+# proj-c: Orca still says working, but Claude Code's title says it is waiting for input.
+TERMINALS = {"result": {"terminals": [
+    {"tabId": "tab1", "leafId": "leaf1", "title": "◑ Pull反映"},
+    {"tabId": "tab1", "leafId": "leaf2", "title": "✳ 終わった作業"},
+    {"tabId": "tab2", "leafId": "leaf1", "title": "codex"},
+    {"tabId": "tab3", "leafId": "leaf1", "title": "✳ 計測記録の修正"},
+    {"tabId": "tab4", "leafId": "leaf1", "title": ""},
+    {"tabId": "tab5", "leafId": "leaf1"},
 ]}}
 WINDOWS = {"result": {"windows": [
     {"index": 1, "isMinimized": False, "title": "Background"},
@@ -23,8 +34,10 @@ WINDOWS = {"result": {"windows": [
 ]}}
 
 
-def fake_runner(orca_up=True):
+def fake_runner(orca_up=True, terminals_up=True):
     outputs = {
+        ("orca", "terminal", "list", "--json"):
+            json.dumps(TERMINALS).encode() if orca_up and terminals_up else None,
         ("ioreg", "-c", "IOHIDSystem"): b'    | |   "HIDIdleTime" = 13231015208\n',
         ("ioreg", "-n", "Root", "-d1", "-a"): plistlib.dumps({"IOConsoleUsers": [{"kCGSSessionOnConsoleKey": True}]}),
         ("lsappinfo", "front"): (ASN + "\n").encode(),
@@ -59,6 +72,17 @@ class ParseTest(unittest.TestCase):
         project, agents = wl_probe.parse_orca_ps(json.dumps(ORCA_PS).encode())
         self.assertEqual(project, "dotfiles2")
         self.assertEqual(agents, [{"project": "dotfiles2", "type": "claude"},
+                                  {"project": "proj-b", "type": "codex"},
+                                  {"project": "proj-c", "type": "claude"}])
+
+    def test_idle_panes_are_titles_with_idle_mark(self):
+        self.assertEqual(wl_probe.parse_idle_panes(json.dumps(TERMINALS).encode()),
+                         {"tab1:leaf2", "tab3:leaf1"})
+
+    def test_working_agent_in_idle_pane_is_dropped(self):
+        _, agents = wl_probe.parse_orca_ps(json.dumps(ORCA_PS).encode(),
+                                           idle_panes={"tab1:leaf2", "tab3:leaf1"})
+        self.assertEqual(agents, [{"project": "dotfiles2", "type": "claude"},
                                   {"project": "proj-b", "type": "codex"}])
 
     def test_window_title_is_front_visible_window(self):
@@ -80,6 +104,12 @@ class CollectTest(unittest.TestCase):
             "agents": [{"project": "dotfiles2", "type": "claude"},
                        {"project": "proj-b", "type": "codex"}],
         })
+
+    def test_unreadable_titles_keep_orca_state(self):
+        s = wl_probe.collect_sample(BASE, fake_runner(terminals_up=False))
+        self.assertEqual(s["agents"], [{"project": "dotfiles2", "type": "claude"},
+                                       {"project": "proj-b", "type": "codex"},
+                                       {"project": "proj-c", "type": "claude"}])
 
     def test_orca_down_leaves_orca_fields_empty(self):
         s = wl_probe.collect_sample(BASE, fake_runner(orca_up=False))

@@ -14,6 +14,8 @@
 
 - `orca worktree ps --json` は、Orca の画面で選んでいるプロジェクトを `isActive: true` で返す。Orca の環境変数をすべて外し、`/tmp` から実行しても同じ結果だったので、launchd から使える。
 - 同じ出力の `agents[]` に、各エージェントの種類（`agentType`: `claude` / `codex`）と状態（`state`: `working` / `done` など）が入っている。
+- `state` は止まったまま残ることがある。2026-10-06 に、ターンを終えた Claude を Orca が 8 時間以上 `working` と返し続けた（ターン終了の通知は届いていた。裏で開発用サーバーを動かしていたペインだけで起きた）。
+- `orca terminal list --json` は各端末のタイトルを返し、`tabId:leafId` がエージェントの `paneKey` と一致する。Claude Code はタイトルの先頭に、作業中は回転する記号（`◑` など）、入力待ちでは `✳` を付ける。2026-10-06 に 15 のエージェントで照合し、Orca の `state` と食い違ったのは上のペインだけだった。
 - Orca 自身の稼働記録 `orca-stats.json` は、終了の記録が抜けて数日続く区間が残るため使わない（例：dotfiles2 で 68 時間の区間）。
 - `orca computer list-windows --app <アプリ>` で、Orca 以外のアプリのウィンドウ名も取れる。Chrome では表示中のタブの題名が返った。osascript による取得は macOS のアクセシビリティ許可がなく失敗した。
 - 最後の操作からの経過時間は `ioreg -c IOHIDSystem` の `HIDIdleTime` で取れる。キーボード、マウスの移動、スクロールのいずれでもリセットされる。
@@ -51,7 +53,7 @@ launchd で次の処理を定期実行する。
 ```
 
 - `orca_project` は `isActive` のプロジェクトの `repo` 名。Orca が起動していなければ `null`。
-- `agents` は `state` が `working` のエージェントだけを並べる。
+- `agents` は `state` が `working` のエージェントだけを並べる。ただし端末のタイトルが `✳` で始まるものは、Orca の `state` が止まったまま残った場合とみなして除く。
 - `window_title` は Orca が起動していないと取れないので `null` になる。
 - 30 日より古いファイルは `sync` が削除する。
 
@@ -154,6 +156,7 @@ launchd 設定にパスを直接書かないので、ユーザー名や dotfiles
 ## 失敗したときの扱い
 
 - Orca が起動していない：`orca_project`・`window_title` を `null`、`agents` を空にして記録する。プロジェクト作業の時間は記録されないが、その他の作業は記録される。
+- 端末の一覧が取れない：タイトルによる除外をせず、Orca の `state` だけで判定する。タイトルが読めないことは、止まっている証拠にならないため。
 - gog の呼び出しが失敗した：その予定の控えを更新せず、`~/.local/state/worklog/errors.log` に記録して次の回にやり直す。
 - 観測ログの行が壊れている：その行を飛ばし、エラーログに記録する。
 
