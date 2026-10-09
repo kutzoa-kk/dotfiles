@@ -84,6 +84,13 @@ dotdir/.codex/config.toml
 !/dotdir/.claude/skills/marp-rector-slides/**
 !/dotdir/.claude/skills/html-report-generator/
 !/dotdir/.claude/skills/html-report-generator/**
+# bee 公式スキル（npx skills add nulab/bee -g -a claude-code --copy で導入。更新は npx skills update -g）
+!/dotdir/.claude/skills/using-bee/
+!/dotdir/.claude/skills/using-bee/**
+!/dotdir/.claude/skills/backlog-notation/
+!/dotdir/.claude/skills/backlog-notation/**
+!/dotdir/.claude/skills/backlog-workflow/
+!/dotdir/.claude/skills/backlog-workflow/**
 
 ## dotdir/.codex — 共通指示・README・選択したスキルを追跡（config.toml は機械固有の稼働設定）
 !/dotdir/.codex/
