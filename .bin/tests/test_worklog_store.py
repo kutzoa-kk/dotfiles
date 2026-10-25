@@ -99,6 +99,17 @@ class StoreTest(unittest.TestCase):
         lines = (self.dir / "errors.log").read_text(encoding="utf-8").splitlines()
         self.assertEqual(lines, ["2026-10-05T10:00:00+09:00 first", "2026-10-05T10:00:00+09:00 second"])
 
+    def test_prune_error_log_keeps_recent_entries_with_their_continuation_lines(self):
+        wl_store.log_error("old\nold detail", BASE - timedelta(days=31), self.dir)
+        wl_store.log_error("new\nnew detail", BASE, self.dir)
+        wl_store.prune_error_log(BASE - timedelta(days=30), self.dir)
+        lines = (self.dir / "errors.log").read_text(encoding="utf-8").splitlines()
+        self.assertEqual(lines, ["2026-10-05T10:00:00+09:00 new", "new detail"])
+
+    def test_prune_error_log_without_file(self):
+        wl_store.prune_error_log(BASE, self.dir)
+        self.assertFalse((self.dir / "errors.log").exists())
+
 
 if __name__ == "__main__":
     unittest.main()

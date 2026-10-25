@@ -124,6 +124,17 @@ class CollectTest(unittest.TestCase):
         self.assertEqual((s["orca_project"], s["agents"], s["window_title"]), (None, [], None))
         self.assertEqual(s["front_bundle"], CHROME)
 
+    def test_one_failed_system_read_is_retried(self):
+        failures = []
+
+        def flaky(cmd):
+            if cmd[:2] == ["ioreg", "-c"] and not failures:
+                failures.append(cmd)
+                return None
+            return fake_runner()(cmd)
+        self.assertEqual(wl_probe.collect_sample(BASE, flaky)["idle_sec"], 13)
+        self.assertEqual(len(failures), 1)
+
     def test_missing_system_output_raises(self):
         def broken(cmd):
             return None if cmd[0] == "ioreg" else fake_runner()(cmd)

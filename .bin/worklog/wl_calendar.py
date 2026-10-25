@@ -3,7 +3,7 @@ import json
 import subprocess
 import zlib
 from collections import Counter
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from wl_timeline import OTHER
 
@@ -86,10 +86,10 @@ def apply_actions(actions, ledger, gogs, cfg):
     for action, key, interval in actions:
         try:
             if action == "create":
-                event_id = gogs[interval["kind"]].create(
-                    summary(interval), interval["start"].isoformat(), interval["end"].isoformat(),
-                    describe(interval), color(interval["project"], cfg), key)
+                event_id, extra = _create_once(gogs[interval["kind"]], key, interval, cfg)
                 result[key] = _record(event_id, interval)
+                if extra:
+                    errors.append(f"duplicate {key}: kept {event_id}, extra copies {', '.join(extra)}")
             elif action == "update":
                 gogs[_calendar(ledger[key])].update(ledger[key]["id"], interval["end"].isoformat(),
                                                     describe(interval), summary(interval))
@@ -100,6 +100,21 @@ def apply_actions(actions, ledger, gogs, cfg):
         except GogError as exc:
             errors.append(f"{action} {key}: {exc}")
     return result, errors
+
+
+def _create_once(gog, key, interval, cfg):
+    """Return (event id, ids of extra copies), reusing an event an earlier timed-out create left.
+
+    The lookup runs before every create, not only after a failure: a timed-out create can
+    reach Google after an immediate re-query, but it is visible by the next sync.
+    """
+    found = gog.find(key, interval["start"].isoformat())
+    if not found:
+        return gog.create(summary(interval), interval["start"].isoformat(), interval["end"].isoformat(),
+                          describe(interval), color(interval["project"], cfg), key), []
+    # The copy may have been written by an older run with a shorter end.
+    gog.update(found[0], interval["end"].isoformat(), describe(interval), summary(interval))
+    return found[0], found[1:]
 
 
 def prune_ledger(ledger, before):
@@ -127,6 +142,13 @@ class Gog:
         except (OSError, subprocess.TimeoutExpired, ValueError) as exc:
             # Anything else would escape apply_actions and lose the ledger for this run.
             raise GogError(f"{args[0]}: {exc!r}") from exc
+
+    def find(self, key, start):
+        """Ids of events tagged with this worklog_key that start at `start`."""
+        to = (datetime.fromisoformat(start) + timedelta(minutes=1)).isoformat()
+        payload = self._call("events", self.calendar_id, f"--from={start}", f"--to={to}",
+                             f"--private-prop-filter=worklog_key={key}")
+        return [event["id"] for event in payload.get("events", [])]
 
     def create(self, summary, start, end, description, color, key):
         payload = self._call("create", self.calendar_id, f"--summary={summary}", f"--from={start}",

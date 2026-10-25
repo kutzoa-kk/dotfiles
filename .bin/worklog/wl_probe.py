@@ -26,7 +26,10 @@ def run(cmd, timeout=10):
 
 
 def _required(runner, cmd):
+    # ioreg fails now and then for no lasting reason; one retry keeps that minute.
     out = runner(cmd)
+    if out is None:
+        out = runner(cmd)
     if out is None:
         raise ProbeError(f"command failed: {' '.join(cmd)}")
     return out

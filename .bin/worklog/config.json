@@ -34,6 +34,7 @@
     "merge_gap_min": 5,
     "min_event_min": 3,
     "window_hours": 48,
-    "retention_days": 30
+    "retention_days": 30,
+    "alert_after_hours": 6
   }
 }

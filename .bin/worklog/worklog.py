@@ -5,6 +5,7 @@ Design: docs/superpowers/specs/2026-10-04-worklog-calendar-design.md
 """
 import argparse
 import fcntl
+import subprocess
 import sys
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -28,7 +29,44 @@ def cmd_sample(now, state_dir=wl_store.STATE_DIR, runner=wl_probe.run):
     wl_store.append_sample(wl_probe.collect_sample(now, runner), state_dir)
 
 
-def cmd_sync(now, cfg, gogs, state_dir=wl_store.STATE_DIR):
+def notify(message):
+    """Show a macOS notification; return why it failed, or None.
+
+    The message is passed as an argument, never as script text.
+    """
+    try:
+        result = subprocess.run(["osascript", "-e", "on run argv",
+                                 "-e", 'display notification (item 1 of argv) with title "worklog"',
+                                 "-e", "end run", message], capture_output=True, text=True, timeout=10,
+                                check=False)
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        return repr(exc)
+    return None if result.returncode == 0 else (result.stderr.strip() or f"exit {result.returncode}")
+
+
+def watch_failures(now, failed, cfg, state_dir, notify):
+    """Alert while calendar writes keep failing: work older than window_hours is never written."""
+    if not failed:
+        wl_store.save_status({}, state_dir)
+        return
+    t = cfg["thresholds"]
+    period = timedelta(hours=t["alert_after_hours"])
+    status = wl_store.load_status(state_dir)
+    status.setdefault("failing_since", now.isoformat())
+    failing = now - datetime.fromisoformat(status["failing_since"])
+    alerted_at = status.get("alerted_at")
+    if failing >= period and (alerted_at is None or now - datetime.fromisoformat(alerted_at) >= period):
+        hours = int(failing.total_seconds() // 3600)
+        problem = notify(f"カレンダーへの書き込みが {hours} 時間失敗しています。{t['window_hours']} 時間を過ぎた作業は"
+                         f"記録されません。errors.log を確認してください。")
+        if problem:
+            # The alert exists so failures are not silent; a refused notification must not be either.
+            wl_store.log_error(f"notify: {problem}", now, state_dir)
+        status["alerted_at"] = now.isoformat()
+    wl_store.save_status(status, state_dir)
+
+
+def cmd_sync(now, cfg, gogs, state_dir=wl_store.STATE_DIR, notify=notify):
     # Two syncs reading the same ledger would both create the same events.
     state_dir.mkdir(parents=True, exist_ok=True)
     with open(state_dir / LOCK_NAME, "w") as lock:
@@ -37,10 +75,10 @@ def cmd_sync(now, cfg, gogs, state_dir=wl_store.STATE_DIR):
         except BlockingIOError:
             print(f"{now.isoformat(timespec='seconds')} sync: another sync is running; skipped")
             return 0
-        return _sync_locked(now, cfg, gogs, state_dir)
+        return _sync_locked(now, cfg, gogs, state_dir, notify)
 
 
-def _sync_locked(now, cfg, gogs, state_dir):
+def _sync_locked(now, cfg, gogs, state_dir, notify):
     t = cfg["thresholds"]
     window_start = now - timedelta(hours=t["window_hours"])
     samples, broken = wl_store.load_samples(window_start - LOOKBACK_MARGIN, state_dir)
@@ -52,8 +90,10 @@ def _sync_locked(now, cfg, gogs, state_dir):
     retention = timedelta(days=t["retention_days"])
     wl_store.save_ledger(wl_calendar.prune_ledger(ledger, now - retention), state_dir)
     wl_store.prune_samples((now - retention).date(), state_dir)
+    wl_store.prune_error_log(now - retention, state_dir)
     for message in broken + failed:
         wl_store.log_error(message, now, state_dir)
+    watch_failures(now, failed, cfg, state_dir, notify)
     print(f"{now.isoformat(timespec='seconds')} sync: {len(actions)} actions, {len(failed)} failed")
     return len(actions)
 

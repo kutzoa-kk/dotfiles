@@ -6,6 +6,8 @@ from pathlib import Path
 STATE_DIR = Path.home() / ".local/state/worklog"
 SAMPLE_PREFIX = "samples-"
 LEDGER_NAME = "events.json"
+ERROR_LOG_NAME = "errors.log"
+STATUS_NAME = "sync-status.json"
 PRIVATE_DIR_MODE = 0o700
 
 
@@ -53,17 +55,54 @@ def load_ledger(state_dir=STATE_DIR):
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def _replace_text(path, text):
+    tmp = path.with_name(path.name + ".tmp")
+    tmp.write_text(text, encoding="utf-8")
+    tmp.replace(path)
+
+
 def save_ledger(ledger, state_dir=STATE_DIR):
     _ensure_private_dir(state_dir)
-    tmp = state_dir / (LEDGER_NAME + ".tmp")
-    tmp.write_text(json.dumps(ledger, ensure_ascii=False, indent=1, sort_keys=True), encoding="utf-8")
-    tmp.replace(state_dir / LEDGER_NAME)
+    _replace_text(state_dir / LEDGER_NAME, json.dumps(ledger, ensure_ascii=False, indent=1, sort_keys=True))
+
+
+def load_status(state_dir=STATE_DIR):
+    """How long calendar writes have been failing: {"failing_since", "alerted_at"}, or {}."""
+    path = state_dir / STATUS_NAME
+    return json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
+
+
+def save_status(status, state_dir=STATE_DIR):
+    _ensure_private_dir(state_dir)
+    _replace_text(state_dir / STATUS_NAME, json.dumps(status))
 
 
 def log_error(message, now, state_dir=STATE_DIR):
     _ensure_private_dir(state_dir)
-    with open(state_dir / "errors.log", "a", encoding="utf-8") as f:
+    with open(state_dir / ERROR_LOG_NAME, "a", encoding="utf-8") as f:
         f.write(f"{now.isoformat(timespec='seconds')} {message}\n")
+
+
+def _entry_time(line):
+    try:
+        return datetime.fromisoformat(line.split(" ", 1)[0])
+    except ValueError:
+        return None
+
+
+def prune_error_log(before, state_dir=STATE_DIR):
+    """Drop entries logged before `before`; a line without a timestamp belongs to the entry above."""
+    path = state_dir / ERROR_LOG_NAME
+    if not path.exists():
+        return
+    kept, keep = [], True
+    for line in path.read_text(encoding="utf-8").splitlines(keepends=True):
+        logged = _entry_time(line)
+        if logged is not None:
+            keep = logged >= before
+        if keep:
+            kept.append(line)
+    _replace_text(path, "".join(kept))
 
 
 def prune_samples(before_day, state_dir=STATE_DIR):

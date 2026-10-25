@@ -21,7 +21,7 @@ CFG = {
     "thresholds": {
         "active_idle_sec": 60, "reading_max_min": 30, "grace_min": 2,
         "sample_gap_sec": 120, "merge_gap_min": 5, "min_event_min": 3,
-        "window_hours": 48, "retention_days": 30,
+        "window_hours": 48, "retention_days": 30, "alert_after_hours": 6,
     },
     "account": "me@example.com",
     "calendar_id": "cal@example.com",
@@ -55,14 +55,20 @@ def stored(s):
 class FakeGog:
     """Records calls instead of talking to Google; fails on the named operations."""
 
-    def __init__(self, fail_on=()):
+    def __init__(self, fail_on=(), existing=None):
         self.calls, self.fail_on, self.created = [], set(fail_on), 0
+        # worklog_key -> ids of events already on the calendar (e.g. a create that timed out).
+        self.existing = dict(existing or {})
 
     def _record(self, name, *args):
         self.calls.append((name,) + args)
         if name in self.fail_on:
             from wl_calendar import GogError
             raise GogError(f"{name} failed")
+
+    def find(self, key, start):
+        self._record("find", key, start)
+        return list(self.existing.get(key, []))
 
     def create(self, summary, start, end, description, color, key):
         self._record("create", summary, start, end, description, color, key)
@@ -80,6 +86,11 @@ class FakeGog:
         return f"{name}@group.calendar.google.com"
 
 
-def fake_gogs(fail_on=()):
+def fake_gogs(fail_on=(), existing=None):
     """One fake per calendar, keyed like worklog.CALENDAR_KEYS."""
-    return {"human": FakeGog(fail_on), "agent": FakeGog(fail_on)}
+    return {"human": FakeGog(fail_on, existing), "agent": FakeGog(fail_on, existing)}
+
+
+def writes(gog):
+    """The calls that change the calendar (the lookup before each create is left out)."""
+    return [call for call in gog.calls if call[0] != "find"]

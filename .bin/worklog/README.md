@@ -61,6 +61,6 @@ tail -3 ~/.local/state/worklog/errors.log
 
 作業の分類（どのアプリをプロジェクト作業・その他に数えるか）、除外するウィンドウ名、判定のしきい値は `config.json` で変える。変更すると次の書き込みで直近48時間の予定が組み直される。
 
-観測ログ・予定の控え・エラーログは `~/.local/state/worklog/` にあり、観測ログは30日で消える。止めたいときは `make worklog-uninstall` で launchd から外す。テストは `make test-worklog` で実行する。
+観測ログ・予定の控え・エラーログは `~/.local/state/worklog/` にあり、観測ログとエラーログは30日で消える。止めたいときは `make worklog-uninstall` で launchd から外す。テストは `make test-worklog` で実行する。
 
-ログインが切れると、`errors.log` に gog のエラーが残り、予定の書き込みが止まる。`gog auth add <Google アカウント> --services calendar` でログインし直せば、直近48時間の分はまとめて書き込まれる。
+ログインが切れると、`errors.log` に gog のエラーが残り、予定の書き込みが止まる。`gog auth add <Google アカウント> --services calendar` でログインし直せば、直近48時間の分はまとめて書き込まれる。失敗が6時間続くと macOS の通知が出るので、そのときは `errors.log` を見る。gog を更新した直後は、キーチェーンの許可を求める画面が出て書き込みが止まることがある。

@@ -80,6 +80,17 @@ class MergeTest(unittest.TestCase):
     def test_intervals_under_3_minutes_are_dropped(self):
         self.assertEqual(human_spans(active(0, 1)), [])
 
+    def test_switching_back_and_forth_does_not_overlap(self):
+        # One person works on one thing at a time: proj-b's 4 minutes must not sit inside dotfiles2.
+        spans = human_spans(active(0, 4) + active(5, 8, project="proj-b") + active(9, 12))
+        self.assertEqual(spans, [("dotfiles2", at(0), at(5)), ("proj-b", at(5), at(9)),
+                                 ("dotfiles2", at(9), at(13))])
+
+    def test_short_detour_does_not_split(self):
+        # proj-b's 2 minutes never reach the calendar, so dotfiles2 stays one interval.
+        spans = human_spans(active(0, 4) + active(5, 6, project="proj-b") + active(7, 10))
+        self.assertEqual(spans, [("dotfiles2", at(0), at(11))])
+
 
 class AgentTest(unittest.TestCase):
     def test_parallel_projects_are_separate_intervals(self):

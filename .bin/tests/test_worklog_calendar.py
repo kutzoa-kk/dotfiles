@@ -4,7 +4,7 @@ import unittest
 from collections import Counter
 from types import SimpleNamespace
 
-from worklog_fixtures import CFG, at, fake_gogs
+from worklog_fixtures import CFG, at, fake_gogs, writes
 
 import wl_calendar
 from wl_timeline import OTHER
@@ -104,10 +104,10 @@ class ApplyTest(unittest.TestCase):
         gogs = fake_gogs()
         ledger, errors = wl_calendar.apply_actions(actions, {}, gogs, CFG)
         self.assertEqual(errors, [])
-        self.assertEqual(gogs["human"].calls, [("create", "dotfiles2", human["start"].isoformat(),
+        self.assertEqual(writes(gogs["human"]), [("create", "dotfiles2", human["start"].isoformat(),
                                                 human["end"].isoformat(), "", "9",
                                                 wl_calendar.interval_key(human))])
-        self.assertEqual([call[1] for call in gogs["agent"].calls], [TASK])
+        self.assertEqual([call[1] for call in writes(gogs["agent"])], [TASK])
         self.assertEqual(ledger[wl_calendar.interval_key(agent)]["calendar"], "agent")
 
     def test_update_sends_title(self):
@@ -148,8 +148,37 @@ class ApplyTest(unittest.TestCase):
         result, errors = wl_calendar.apply_actions(actions, ledger, gogs, CFG)
         self.assertEqual(errors, [])
         self.assertEqual(gogs["human"].calls, [("delete", "old1")])
-        self.assertEqual([call[0] for call in gogs["agent"].calls], ["create"])
+        self.assertEqual([call[0] for call in writes(gogs["agent"])], ["create"])
         self.assertEqual(list(result), [wl_calendar.interval_key(iv)])
+
+    def test_event_left_by_a_timed_out_create_is_adopted(self):
+        # A create that timed out may still have reached Google; creating again would duplicate it.
+        iv = interval(end=20)
+        key = wl_calendar.interval_key(iv)
+        gogs = fake_gogs(existing={key: ["left1"]})
+        ledger, errors = wl_calendar.apply_actions([("create", key, iv)], {}, gogs, CFG)
+        self.assertEqual(errors, [])
+        self.assertEqual(writes(gogs["human"]), [("update", "left1", iv["end"].isoformat(), "", "dotfiles2")])
+        self.assertEqual(ledger[key]["id"], "left1")
+
+    def test_extra_copies_are_reported_not_deleted(self):
+        iv = interval()
+        key = wl_calendar.interval_key(iv)
+        gogs = fake_gogs(existing={key: ["left1", "left2"]})
+        ledger, errors = wl_calendar.apply_actions([("create", key, iv)], {}, gogs, CFG)
+        self.assertEqual(ledger[key]["id"], "left1")
+        self.assertEqual([call[0] for call in writes(gogs["human"])], ["update"])
+        self.assertEqual(len(errors), 1)
+        self.assertIn("left2", errors[0])
+
+    def test_failed_lookup_skips_create(self):
+        iv = interval()
+        key = wl_calendar.interval_key(iv)
+        gogs = fake_gogs(fail_on={"find"})
+        ledger, errors = wl_calendar.apply_actions([("create", key, iv)], {}, gogs, CFG)
+        self.assertEqual(ledger, {})
+        self.assertEqual(writes(gogs["human"]), [])
+        self.assertEqual(len(errors), 1)
 
     def test_prune_ledger_by_start(self):
         old, new = interval(start=-100, end=-90), interval()
@@ -201,6 +230,19 @@ class GogTest(unittest.TestCase):
         gog, _ = self.make(stdout="not json")
         with self.assertRaises(wl_calendar.GogError):
             gog.create("t", "s", "e", "d", "1", "k")
+
+    def test_find_command_line_and_ids(self):
+        gog, calls = self.make(stdout='{"events": [{"id": "ev3"}, {"id": "ev4"}], "nextPageToken": ""}')
+        start = "2026-10-05T10:00:00+09:00"
+        self.assertEqual(gog.find("human|dotfiles2|" + start, start), ["ev3", "ev4"])
+        self.assertEqual(calls[0], [
+            "gog", "calendar", "events", "cal@example.com", f"--from={start}",
+            "--to=2026-10-05T10:01:00+09:00", "--private-prop-filter=worklog_key=human|dotfiles2|" + start,
+            "--account=me@example.com", "--json", "--no-input"])
+
+    def test_find_nothing(self):
+        gog, _ = self.make(stdout='{"events": [], "nextPageToken": ""}')
+        self.assertEqual(gog.find("k", "2026-10-05T10:00:00+09:00"), [])
 
     def test_update_and_delete_command_lines(self):
         gog, calls = self.make(stdout="")

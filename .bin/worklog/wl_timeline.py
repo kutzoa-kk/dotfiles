@@ -84,6 +84,47 @@ def agent_minutes(samples):
     return credits
 
 
+def _bridge_always(last, minute):
+    return True
+
+
+def _groups(minutes, merge_gap, may_bridge):
+    """Runs of credited minutes, joined across gaps shorter than merge_gap that may_bridge allows."""
+    groups = []
+    for minute in sorted(minutes):
+        if (groups and minute - (groups[-1][-1] + ONE_MIN) < merge_gap
+                and may_bridge(groups[-1][-1], minute)):
+            groups[-1].append(minute)
+        else:
+            groups.append([minute])
+    return groups
+
+
+def _long_enough(groups, min_length):
+    return [group for group in groups if group[-1] + ONE_MIN - group[0] >= min_length]
+
+
+def _one_thing_at_a_time(by_bucket, groups, merge_gap, min_length):
+    """Regroup a person's minutes so no gap is bridged across another project's interval.
+
+    Only intervals that reach the calendar block a bridge: a detour too short to be shown
+    keeps the surrounding work in one piece.
+    """
+    spans = {bucket: [(g[0], g[-1] + ONE_MIN) for g in bucket_groups]
+             for bucket, bucket_groups in groups.items()}
+
+    def regroup(bucket):
+        others = [span for other, other_spans in spans.items() if other != bucket for span in other_spans]
+
+        def may_bridge(last, minute):
+            gap_start = last + ONE_MIN
+            # Adjacent minutes have no gap, so there is nothing to cross.
+            return gap_start == minute or not any(start < minute and end > gap_start
+                                                  for start, end in others)
+        return _long_enough(_groups(by_bucket[bucket], merge_gap, may_bridge), min_length)
+    return {bucket: regroup(bucket) for bucket in groups}
+
+
 def build_intervals(kind, credits, cfg):
     t = cfg["thresholds"]
     merge_gap = timedelta(minutes=t["merge_gap_min"])
@@ -91,21 +132,18 @@ def build_intervals(kind, credits, cfg):
     by_bucket = defaultdict(lambda: defaultdict(list))
     for minute, bucket, detail in credits:
         by_bucket[bucket][minute].append(detail)
+    groups = {bucket: _long_enough(_groups(minutes, merge_gap, _bridge_always), min_length)
+              for bucket, minutes in by_bucket.items()}
+    if kind == "human":
+        # Agents run in parallel and may overlap; a person's intervals may not.
+        groups = _one_thing_at_a_time(by_bucket, groups, merge_gap, min_length)
     intervals = []
-    for bucket, minutes in by_bucket.items():
+    for bucket, bucket_groups in groups.items():
         # Agents are counted per (project, task); people per project only.
         project, task = bucket if kind == "agent" else (bucket, None)
-        groups = []
-        for minute in sorted(minutes):
-            if groups and minute - (groups[-1][-1] + ONE_MIN) < merge_gap:
-                groups[-1].append(minute)
-            else:
-                groups.append([minute])
-        for group in groups:
+        for group in bucket_groups:
             start, end = group[0], group[-1] + ONE_MIN
-            if end - start < min_length:
-                continue
-            details = [detail for minute in group for detail in minutes[minute]]
+            details = [detail for minute in group for detail in by_bucket[bucket][minute]]
             intervals.append({"kind": kind, "project": project, "task": task,
                               "start": start, "end": end, "details": details})
     return sorted(intervals, key=lambda i: (i["start"], i["project"], i["task"] or ""))
