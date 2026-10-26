@@ -7,6 +7,7 @@ description: >
   (3) エージェントが.eslintrc, biome.json, ruff.toml等を変更しようとした場合、
   (4)「agent modifying eslintrc」「stop agent from disabling rules」、
   (5) エージェントがlinterルールを弱めていることに気づいた場合。
+  Do NOT trigger for: チームで共有しない個人の環境で ECC が有効な場合（ECC の pre:config-protection が同じ保護を担い、二重導入になる）。
 ---
 
 # Lint Config Guard

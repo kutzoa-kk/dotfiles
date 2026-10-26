@@ -1,6 +1,6 @@
 ---
 name: auto-format-hook
-description: 編集後に自動でフォーマット・lint を実行する PostToolUse フックを生成する。「エージェントがフォーマットを忘れる」問題を、CLAUDE.md の指示ではなく harness 側の仕組みで解決する。トリガー：「format on save」「auto-format hook」「PostToolUse フック設定」「lint on save」「code quality hook」「Biome/Oxlint/Ruff/golangci-lint/Clippy のフック統合」「エージェントが毎回フォーマットを忘れる」。Do NOT trigger for: 手動でのコード整形そのもの、CI パイプライン設定、linter 設定ファイルの保護（それは lint-config-guard）。
+description: 編集後に自動でフォーマット・lint を実行する PostToolUse フックを生成する。「エージェントがフォーマットを忘れる」問題を、CLAUDE.md の指示ではなく harness 側の仕組みで解決する。トリガー：「format on save」「auto-format hook」「PostToolUse フック設定」「lint on save」「code quality hook」「Biome/Oxlint/Ruff/golangci-lint/Clippy のフック統合」「エージェントが毎回フォーマットを忘れる」。Do NOT trigger for: 手動でのコード整形そのもの、CI パイプライン設定、linter 設定ファイルの保護（それは lint-config-guard）、チームで共有しない個人の環境で ECC が有効な場合（ECC の stop:format-typecheck が同じ役割を担う）。
 ---
 
 # Auto-Format PostToolUse Hook Generator
