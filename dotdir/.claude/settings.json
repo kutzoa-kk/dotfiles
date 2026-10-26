@@ -232,44 +232,34 @@
     "command": "bash ~/.claude/scripts/statusline.sh"
   },
   "enabledPlugins": {
-    "code-simplifier@claude-plugins-official": false,
     "context7@claude-plugins-official": false,
-    "playwright@claude-plugins-official": false,
-    "example-skills@anthropic-agent-skills": false,
     "commit-commands@claude-plugins-official": true,
-    "code-review@claude-plugins-official": false,
-    "feature-dev@claude-plugins-official": false,
-    "ralph-loop@claude-plugins-official": false,
     "swift-lsp@claude-plugins-official": true,
-    "hookify@claude-plugins-official": false,
     "frontend-design@claude-plugins-official": true,
     "superpowers@claude-plugins-official": true,
-    "claude-md-management@claude-plugins-official": false,
-    "octo@nyldn-plugins": false,
     "skill-creator@claude-plugins-official": true,
-    "chrome-devtools-mcp@claude-plugins-official": false,
     "codex@openai-codex": true,
     "ecc@ecc": true,
     "linear@claude-plugins-official": true,
     "typescript-lsp@claude-plugins-official": true,
     "security-guidance@claude-plugins-official": true,
-    "claude-code-setup@claude-plugins-official": true,
     "pyright-lsp@claude-plugins-official": true,
     "serena@claude-plugins-official": true,
     "explanatory-output-style@claude-plugins-official": true,
     "academic-research-skills@academic-research-skills": true,
     "deploy-on-aws@claude-plugins-official": true,
     "aws-serverless@claude-plugins-official": true,
-    "data-engineering@claude-plugins-official": false
+    "data@knowledge-work-plugins": true,
+    "pubmed@anthropic-plugin-directory": true,
+    "clinical-trials@anthropic-plugin-directory": true,
+    "biorxiv@anthropic-plugin-directory": true,
+    "session-report@claude-plugins-official": true,
+    "design@knowledge-work-plugins": true,
+    "engineering@knowledge-work-plugins": true,
+    "product-management@knowledge-work-plugins": true,
+    "productivity@knowledge-work-plugins": true
   },
   "extraKnownMarketplaces": {
-    "nyldn-plugins": {
-      "source": {
-        "source": "git",
-        "url": "https://github.com/nyldn/claude-octopus.git"
-      },
-      "autoUpdate": true
-    },
     "openai-codex": {
       "source": {
         "source": "github",
@@ -295,7 +285,15 @@
       "source": {
         "source": "github",
         "repo": "Imbad0202/academic-research-skills"
-      }
+      },
+      "autoUpdate": true
+    },
+    "knowledge-work-plugins": {
+      "source": {
+        "source": "github",
+        "repo": "anthropics/knowledge-work-plugins"
+      },
+      "autoUpdate": true
     }
   },
   "language": "Japanese",
