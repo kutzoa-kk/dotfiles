@@ -34,11 +34,10 @@ for event, blocks in clean.get('hooks', {}).items():
         new_hooks[event] = kept
 clean['hooks'] = new_hooks
 
-# merge: git を土台に clean の③キーで更新。effortLevel は git 値を保持。②キーは念のため落とす
+# merge: git を土台に clean の③キーで更新。effortLevel は clean から外してあるので git 値のまま。②キーは念のため落とす
 result = dict(git)
 for k, v in clean.items():
     result[k] = v
-result['effortLevel'] = git.get('effortLevel', result.get('effortLevel'))
 for k in MACHINE_LOCAL:
     result.pop(k, None)
 
@@ -50,8 +49,14 @@ print('\n'.join(diff))
 if mode == 'dry':
     print('\n[dry-run] 書き込みませんでした。'); sys.exit(0)
 if mode == 'interactive':
+    # stdin はこの heredoc なので、確認の入力は端末から直接読む
     sys.stderr.write('\nこの差分を dotdir へ書き込みますか? [y/N]: '); sys.stderr.flush()
-    if sys.stdin.readline().strip().lower() not in ('y','yes'):
+    try:
+        with open('/dev/tty') as tty:
+            answer = tty.readline().strip().lower()
+    except OSError:
+        print('確認の入力を受け取れません。--yes を付けて実行してください。'); sys.exit(0)
+    if answer not in ('y','yes'):
         print('中止しました。'); sys.exit(0)
 with open(git_p, 'w') as f:
     json.dump(result, f, indent=2, ensure_ascii=False); f.write('\n')
