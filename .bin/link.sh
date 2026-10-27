@@ -125,8 +125,12 @@ if [ -d "${DOTDIR_ROOT}/.cursor/User" ]; then
         ln -fnsv "${DOTDIR_ROOT}/.cursor/User/keybindings.json" "${CURSOR_USER_DIR}/keybindings.json"
     fi
     
-    # Link snippets directory
+    # Link snippets directory（実体のディレクトリがあると中にリンクが作られるため、退避してから張る）
     if [ -d "${DOTDIR_ROOT}/.cursor/User/snippets" ]; then
+        if [ -d "${CURSOR_USER_DIR}/snippets" ] && [ ! -L "${CURSOR_USER_DIR}/snippets" ]; then
+            mv "${CURSOR_USER_DIR}/snippets" "${CURSOR_USER_DIR}/snippets.backup"
+            echo "moved aside: ${CURSOR_USER_DIR}/snippets -> snippets.backup"
+        fi
         ln -fnsv "${DOTDIR_ROOT}/.cursor/User/snippets" "${CURSOR_USER_DIR}/snippets"
     fi
 fi
@@ -170,6 +174,7 @@ if [ -d "${DOTDIR_ROOT}/.codex" ]; then
         [[ ! -e "$codexfile" ]] && continue
         [[ -d "$codexfile" ]] && continue  # Skip directories (like skills)
         [[ "$codexfile" == "${DOTDIR_ROOT}/.codex/README.md" ]] && continue  # Skip README
+        [[ "$codexfile" == *.bak ]] && continue  # Skip backups written by Codex
         filename=$(basename "$codexfile")
         ln -fnsv "$codexfile" "$HOME/.codex/$filename"
     done
@@ -254,6 +259,16 @@ if [ -d "${DOTDIR_ROOT}/.gemini" ]; then
         [[ -d "$geminifile" ]] && continue  # Skip directories
         [[ "$geminifile" == "${DOTDIR_ROOT}/.gemini/README.md" ]] && continue  # Skip README
         filename=$(basename "$geminifile")
+        # settings.json は Gemini CLI と orca（マシンごとのパスで hook を注入）が書き換える → リンクせず保全（seed-if-absent）
+        if [[ "$filename" == "settings.json" ]]; then
+            if [[ ! -e "$HOME/.gemini/$filename" ]]; then
+                cp "$geminifile" "$HOME/.gemini/$filename"
+                echo "seeded (copy): .gemini/$filename"
+            else
+                echo "preserved (exists): .gemini/$filename"
+            fi
+            continue
+        fi
         ln -fnsv "$geminifile" "$HOME/.gemini/$filename"
     done
 fi
