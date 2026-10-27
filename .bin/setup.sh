@@ -117,8 +117,25 @@ else
     echo ""
 fi
 
-# Step 8: GitHub setup (optional)
-echo -e "${YELLOW}Step 8: GitHub SSH setup (optional)...${NC}"
+# Step 8: Install Claude Code plugins listed in git (if Claude Code is available)
+echo -e "${YELLOW}Step 8: Installing Claude Code plugins...${NC}"
+if command -v claude &> /dev/null; then
+    echo -e "${BLUE}→ Claude Code plugins sync${NC}"
+    if python3 "${SCRIPT_DIR}/plugins-sync.py"; then
+        echo -e "${GREEN}✓ Claude Code plugins sync completed${NC}"
+    else
+        echo -e "${YELLOW}Warning: Some plugins may not have been installed.${NC}"
+        echo -e "${YELLOW}Start Claude Code once (adds the official marketplace), then run 'make plugins-sync'.${NC}"
+    fi
+    echo ""
+else
+    echo -e "${YELLOW}Skipping Claude Code plugins (claude not found).${NC}"
+    echo -e "${YELLOW}Please install Claude Code and run 'make plugins-sync' later.${NC}"
+    echo ""
+fi
+
+# Step 9: GitHub setup (optional)
+echo -e "${YELLOW}Step 9: GitHub SSH setup (optional)...${NC}"
 echo -e "${BLUE}Do you want to set up GitHub SSH keys? [y/N]${NC}"
 read -r response
 if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
@@ -139,5 +156,6 @@ echo -e "1. Restart your terminal or run: ${YELLOW}source ~/.zshrc${NC}"
 echo -e "2. If you skipped iTerm2 setup, run: ${YELLOW}make iterm2${NC}"
 echo -e "3. If you skipped Cursor extensions, run: ${YELLOW}make cursor${NC}"
 echo -e "4. If you skipped GitHub setup, run: ${YELLOW}make github${NC}"
+echo -e "5. Start Claude Code once, then run: ${YELLOW}make plugins-sync${NC} (installs plugins skipped above)"
 echo ""
 

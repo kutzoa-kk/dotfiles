@@ -38,6 +38,14 @@ settings-pull:
 	@echo "\033[0;34mRun settings-pull.sh\033[0m"
 	@.bin/settings-pull.sh
 
+# Install/enable the plugins and marketplaces listed in git (dotdir) on this machine (never removes)
+.PHONY: plugins-sync test-plugins-sync
+plugins-sync:
+	@python3 .bin/plugins-sync.py
+
+test-plugins-sync:
+	@python3 -m unittest discover -s .bin/tests -p 'test_plugins_sync.py' -v
+
 # Install macOS applications.
 brew:
 	@echo "\033[0;34mRun brew.sh\033[0m"
