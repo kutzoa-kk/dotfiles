@@ -67,7 +67,9 @@
       "x": 52,
       "y": 594,
       "width": 1176,
-      "height": 68
+      "height": 68,
+      "optional": true,
+      "note": "結論帯の背景は結論ラベルの塗り。ラベルと本文は帯と同じ高さで上下中央揃え。結論がないページでは両方の枠を削除する"
     },
     "footnote": {
       "x": 52,
@@ -157,12 +159,14 @@
           "type": "body",
           "index": 80,
           "framePx": {
-            "x": 76,
-            "y": 632,
-            "width": 190,
-            "height": 38
+            "x": 52,
+            "y": 614,
+            "width": 1176,
+            "height": 68
           },
-          "fontSizePt": 16.5
+          "fontSizePt": 16.5,
+          "anchor": "ctr",
+          "fill": "結論帯の色を持つ。枠ごと削除すると帯も消える"
         },
         {
           "name": "結論本文",
@@ -170,11 +174,12 @@
           "index": 81,
           "framePx": {
             "x": 278,
-            "y": 628,
+            "y": 614,
             "width": 926,
-            "height": 48
+            "height": 68
           },
-          "fontSizePt": 14.25
+          "fontSizePt": 14.25,
+          "anchor": "ctr"
         }
       ]
     },
@@ -234,12 +239,14 @@
           "type": "body",
           "index": 80,
           "framePx": {
-            "x": 76,
-            "y": 612,
-            "width": 190,
-            "height": 38
+            "x": 52,
+            "y": 594,
+            "width": 1176,
+            "height": 68
           },
-          "fontSizePt": 16.5
+          "fontSizePt": 16.5,
+          "anchor": "ctr",
+          "fill": "結論帯の色を持つ。枠ごと削除すると帯も消える"
         },
         {
           "name": "結論本文",
@@ -247,11 +254,12 @@
           "index": 81,
           "framePx": {
             "x": 278,
-            "y": 608,
+            "y": 594,
             "width": 926,
-            "height": 48
+            "height": 68
           },
-          "fontSizePt": 14.25
+          "fontSizePt": 14.25,
+          "anchor": "ctr"
         }
       ]
     },
@@ -299,12 +307,14 @@
           "type": "body",
           "index": 80,
           "framePx": {
-            "x": 76,
-            "y": 612,
-            "width": 190,
-            "height": 38
+            "x": 52,
+            "y": 594,
+            "width": 1176,
+            "height": 68
           },
-          "fontSizePt": 16.5
+          "fontSizePt": 16.5,
+          "anchor": "ctr",
+          "fill": "結論帯の色を持つ。枠ごと削除すると帯も消える"
         },
         {
           "name": "結論本文",
@@ -312,11 +322,12 @@
           "index": 81,
           "framePx": {
             "x": 278,
-            "y": 608,
+            "y": 594,
             "width": 926,
-            "height": 48
+            "height": 68
           },
-          "fontSizePt": 14.25
+          "fontSizePt": 14.25,
+          "anchor": "ctr"
         }
       ]
     },
@@ -400,12 +411,14 @@
           "type": "body",
           "index": 80,
           "framePx": {
-            "x": 76,
-            "y": 612,
-            "width": 190,
-            "height": 38
+            "x": 52,
+            "y": 594,
+            "width": 1176,
+            "height": 68
           },
-          "fontSizePt": 16.5
+          "fontSizePt": 16.5,
+          "anchor": "ctr",
+          "fill": "結論帯の色を持つ。枠ごと削除すると帯も消える"
         },
         {
           "name": "結論本文",
@@ -413,11 +426,12 @@
           "index": 81,
           "framePx": {
             "x": 278,
-            "y": 608,
+            "y": 594,
             "width": 926,
-            "height": 48
+            "height": 68
           },
-          "fontSizePt": 14.25
+          "fontSizePt": 14.25,
+          "anchor": "ctr"
         }
       ]
     },
@@ -525,12 +539,14 @@
           "type": "body",
           "index": 80,
           "framePx": {
-            "x": 76,
-            "y": 612,
-            "width": 190,
-            "height": 38
+            "x": 52,
+            "y": 594,
+            "width": 1176,
+            "height": 68
           },
-          "fontSizePt": 16.5
+          "fontSizePt": 16.5,
+          "anchor": "ctr",
+          "fill": "結論帯の色を持つ。枠ごと削除すると帯も消える"
         },
         {
           "name": "結論本文",
@@ -538,11 +554,12 @@
           "index": 81,
           "framePx": {
             "x": 278,
-            "y": 608,
+            "y": 594,
             "width": 926,
-            "height": 48
+            "height": 68
           },
-          "fontSizePt": 14.25
+          "fontSizePt": 14.25,
+          "anchor": "ctr"
         }
       ]
     },
@@ -722,12 +739,14 @@
           "type": "body",
           "index": 80,
           "framePx": {
-            "x": 76,
-            "y": 612,
-            "width": 190,
-            "height": 38
+            "x": 52,
+            "y": 594,
+            "width": 1176,
+            "height": 68
           },
-          "fontSizePt": 16.5
+          "fontSizePt": 16.5,
+          "anchor": "ctr",
+          "fill": "結論帯の色を持つ。枠ごと削除すると帯も消える"
         },
         {
           "name": "結論本文",
@@ -735,11 +754,12 @@
           "index": 81,
           "framePx": {
             "x": 278,
-            "y": 608,
+            "y": 594,
             "width": 926,
-            "height": 48
+            "height": 68
           },
-          "fontSizePt": 14.25
+          "fontSizePt": 14.25,
+          "anchor": "ctr"
         }
       ]
     },
@@ -787,12 +807,14 @@
           "type": "body",
           "index": 80,
           "framePx": {
-            "x": 76,
-            "y": 612,
-            "width": 190,
-            "height": 38
+            "x": 52,
+            "y": 594,
+            "width": 1176,
+            "height": 68
           },
-          "fontSizePt": 16.5
+          "fontSizePt": 16.5,
+          "anchor": "ctr",
+          "fill": "結論帯の色を持つ。枠ごと削除すると帯も消える"
         },
         {
           "name": "結論本文",
@@ -800,11 +822,12 @@
           "index": 81,
           "framePx": {
             "x": 278,
-            "y": 608,
+            "y": 594,
             "width": 926,
-            "height": 48
+            "height": 68
           },
-          "fontSizePt": 14.25
+          "fontSizePt": 14.25,
+          "anchor": "ctr"
         }
       ]
     },
@@ -948,12 +971,14 @@
           "type": "body",
           "index": 80,
           "framePx": {
-            "x": 76,
-            "y": 612,
-            "width": 190,
-            "height": 38
+            "x": 52,
+            "y": 594,
+            "width": 1176,
+            "height": 68
           },
-          "fontSizePt": 16.5
+          "fontSizePt": 16.5,
+          "anchor": "ctr",
+          "fill": "結論帯の色を持つ。枠ごと削除すると帯も消える"
         },
         {
           "name": "結論本文",
@@ -961,11 +986,12 @@
           "index": 81,
           "framePx": {
             "x": 278,
-            "y": 608,
+            "y": 594,
             "width": 926,
-            "height": 48
+            "height": 68
           },
-          "fontSizePt": 14.25
+          "fontSizePt": 14.25,
+          "anchor": "ctr"
         }
       ]
     },
@@ -1121,12 +1147,14 @@
           "type": "body",
           "index": 80,
           "framePx": {
-            "x": 76,
-            "y": 612,
-            "width": 190,
-            "height": 38
+            "x": 52,
+            "y": 594,
+            "width": 1176,
+            "height": 68
           },
-          "fontSizePt": 16.5
+          "fontSizePt": 16.5,
+          "anchor": "ctr",
+          "fill": "結論帯の色を持つ。枠ごと削除すると帯も消える"
         },
         {
           "name": "結論本文",
@@ -1134,11 +1162,12 @@
           "index": 81,
           "framePx": {
             "x": 278,
-            "y": 608,
+            "y": 594,
             "width": 926,
-            "height": 48
+            "height": 68
           },
-          "fontSizePt": 14.25
+          "fontSizePt": 14.25,
+          "anchor": "ctr"
         }
       ]
     },
@@ -1222,12 +1251,14 @@
           "type": "body",
           "index": 80,
           "framePx": {
-            "x": 76,
-            "y": 612,
-            "width": 190,
-            "height": 38
+            "x": 52,
+            "y": 594,
+            "width": 1176,
+            "height": 68
           },
-          "fontSizePt": 16.5
+          "fontSizePt": 16.5,
+          "anchor": "ctr",
+          "fill": "結論帯の色を持つ。枠ごと削除すると帯も消える"
         },
         {
           "name": "結論本文",
@@ -1235,11 +1266,12 @@
           "index": 81,
           "framePx": {
             "x": 278,
-            "y": 608,
+            "y": 594,
             "width": 926,
-            "height": 48
+            "height": 68
           },
-          "fontSizePt": 14.25
+          "fontSizePt": 14.25,
+          "anchor": "ctr"
         }
       ]
     },
@@ -1467,12 +1499,14 @@
           "type": "body",
           "index": 80,
           "framePx": {
-            "x": 76,
-            "y": 612,
-            "width": 190,
-            "height": 38
+            "x": 52,
+            "y": 594,
+            "width": 1176,
+            "height": 68
           },
-          "fontSizePt": 16.5
+          "fontSizePt": 16.5,
+          "anchor": "ctr",
+          "fill": "結論帯の色を持つ。枠ごと削除すると帯も消える"
         },
         {
           "name": "結論本文",
@@ -1480,11 +1514,12 @@
           "index": 81,
           "framePx": {
             "x": 278,
-            "y": 608,
+            "y": 594,
             "width": 926,
-            "height": 48
+            "height": 68
           },
-          "fontSizePt": 14.25
+          "fontSizePt": 14.25,
+          "anchor": "ctr"
         }
       ]
     },
@@ -1568,12 +1603,14 @@
           "type": "body",
           "index": 80,
           "framePx": {
-            "x": 76,
-            "y": 612,
-            "width": 190,
-            "height": 38
+            "x": 52,
+            "y": 594,
+            "width": 1176,
+            "height": 68
           },
-          "fontSizePt": 16.5
+          "fontSizePt": 16.5,
+          "anchor": "ctr",
+          "fill": "結論帯の色を持つ。枠ごと削除すると帯も消える"
         },
         {
           "name": "結論本文",
@@ -1581,11 +1618,12 @@
           "index": 81,
           "framePx": {
             "x": 278,
-            "y": 608,
+            "y": 594,
             "width": 926,
-            "height": 48
+            "height": 68
           },
-          "fontSizePt": 14.25
+          "fontSizePt": 14.25,
+          "anchor": "ctr"
         }
       ]
     }
