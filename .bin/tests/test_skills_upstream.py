@@ -140,6 +140,13 @@ class SkillsUpstreamTest(unittest.TestCase):
         self.assertEqual(dest.read_text(), "hand-edited")
         self.assertEqual(json.loads(self.config.read_text())["skills"][0]["commit"], OLD)
 
+    def test_check_fails_loudly_when_gh_fails(self):
+        self.write([self.mirror()], {"latest": {}})  # 偽物の gh が KeyError で非0終了する
+        result = self.run_script("check", "--json")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("確認できていません", result.stderr)
+        self.assertEqual(result.stdout, "")
+
     def test_sync_unknown_name_fails(self):
         self.write([self.mirror()], {})
         result = self.run_script("sync", "nope")

@@ -1,6 +1,6 @@
 # スライドの AI らしさ点検表
 
-出典：[Dragoon0x/useslidekit](https://github.com/Dragoon0x/useslidekit) の `references/ANTI-SLOP.md`（commit `3e371a0`、MIT License, Copyright (c) 2026 Dragoon0x）。研究発表と MCLab の型に合う項目を選んで日本語にし、スタイルガイドに記録済みの指摘と storytelling-with-data の規則を加えた。取得元の更新は `make skills-check` で確かめる（`.bin/skills-upstream.json` の `useslidekit-anti-slop`）。
+出典：[Dragoon0x/useslidekit](https://github.com/Dragoon0x/useslidekit) の `references/ANTI-SLOP.md`（commit `3e371a0`、MIT License, Copyright (c) 2026 Dragoon0x。許諾文の全文は `slide-slop-checklist.LICENSE`）。研究発表と MCLab の型に合う項目を選んで日本語にし、スタイルガイドに記録済みの指摘と storytelling-with-data の規則を加えた。取得元の更新は `make skills-check` で確かめる（`.bin/skills-upstream.json` の `useslidekit-anti-slop`）。
 
 描画確認（`render-check.sh`）の後、全ページの画像をこの表と照らし合わせる。該当した項目は直してから報告する。該当が多いときは、ページ単位で直すより、題だけを並べた筋書きから作り直す。
 

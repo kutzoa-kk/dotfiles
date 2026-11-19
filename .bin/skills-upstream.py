@@ -31,7 +31,13 @@ class Upstream:
 
     def api(self, endpoint: str, raw: bool = False) -> str:
         args = [self.gh, "api", *(["-H", RAW] if raw else []), endpoint]
-        return subprocess.run(args, check=True, capture_output=True, text=True).stdout
+        try:
+            result = subprocess.run(args, capture_output=True, text=True)
+        except FileNotFoundError:
+            sys.exit(f"{self.gh} コマンドが見つかりません（取得元の更新は確認できていません）")
+        if result.returncode != 0:
+            sys.exit(f"gh api {endpoint} が失敗しました（取得元の更新は確認できていません）: {result.stderr.strip()}")
+        return result.stdout
 
     def latest(self, repo: str, path: str) -> str:
         commits = json.loads(self.api(f"repos/{repo}/commits?path={quote(path)}&per_page=1"))
