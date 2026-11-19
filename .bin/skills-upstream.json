@@ -1,0 +1,21 @@
+{
+  "skills": [
+    {
+      "name": "storytelling-with-data",
+      "repo": "sammcj/agentic-coding",
+      "path": "Skills/storytelling-with-data",
+      "commit": "7fd44001c1d6e26c2d34090b7290de74b6da0727",
+      "mode": "mirror",
+      "dest": "dotdir/.claude/skills/storytelling-with-data",
+      "license": "LICENSE"
+    },
+    {
+      "name": "useslidekit-anti-slop",
+      "repo": "Dragoon0x/useslidekit",
+      "path": "references/ANTI-SLOP.md",
+      "commit": "3e371a097076f9d8446ddaac0d8a503c50af8327",
+      "mode": "adapted",
+      "dest": "dotdir/.claude/skills/mclab-slide-design/references/slide-slop-checklist.md"
+    }
+  ]
+}

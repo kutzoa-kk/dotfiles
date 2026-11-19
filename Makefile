@@ -46,6 +46,18 @@ plugins-sync:
 test-plugins-sync:
 	@python3 -m unittest discover -s .bin/tests -p 'test_plugins_sync.py' -v
 
+# Compare skills copied from other repos (.bin/skills-upstream.json) with their sources; sync replaces a mirror copy
+.PHONY: skills-check skills-sync test-skills-upstream
+skills-check:
+	@python3 .bin/skills-upstream.py check
+
+skills-sync:
+	@test -n "$(NAME)" || { echo "usage: make skills-sync NAME=<name>"; exit 1; }
+	@python3 .bin/skills-upstream.py sync $(NAME)
+
+test-skills-upstream:
+	@python3 -m unittest discover -s .bin/tests -p 'test_skills_upstream.py' -v
+
 # Install macOS applications.
 brew:
 	@echo "\033[0;34mRun brew.sh\033[0m"

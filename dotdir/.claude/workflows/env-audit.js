@@ -57,8 +57,8 @@ const scans = await parallel([
     { label: 'scan:cruft', phase: 'Scan', schema: FINDINGS, effort: 'low' }),
   () => agent(`${COMMON}
 目的: git↔稼働ドリフトの検出。
-手順: (1) dotdir/.claude/settings.json と ~/.claude/settings.json の差分（hooks / enabledPlugins / その他キー）。(2) dotdir/.claude/CLAUDE.md の @import 参照先が dotdir 基準で実在するか確認。(3) dotfiles リポジトリの未 push コミット数。
-境界: 修正しない。id は DRIFT-連番。`,
+手順: (1) dotdir/.claude/settings.json と ~/.claude/settings.json の差分（hooks / enabledPlugins / その他キー）。(2) dotdir/.claude/CLAUDE.md の @import 参照先が dotdir 基準で実在するか確認。(3) dotfiles リポジトリの未 push コミット数。(4) 外部から取り込んだスキルの取得元の更新: \`python3 <リポジトリのルート>/.bin/skills-upstream.py check --json\` を実行し、status が behind の項目ごとに low の所見を1件出す（evidence に名前・記録した commit → 最新の commit・変わったファイル名、recommendation に差分の要点と、mode が mirror なら \`make skills-sync NAME=<名前>\`、adapted なら手で反映するかの判断を書く）。
+境界: 修正しない（skills-sync も実行しない）。id は DRIFT-連番。`,
     { label: 'scan:drift', phase: 'Scan', schema: FINDINGS, effort: 'low' }),
 ])
 
