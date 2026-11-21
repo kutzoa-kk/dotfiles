@@ -124,3 +124,9 @@ dotfiles/
 - `.claude/`ディレクトリ内の設定ファイルをリンクします
 - 設定ファイルを追加すると、自動的にリンクされます
 
+### AIエージェント共通の指示とスキルについて
+- Claude Code・Codex・agy（Antigravity CLI）で共有する指示の正本は `dotdir/.claude/AGENTS.md` です。Claude は `~/.claude/CLAUDE.md` の先頭の `@AGENTS.md` で取り込み、Codex は `dotdir/.codex/AGENTS.md`、agy は `dotdir/.gemini/GEMINI.md`（どちらも正本へのリンク）から読みます。
+- Claude だけに関わる指示（日本語スタイルガイド、判断パターン集、品質階段で使うスキルやエージェント）は `dotdir/.claude/CLAUDE.md` に置き、他のツールには渡しません。
+- Codex と agy のスキルは `~/.agents/skills` で共有します。agy は `make link` が作る `~/.gemini/config/skills.json` でこの場所を読みます。自作スキルを足すときは `ln -s ~/dotfiles2/dotdir/.claude/skills/<名前> ~/.agents/skills/` のように個別にリンクします（Claude 前提のスキルは入れません）。
+- この dotfiles では [share-claude-skills](dotdir/.claude/skills/share-claude-skills/SKILL.md) が共有状況を確認します。Codex の新規セッションの最初の作業時に `AGENTS.md` の指示で読み取り確認し、共有・同期を依頼されたときに対象を検討して個別リンクします。これはアプリを開くだけで動く hook ではなく、最初に Codex が作業するときの手順です。手動では `$share-claude-skills`（Codex）または `/share-claude-skills`（Claude Code）で呼び出せます。
+

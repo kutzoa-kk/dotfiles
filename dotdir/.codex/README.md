@@ -1,6 +1,6 @@
 # Codex の共通設定
 
-- `AGENTS.md`: Codex の共通指示です。リポジトリ固有の指示は各リポジトリの `AGENTS.md` に置きます。
+- `AGENTS.md`: Codex の共通指示です。Claude Code・agy と共有する正本 `dotdir/.claude/AGENTS.md` へのリンクなので、編集は正本で行います。リポジトリ固有の指示は各リポジトリの `AGENTS.md` に置きます。
 - `skills/`: 選択したユーザースキルを管理します。Codex が管理するシステムスキルは含めません。
 - `config.toml`: モデル選択、ローカルパス、信頼履歴などを含む機械固有の稼働設定です。git の追跡対象外です。
 

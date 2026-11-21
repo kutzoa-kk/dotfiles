@@ -271,6 +271,16 @@ if [ -d "${DOTDIR_ROOT}/.gemini" ]; then
         fi
         ln -fnsv "$geminifile" "$HOME/.gemini/$filename"
     done
+
+    # agy に Codex と同じ ~/.agents/skills を読ませる（agy が書き換えうるので seed-if-absent）
+    # 全体用の skills.json では "~/" が展開されない（agy 1.5.2 で確認）ため絶対パスで書く
+    mkdir -p "$HOME/.gemini/config"
+    if [[ ! -e "$HOME/.gemini/config/skills.json" ]]; then
+        printf '{\n  "entries": [\n    { "path": "%s/.agents/skills" }\n  ]\n}\n' "$HOME" > "$HOME/.gemini/config/skills.json"
+        echo "seeded: .gemini/config/skills.json"
+    else
+        echo "preserved (exists): .gemini/config/skills.json"
+    fi
 fi
 
 # Rebuild the Codex-only security-guidance boundary after plugin updates.
