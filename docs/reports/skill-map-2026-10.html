@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>スキル棚卸し 2026年10月</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* 棚卸し表：本文は1カラム。結論 → 早見表 → 重なり → 足りない作業 → 自作スキル → 次の手順。表は横スクロールの箱に入れる */
+:root {
+  --bg: #f5f6f8; --surface: #ffffff; --fg: #1b2230; --muted: #5a6374; --line: #dce0e7;
+  --accent: #1d6b66; --accent-soft: #e2f0ee; --chip: #edf0f4;
+  --ok: #2e7a4d; --ok-soft: #e4f3ea; --warn: #9a5c00; --warn-soft: #fbf0dc;
+  --crit: #a8261d; --crit-soft: #fbe6e3; --info: #3d5a99; --info-soft: #e7ecf7;
+  --font-body: "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #10141a; --surface: #171d26; --fg: #e5e8ee; --muted: #9ba3b1; --line: #2a323f;
+  --accent: #63c1b6; --accent-soft: #17312f; --chip: #212935;
+  --ok: #6fc690; --ok-soft: #173024; --warn: #e2a640; --warn-soft: #33270f;
+  --crit: #f07a70; --crit-soft: #3a1c1a; --info: #93aee8; --info-soft: #1d2640; color-scheme: dark;
+} }
+:root[data-theme="dark"] {
+  --bg: #10141a; --surface: #171d26; --fg: #e5e8ee; --muted: #9ba3b1; --line: #2a323f;
+  --accent: #63c1b6; --accent-soft: #17312f; --chip: #212935;
+  --ok: #6fc690; --ok-soft: #173024; --warn: #e2a640; --warn-soft: #33270f;
+  --crit: #f07a70; --crit-soft: #3a1c1a; --info: #93aee8; --info-soft: #1d2640; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { color-scheme: light; }
+@media (prefers-color-scheme: dark) { html { color-scheme: dark; } }
+[hidden] { display: none !important; }
+body { margin: 0; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 15px; line-height: 1.75;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 32px 64px; }
+.wrap { max-width: 1060px; margin: 0 auto; display: grid; gap: 48px; }
+h1, h2, h3 { text-wrap: balance; line-height: 1.35; margin: 0; }
+h1 { font-size: clamp(26px, 4vw, 34px); font-weight: 700; letter-spacing: .02em; }
+h2 { font-size: 21px; font-weight: 700; }
+h3 { font-size: 16px; font-weight: 700; }
+p { margin: 0; max-width: 46em; }
+code { font-family: var(--font-mono); font-size: .86em; background: var(--chip); padding: 1px 5px; border-radius: 4px; overflow-wrap: anywhere; }
+header { display: grid; gap: 12px; border-bottom: 2px solid var(--fg); padding-bottom: 20px; }
+.meta { color: var(--muted); font-size: 13px; display: flex; flex-wrap: wrap; gap: 4px 18px; }
+section { display: grid; gap: 16px; min-width: 0; }
+.lead { font-size: 13px; color: var(--muted); letter-spacing: .08em; }
+.findings { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
+.findings li { display: grid; grid-template-columns: 7.5em 1fr; gap: 12px; padding: 14px 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+.findings li > div { min-width: 0; }
+.findings .tag { font-size: 12px; font-weight: 700; align-self: start; padding: 2px 8px; border-radius: 999px; text-align: center; }
+@media (max-width: 560px) { .findings li { grid-template-columns: 1fr; } .findings .tag { justify-self: start; } }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; }
+.stat { border-top: 3px solid var(--accent); padding-top: 8px; display: grid; gap: 2px; }
+.stat b { font-size: 28px; font-variant-numeric: tabular-nums; line-height: 1.2; }
+.stat span { font-size: 13px; color: var(--muted); }
+.box { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; min-width: 720px; font-size: 14px; }
+th, td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+th { font-size: 12px; color: var(--muted); font-weight: 500; letter-spacing: .04em; background: var(--bg); }
+tr:last-child td { border-bottom: 0; }
+td.area { font-weight: 700; white-space: nowrap; }
+tr.group td { background: var(--accent-soft); font-weight: 700; font-size: 13px; color: var(--accent); padding: 6px 12px; }
+.pill { display: inline-block; font-size: 12px; font-weight: 700; padding: 1px 8px; border-radius: 999px; white-space: nowrap; }
+.ok { background: var(--ok-soft); color: var(--ok); }
+.warn { background: var(--warn-soft); color: var(--warn); }
+.crit { background: var(--crit-soft); color: var(--crit); }
+.info { background: var(--info-soft); color: var(--info); }
+.none { background: var(--chip); color: var(--muted); }
+.gaps { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 12px; }
+.gap { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--warn); border-radius: 8px; padding: 14px 16px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.gap.low { border-left-color: var(--line); }
+.gap p { font-size: 14px; }
+.filters { display: flex; flex-wrap: wrap; gap: 8px; }
+.filters button { font: inherit; font-size: 13px; padding: 4px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); cursor: pointer; }
+.filters button[aria-pressed="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.filters button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.num { font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+.steps { margin: 0; padding-left: 1.4em; display: grid; gap: 10px; }
+.steps li { padding-left: 4px; }
+.note { font-size: 13px; color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="lead">CLAUDE CODE のスキル棚卸し</div>
+  <h1>スキル棚卸し 2026年10月</h1>
+  <p>どの作業でどのスキルを使うかの早見表と、重なっているスキル、支えが足りない作業、自作スキルの点検結果をまとめました。</p>
+  <div class="meta">
+    <span>調査日：2026-10-27</span>
+    <span>対象：このPC（kkmac）の有効なプラグインと dotfiles の自作スキル</span>
+    <span>使用実績：過去120日の152セッション</span>
+  </div>
+</header>
+
+<section>
+  <h2>結論</h2>
+  <ul class="findings">
+    <li><span class="tag crit">いちばんの問題</span><div>重なりよりも、スキルが<strong>見えなくなっている</strong>ことが問題です。Claude Code がスキルの説明文に使える量には上限（モデルが一度に読める量の1%）があり、超えると使われていないものから順に説明文が消えて、名前だけになります。いまは約450個のうち、説明文が残っているのは40個ほどです。自作スキルの多くは名前だけになっていて、名前で呼ばない限り自動では選ばれません。</div></li>
+    <li><span class="tag warn">重なり</span><div>調べもの、コードレビュー、計画、スライド、ブラウザ操作で、同じ目的のスキルが4〜6個ずつ並んでいます。多くは ecc の中のスキルと、他のプラグインや自作スキルとの重なりです。</div></li>
+    <li><span class="tag warn">足りない</span><div>いちばん多い作業の iOS アプリ開発で、後半の工程（課金、App Store への提出と審査、実機での確認）を支えるスキルがありません。繰り返している市場調査にも決まった型がありません。</div></li>
+    <li><span class="tag info">自作スキル</span><div>37個のうち、このPCで使われたのは4個です。研究・機械学習の実験向けの sdd 系6個のうち4個は、2月から更新されていません。<code>archify</code> と <code>archify-review</code> はリンク切れで、読み込まれていません。</div></li>
+  </ul>
+  <div class="stats">
+    <div class="stat"><b>約450</b><span>一覧に載っているスキル</span></div>
+    <div class="stat"><b>295</b><span>そのうち ecc の分（有効なプラグインの370個中）</span></div>
+    <div class="stat"><b>約40</b><span>説明文まで見えているスキル</span></div>
+    <div class="stat"><b>4 / 37</b><span>120日で使われた自作スキル</span></div>
+  </div>
+  <p class="note">研究・論文の作業は、もう1台のPC（kkmclab）が中心です。このPCの記録には研究の作業がほとんどないので、研究系スキルの「使用0回」は少なめに出ている可能性があります。説明文の上限の仕組みは、Claude Code の公式説明（Skills の「Skill descriptions are cut short」）で確かめました。</p>
+</section>
+
+<section id="map">
+  <h2>やりたいこと別の早見表</h2>
+  <p>迷ったら「まず使う」を選びます。「使わない」の列は、同じことができても選ばないほうがよいものです。</p>
+  <div class="box"><table>
+    <thead><tr><th>やりたいこと</th><th>まず使う</th><th>場面によって使う</th><th>使わない</th></tr></thead>
+    <tbody>
+      <tr class="group"><td colspan="4">iOS アプリ開発（TomoriGuard、推し語り、voice-writer など）</td></tr>
+      <tr><td class="area">機能を考える</td><td><code>superpowers:brainstorming</code> → <code>superpowers:writing-plans</code></td><td>市場や競合を見るなら <code>ecc:market-research</code></td><td><code>ecc:plan</code>、<code>ecc:blueprint</code>、<code>ecc:prp-plan</code></td></tr>
+      <tr><td class="area">実装する</td><td><code>superpowers:executing-plans</code>、<code>superpowers:test-driven-development</code></td><td>書き方の参考に <code>ecc:swiftui-patterns</code>、<code>ecc:swift-concurrency-6-2</code>、<code>ecc:liquid-glass-design</code>。端末上の AI なら <code>ecc:foundation-models-on-device</code></td><td><code>ecc:tdd-workflow</code></td></tr>
+      <tr><td class="area">不具合を直す</td><td><code>superpowers:systematic-debugging</code></td><td>ビルドが通らないときは <code>ecc:swift-build-resolver</code>（エージェント）</td><td></td></tr>
+      <tr><td class="area">レビューする</td><td>組み込みの <code>/code-review</code></td><td>Swift 固有の点検は <code>ecc:swift-reviewer</code>（エージェント）</td><td><code>ecc:code-review</code>、<code>engineering:code-review</code></td></tr>
+      <tr><td class="area">課金・提出・審査</td><td colspan="2"><span class="pill warn">足りない</span> 下の「支えが足りない作業」を参照</td><td></td></tr>
+      <tr><td class="area">アイコン・画像</td><td><code>codex-image-gen</code></td><td>アプリアイコンの書き出しは <code>ecc:ios-icon-gen</code></td><td></td></tr>
+      <tr class="group"><td colspan="4">計画と判断</td></tr>
+      <tr><td class="area">迷う判断を確かめる</td><td><code>second-opinion</code>（Codex と agy に聞く）</td><td>ChatGPT Pro に聞きたいときは <code>chatgpt-bridge</code>、Codex に任せるなら <code>codex:rescue</code></td><td><code>ecc:council-multi-model</code></td></tr>
+      <tr><td class="area">設計判断を残す</td><td><code>ecc:architecture-decision-records</code></td><td></td><td><code>engineering:architecture</code></td></tr>
+      <tr class="group"><td colspan="4">調べもの</td></tr>
+      <tr><td class="area">技術・ライブラリ</td><td><code>researcher</code>（エージェント）</td><td>Claude Code 自体のことは <code>claude-code-guide</code>（エージェント）</td><td><code>ecc:docs-lookup</code>（context7 が無効なので動かない）</td></tr>
+      <tr><td class="area">市場・競合</td><td><code>ecc:market-research</code></td><td>競合の比較表は <code>product-management:competitive-brief</code></td><td><code>ecc:competitive-platform-analysis</code></td></tr>
+      <tr><td class="area">文献</td><td><code>pubmed</code> プラグイン ＋ <code>academic-research-skills:deep-research</code></td><td>臨床試験は <code>clinical-trials</code>、査読前の論文は <code>biorxiv</code></td><td><code>ecc:scientific-db-pubmed-database</code>、<code>ecc:deep-research</code></td></tr>
+      <tr class="group"><td colspan="4">論文と研究</td></tr>
+      <tr><td class="area">論文を書く・直す</td><td><code>academic-research-skills:academic-paper</code></td><td>査読のまねは <code>academic-paper-reviewer</code>、文献の選別は <code>sr-screener</code></td><td></td></tr>
+      <tr><td class="area">解析の方法を点検</td><td><code>research-methodologist</code>（エージェント）</td><td>統計の手順の確認は <code>data:statistical-analysis</code></td><td></td></tr>
+      <tr><td class="area">医療 AI の規制</td><td><code>medical-ai-compliance</code></td><td></td><td><code>ecc:healthcare-*</code></td></tr>
+      <tr><td class="area">機械学習の実験管理</td><td><code>sdd-ml-experiment</code></td><td>学習前の点検は <code>sdd-pre-train-guard</code>、最終報告は <code>sdd-report-generator</code></td><td><code>ecc:mle-workflow</code></td></tr>
+      <tr class="group"><td colspan="4">文書と資料</td></tr>
+      <tr><td class="area">人に見せるレポート</td><td>Artifact として公開</td><td>手元に HTML ファイルとして残すなら <code>html-report-generator</code>、グラフは <code>dataviz</code></td><td><code>ecc:dashboard-builder</code>、<code>data:build-dashboard</code></td></tr>
+      <tr><td class="area">スライド</td><td><code>mclab-slide-design</code>（PowerPoint）</td><td>Marp で作るなら <code>marp-rector-slides</code></td><td><code>ecc:frontend-slides</code>、<code>anthropic-skills:pptx</code></td></tr>
+      <tr><td class="area">日本語の品質</td><td>見つけるだけなら <code>stop-ai-slop</code>、書き直すなら <code>humanize-ja</code></td><td>Claude 自身の応答の点検は <code>japanese-output-review</code>、文書の点検は <code>jp-doc-reviewer</code>（エージェント）</td><td></td></tr>
+      <tr class="group"><td colspan="4">仕事の連絡と管理</td></tr>
+      <tr><td class="area">Backlog</td><td><code>backlog-workflow</code></td><td>命令の使い方は <code>using-bee</code>、本文の書式は <code>backlog-notation</code></td><td></td></tr>
+      <tr><td class="area">Slack の DM</td><td><code>slack-dm-summary</code></td><td></td><td></td></tr>
+      <tr><td class="area">メール・予定</td><td colspan="2"><span class="pill warn">スキルなし</span> gog CLI を直接使う</td><td></td></tr>
+      <tr><td class="area">記憶・タスク</td><td>Second Brain（<code>secondbrain</code> の道具）</td><td>このPCだけの覚え書きは Claude Code の自動記憶</td><td><code>productivity:memory-management</code>、<code>ecc:unified-memory</code></td></tr>
+      <tr class="group"><td colspan="4">環境の整備</td></tr>
+      <tr><td class="area">プロジェクトを整える</td><td><code>mvh-setup</code>（まとめ役）</td><td>CLAUDE.md は <code>claude-md-generator</code>、フックは <code>update-config</code></td><td>ECC が有効な個人の環境での <code>auto-format-hook</code>、<code>lint-config-guard</code></td></tr>
+      <tr><td class="area">Orca の作業場所</td><td><code>orca-cli</code></td><td>複数の作業者をまとめるときは <code>orchestration</code></td><td></td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="overlap">
+  <h2>重なっているスキル</h2>
+  <p>同じ目的のスキルが並ぶと、説明文の枠を取り合い、選ばれ方も毎回ぶれます。残す1つを決め、残りは一覧から外すか、説明文を出さない設定にします。</p>
+  <div class="box"><table>
+    <thead><tr><th>目的</th><th>重なっているもの</th><th>残すもの</th><th>外す・隠す候補</th></tr></thead>
+    <tbody>
+      <tr><td class="area">調べもの</td><td><code>academic-research-skills:deep-research</code>、<code>anthropic-skills:deep-research</code>、<code>ecc:deep-research</code>、<code>ecc:research-ops</code>、<code>researcher</code></td><td>学術は ARS、一般の調べものは <code>researcher</code></td><td>ecc の2つ</td></tr>
+      <tr><td class="area">文献検索</td><td><code>pubmed</code> プラグイン、<code>ecc:scientific-db-pubmed-database</code>、<code>ecc:scientific-thinking-literature-review</code></td><td><code>pubmed</code> プラグイン</td><td>ecc の2つ</td></tr>
+      <tr><td class="area">コードレビュー</td><td><code>/code-review</code>、<code>ecc:code-review</code>、<code>engineering:code-review</code>、<code>superpowers:requesting-code-review</code>、<code>ecc:code-reviewer</code></td><td>組み込みの <code>/code-review</code></td><td><code>ecc:code-review</code>、<code>engineering:code-review</code></td></tr>
+      <tr><td class="area">計画</td><td><code>superpowers:writing-plans</code>、<code>ecc:plan</code>、<code>ecc:blueprint</code>、<code>ecc:prp-plan</code>、<code>ecc:plan-prd</code>、<code>product-management:write-spec</code></td><td>superpowers（120日で6回使用）</td><td>ecc の4つ</td></tr>
+      <tr><td class="area">設計判断の記録</td><td><code>ecc:architecture-decision-records</code>、<code>engineering:architecture</code></td><td>ecc のほう</td><td><code>engineering:architecture</code></td></tr>
+      <tr><td class="area">他のモデルの意見</td><td><code>second-opinion</code>、<code>chatgpt-bridge</code>、<code>ecc:council-multi-model</code>、<code>codex:rescue</code></td><td><code>second-opinion</code></td><td><code>ecc:council-multi-model</code></td></tr>
+      <tr><td class="area">ブラウザ操作</td><td><code>claude-in-chrome</code>、<code>playwright-cli</code>、<code>anthropic-skills:chrome-browser</code>、<code>ecc:browser-qa</code>、ecc の chrome-devtools</td><td>日常は <code>claude-in-chrome</code>、自動テストは <code>playwright-cli</code></td><td><code>ecc:browser-qa</code></td></tr>
+      <tr><td class="area">レポート・可視化</td><td>Artifact、<code>html-report-generator</code>、<code>dataviz</code>、<code>ecc:dashboard-builder</code>、<code>data:build-dashboard</code></td><td>共有は Artifact、手元のファイルは <code>html-report-generator</code></td><td>ecc と data のダッシュボード</td></tr>
+      <tr><td class="area">スライド</td><td><code>mclab-slide-design</code>、<code>marp-rector-slides</code>・<code>marp-layout-validator</code>・<code>marp-to-pptx</code>、<code>anthropic-skills:pptx</code>、<code>ecc:frontend-slides</code></td><td>PowerPoint と Marp のどちらを主にするか決める</td><td>主にしない側の系統</td></tr>
+      <tr><td class="area">記憶</td><td>Second Brain、自動記憶、<code>productivity:memory-management</code>、<code>ecc:unified-memory</code>、<code>ecc:continuous-learning</code></td><td>Second Brain と自動記憶</td><td>残りの3つ</td></tr>
+      <tr><td class="area">機械学習の実験管理</td><td><code>sdd-ml-init</code>・<code>sdd-ml-experiment</code>、<code>ml-experiment-traceability</code>・<code>sdd-experiment-logger</code>、<code>ecc:mle-workflow</code></td><td>sdd 系にまとめる</td><td><code>sdd-ml-init</code>（<code>sdd-ml-experiment</code> が中身を含む）</td></tr>
+      <tr><td class="area">スキル作り</td><td><code>skill-creator:skill-creator</code>、<code>anthropic-skills:skill-creator</code>、<code>superpowers:writing-skills</code>、<code>ecc:skill-create</code></td><td><code>skill-creator:skill-creator</code></td><td><code>ecc:skill-create</code></td></tr>
+    </tbody>
+  </table></div>
+  <p class="note">プラグインの中の一部のスキルだけを外すことはできません。外す代わりに、設定の <code>skillOverrides</code> で説明文を出さない（<code>"name-only"</code>）か、一覧から消す（<code>"off"</code>）ことができます。</p>
+</section>
+
+<section id="gaps">
+  <h2>支えが足りない作業</h2>
+  <div class="gaps">
+    <div class="gap">
+      <h3>iOS アプリの課金・提出・審査</h3>
+      <p>10月23日に「課金で解放するはずの機能が未実装のままだった」という確認がありました。課金（StoreKit）、App Store の審査の決まり、TestFlight、App Store での見つけやすさ（ASO）を扱うスキルはありません。</p>
+      <p>候補：プラグイン一覧の <code>apple-skills</code>（App Store・ASO・テストなど164個のスキルを23の分類にまとめたもの）、<code>Mobile App Design (iOS)</code>（課金画面や初回案内の設計）。どちらも第三者製で、中身はまだ確かめていません。</p>
+    </div>
+    <div class="gap">
+      <h3>市場調査の決まった型</h3>
+      <p>Second Brain に、10月だけで市場調査のノートが4件あります（小遣いを稼げる iOS アプリの候補、推し語りの市場など）。毎回、観点と出典の選び方を一から決めています。</p>
+      <p>案：観点（市場規模、競合、価格、作る手間）と保存先（Second Brain）を決めた自作スキルにする。<code>ecc:market-research</code> を土台にできます。</p>
+    </div>
+    <div class="gap">
+      <h3>実機・シミュレータでの確認</h3>
+      <p>iPhone Duo の画面や、iPhone と Mac の同期など、動かして確かめる依頼が続いています。組み込みの <code>run</code> スキルでアプリを起動できますが、iOS のシミュレータ向けの手順はありません。</p>
+      <p>案：上の <code>apple-skills</code> を試し、足りなければ <code>xcodebuild</code> とシミュレータの手順を自作スキルにする。</p>
+    </div>
+    <div class="gap">
+      <h3>メールと予定（gog）</h3>
+      <p>CLAUDE.md の道具の一覧に gog CLI（Gmail・カレンダー・Drive）がありますが、使い方を書いたスキルがありません。秘書の役割を頼むたびに、使い方を調べ直すことになります。</p>
+      <p>案：よく使う命令と、送信前に確認する決まりだけを書いた短いスキルを作る。送信を伴うので、手動で呼ぶ設定（<code>disable-model-invocation</code>）にします。</p>
+    </div>
+    <div class="gap low">
+      <h3>足りている作業</h3>
+      <p>資格試験の学習は、study-memory プロジェクトの中の <code>study-quiz</code> で足りています。論文・文献・研究方法は、むしろスキルが多すぎる状態です。</p>
+    </div>
+  </div>
+</section>
+
+<section id="own">
+  <h2>自作スキルの点検</h2>
+  <p>dotfiles の <code>dotdir/.claude/skills</code> にある37個です。使用回数は、このPCの過去120日の分です。</p>
+  <div class="filters" role="group" aria-label="状態で絞り込む">
+    <button type="button" id="f-all" data-f="all" aria-pressed="true">すべて</button>
+    <button type="button" id="f-use" data-f="use" aria-pressed="false">使用中</button>
+    <button type="button" id="f-keep" data-f="keep" aria-pressed="false">残す</button>
+    <button type="button" id="f-merge" data-f="merge" aria-pressed="false">統合候補</button>
+    <button type="button" id="f-rest" data-f="rest" aria-pressed="false">休止候補</button>
+    <button type="button" id="f-fix" data-f="fix" aria-pressed="false">修理が必要</button>
+  </div>
+  <div class="box"><table id="own-table">
+    <thead><tr><th>スキル</th><th>状態</th><th class="num">使用</th><th>最終更新</th><th>気づいたこと</th></tr></thead>
+    <tbody>
+      <tr data-s="use"><td><code>orca-cli</code></td><td><span class="pill ok">使用中</span></td><td class="num">3</td><td>git 管理外</td><td>説明文が英語だけです。日本語の依頼の言葉（「ワークツリーを作って」など）を足すと拾われやすくなります。git にバックアップされていません。</td></tr>
+      <tr data-s="use"><td><code>humanize-ja</code></td><td><span class="pill ok">使用中</span></td><td class="num">2</td><td>09-02</td><td>問題ありません。<code>stop-ai-slop</code> との分担も説明文に書かれています。</td></tr>
+      <tr data-s="use"><td><code>second-opinion</code></td><td><span class="pill ok">使用中</span></td><td class="num">1</td><td>09-26</td><td>問題ありません。</td></tr>
+      <tr data-s="use"><td><code>claude-md-generator</code></td><td><span class="pill ok">使用中</span></td><td class="num">1</td><td>09-26</td><td>問題ありません。<code>/init</code> より優先する決まりが説明文にあります。</td></tr>
+      <tr data-s="keep"><td><code>japanese-output-review</code></td><td><span class="pill info">残す</span></td><td class="num">0</td><td>10-26</td><td>頼まれたときだけ使う役割なので、使用0回は問題ありません。</td></tr>
+      <tr data-s="keep"><td><code>stop-ai-slop</code></td><td><span class="pill info">残す</span></td><td class="num">0</td><td>10-07</td><td>日本語スタイルガイドの自己点検の決まりから参照されています。</td></tr>
+      <tr data-s="keep"><td><code>backlog-workflow</code></td><td><span class="pill info">残す</span></td><td class="num">0</td><td>10-09</td><td>Backlog の作業は、もう1台のPCが中心とみられます。</td></tr>
+      <tr data-s="keep"><td><code>backlog-notation</code></td><td><span class="pill info">残す</span></td><td class="num">0</td><td>10-09</td><td>説明文の大半が英語で、862字と長めです。書式の参照用なので、利用者が呼ばない設定（<code>user-invocable: false</code>）が合います。</td></tr>
+      <tr data-s="keep"><td><code>using-bee</code></td><td><span class="pill info">残す</span></td><td class="num">0</td><td>10-09</td><td><code>backlog-workflow</code> の下敷きです。説明文が英語だけで、使わない場面の記述がありません。</td></tr>
+      <tr data-s="keep"><td><code>slack-dm-summary</code></td><td><span class="pill info">残す</span></td><td class="num">0</td><td>10-13</td><td>問題ありません。</td></tr>
+      <tr data-s="keep"><td><code>mclab-slide-design</code></td><td><span class="pill info">残す</span></td><td class="num">0</td><td>09-11</td><td>スライドの主の系統にするなら、Marp 系との使い分けを説明文に書きます。</td></tr>
+      <tr data-s="keep"><td><code>medical-ai-compliance</code></td><td><span class="pill info">残す</span></td><td class="num">0</td><td>06-27</td><td>研究のPCで使っているかを確かめる価値があります。</td></tr>
+      <tr data-s="keep"><td><code>codex-image-gen</code></td><td><span class="pill info">残す</span></td><td class="num">0</td><td>06-13</td><td>説明文が1,299字で、自作の中でいちばん長いです。上限（1,536字）に近く、枠も多く使います。半分ほどに縮めます。</td></tr>
+      <tr data-s="keep"><td><code>html-report-generator</code></td><td><span class="pill info">残す</span></td><td class="num">0</td><td>10-06</td><td>Artifact と役割が重なります。「手元に HTML ファイルを残すとき」に絞ると書き分けられます。</td></tr>
+      <tr data-s="keep"><td><code>chatgpt-bridge</code></td><td><span class="pill info">残す</span></td><td class="num">0</td><td>07-15</td><td><code>second-opinion</code> との分担は説明文に書かれています。</td></tr>
+      <tr data-s="keep"><td><code>orchestration</code></td><td><span class="pill info">残す</span></td><td class="num">0</td><td>git 管理外</td><td>説明文が英語だけで、使わない場面の記述がありません。git にバックアップされていません。</td></tr>
+      <tr data-s="keep"><td><code>mvh-setup</code></td><td><span class="pill info">残す</span></td><td class="num">0</td><td>09-26</td><td>新しいプロジェクトを始めるときだけ使うので、手動で呼ぶ設定にすると枠が空きます。</td></tr>
+      <tr data-s="keep"><td><code>auto-format-hook</code></td><td><span class="pill info">残す</span></td><td class="num">0</td><td>10-26</td><td>説明文の書き方が厳密な YAML としては読めません（Claude Code は読めています）。</td></tr>
+      <tr data-s="keep"><td><code>lint-config-guard</code></td><td><span class="pill info">残す</span></td><td class="num">0</td><td>10-26</td><td>10月26日に、ECC との二重導入を避ける条件を追加済みです。</td></tr>
+      <tr data-s="keep"><td><code>repo-hygiene-audit</code></td><td><span class="pill info">残す</span></td><td class="num">0</td><td>09-26</td><td>使わない場面の記述がありません。</td></tr>
+      <tr data-s="keep"><td><code>graphify</code></td><td><span class="pill info">残す</span></td><td class="num">0</td><td>09-02</td><td>CLAUDE.md で <code>/graphify</code> として案内されています。説明文が英語だけです。</td></tr>
+      <tr data-s="merge"><td><code>sdd-ml-init</code></td><td><span class="pill warn">統合候補</span></td><td class="num">0</td><td>02-22</td><td><code>sdd-ml-experiment</code> が「sdd-ml-init を拡張したもの」と説明しており、入口が2つあります。</td></tr>
+      <tr data-s="merge"><td><code>sdd-ml-experiment</code></td><td><span class="pill warn">統合候補</span></td><td class="num">0</td><td>09-26</td><td>sdd 系の入口をこちらに1本化します。説明文が英語だけで905字です。</td></tr>
+      <tr data-s="merge"><td><code>ml-experiment-traceability</code></td><td><span class="pill warn">統合候補</span></td><td class="num">0</td><td>09-02</td><td>MLflow で実験を記録する点で、<code>sdd-experiment-logger</code> と重なります。</td></tr>
+      <tr data-s="merge"><td><code>sdd-experiment-logger</code></td><td><span class="pill warn">統合候補</span></td><td class="num">0</td><td>09-26</td><td>同上。</td></tr>
+      <tr data-s="merge"><td><code>marp-rector-slides</code></td><td><span class="pill warn">統合候補</span></td><td class="num">0</td><td>09-26</td><td>Marp を続けるなら、点検と変換の2つをこの中の手順にまとめられます。</td></tr>
+      <tr data-s="merge"><td><code>marp-layout-validator</code></td><td><span class="pill warn">統合候補</span></td><td class="num">0</td><td>03-24</td><td>使わない場面の記述がありません。</td></tr>
+      <tr data-s="merge"><td><code>marp-to-pptx</code></td><td><span class="pill warn">統合候補</span></td><td class="num">0</td><td>02-22</td><td><code>mclab-slide-design</code> で最初から PowerPoint を作るなら不要になります。</td></tr>
+      <tr data-s="rest"><td><code>sdd-experiment-audit</code></td><td><span class="pill none">休止候補</span></td><td class="num">0</td><td>02-22</td><td>研究のPCでも使っていなければ、休止して枠を空けます。</td></tr>
+      <tr data-s="rest"><td><code>sdd-pre-train-guard</code></td><td><span class="pill none">休止候補</span></td><td class="num">0</td><td>02-22</td><td>同上。</td></tr>
+      <tr data-s="rest"><td><code>sdd-report-generator</code></td><td><span class="pill none">休止候補</span></td><td class="num">0</td><td>02-22</td><td>同上。</td></tr>
+      <tr data-s="rest"><td><code>custom-lint-rules</code></td><td><span class="pill none">休止候補</span></td><td class="num">0</td><td>03-24</td><td>7か月更新がなく、ECC のフックと役割が近いです。</td></tr>
+      <tr data-s="rest"><td><code>playwright-cli</code></td><td><span class="pill none">休止候補</span></td><td class="num">0</td><td>03-29</td><td>日常のブラウザ操作は <code>claude-in-chrome</code> で足りています。自動テストで使う予定がなければ休止します。</td></tr>
+      <tr data-s="fix"><td><code>archify</code></td><td><span class="pill crit">修理が必要</span></td><td class="num">0</td><td></td><td>リンク切れです。dotfiles の中の <code>.agents/skills</code> を指していますが、実体は <code>~/.agents/skills</code> にあります。</td></tr>
+      <tr data-s="fix"><td><code>archify-review</code></td><td><span class="pill crit">修理が必要</span></td><td class="num">0</td><td></td><td>同上。</td></tr>
+    </tbody>
+  </table></div>
+  <p class="note">表に載せていない <code>learned</code> と <code>synced</code> はスキルではなく、補助のフォルダです。説明文が英語だけのもの（sdd 系6個、<code>orca-cli</code> など計12個）は、日本語の依頼の言葉と一致しにくく、自動で選ばれにくくなります。</p>
+</section>
+
+<section id="next">
+  <h2>次にやること（効く順）</h2>
+  <ol class="steps">
+    <li><strong>説明文の枠を空ける。</strong>ecc の295個のうち、使わない言語や分野（Java、Kotlin、PHP、Laravel、Django、ネットワーク機器、物流、金融など）を <code>skillOverrides</code> で <code>"off"</code> にします。先に <code>/skill-doctor</code> で、スキルごとの枠の使用量と使用回数を測ってから決めます。</li>
+    <li>リンク切れを直す。<code>archify</code> と <code>archify-review</code> のリンク先を <code>~/.agents/skills</code> に直すか、使わないなら消します。</li>
+    <li>iOS の後半の工程を補う。<code>apple-skills</code> を試し、課金・提出・審査が足りるかを確かめます。</li>
+    <li>自作スキルを整理する。sdd 系の入口を1本にまとめ、休止候補は研究のPCで使っているかを確かめてから休止します。英語だけの説明文には、日本語の依頼の言葉を先頭に足します。</li>
+    <li>型が決まっている作業をスキルにする。市場調査と gog（メール・予定）の2つです。</li>
+  </ol>
+</section>
+</div>
+
+<script>
+(() => {
+  const buttons = document.querySelectorAll('.filters button');
+  const rows = document.querySelectorAll('#own-table tbody tr');
+  const apply = (f) => {
+    buttons.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.f === f)));
+    rows.forEach(r => { r.hidden = f !== 'all' && r.dataset.s !== f; });
+    try { localStorage.setItem('skill-map-filter', f); } catch (e) {}
+  };
+  buttons.forEach(b => b.addEventListener('click', () => apply(b.dataset.f)));
+  let saved = 'all';
+  try { saved = localStorage.getItem('skill-map-filter') || 'all'; } catch (e) {}
+  if (![...buttons].some(b => b.dataset.f === saved)) saved = 'all';
+  apply(saved);
+})();
+</script>
+</body>
+</html>
