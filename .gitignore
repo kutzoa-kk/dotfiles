@@ -27,6 +27,11 @@ dotdir/.codex/config.toml
 
 !/README.md
 !/AGENTS.md
+!/.agents/
+/.agents/*
+!/.agents/skills/
+/.agents/skills/*
+!/.agents/skills/share-claude-skills
 !/LICENCE
 !.gitignore
 !.gitkeep
@@ -54,16 +59,26 @@ dotdir/.codex/config.toml
 !/dotdir/.claude/scripts/
 !/dotdir/.claude/scripts/**
 
+## Claude Code・Codex・agy の共通指示の正本と、agy の入口（正本へのリンク）
+!/dotdir/.claude/AGENTS.md
+!/dotdir/.gemini/
+/dotdir/.gemini/*
+!/dotdir/.gemini/GEMINI.md
+
 ## dotdir/.claude/agents・workflows (自作 Agent 定義・Workflow スクリプト)
 # ツール自動生成物が入らないためディレクトリごと allowlist（skills のような個別指定は不要）
 !/dotdir/.claude/agents/
 !/dotdir/.claude/agents/**
 !/dotdir/.claude/workflows/
 !/dotdir/.claude/workflows/**
+!/dotdir/.claude/rules/
+!/dotdir/.claude/rules/**
 
 ## dotdir/.claude/skills — 追跡するスキルを個別に allowlist（同上の手法）
 !/dotdir/.claude/skills/
 /dotdir/.claude/skills/*
+!/dotdir/.claude/skills/share-claude-skills/
+!/dotdir/.claude/skills/share-claude-skills/**
 !/dotdir/.claude/skills/stop-ai-slop/
 !/dotdir/.claude/skills/stop-ai-slop/**
 !/dotdir/.claude/skills/humanize-ja/
@@ -84,9 +99,19 @@ dotdir/.codex/config.toml
 !/dotdir/.claude/skills/marp-rector-slides/**
 !/dotdir/.claude/skills/html-report-generator/
 !/dotdir/.claude/skills/html-report-generator/**
+!/dotdir/.claude/skills/note-article-writer/
+!/dotdir/.claude/skills/note-article-writer/**
 # 外部スキルの無改変の写し（取得元と版は .bin/skills-upstream.json。更新は make skills-check / skills-sync）
 !/dotdir/.claude/skills/storytelling-with-data/
 !/dotdir/.claude/skills/storytelling-with-data/**
+# 公開スキルを元にしたもの（出どころと更新手順は各 UPSTREAM.md）
+!/dotdir/.claude/skills/tech-article-writer/
+!/dotdir/.claude/skills/tech-article-writer/**
+!/dotdir/.claude/skills/natural-japanese/
+!/dotdir/.claude/skills/natural-japanese/**
+# fkubota/understand-mode を写して手を加えたもの（出どころは understand/UPSTREAM.md）
+!/dotdir/.claude/skills/understand/
+!/dotdir/.claude/skills/understand/**
 # bee 公式スキル（npx skills add nulab/bee -g -a claude-code --copy で導入。更新は npx skills update -g）
 !/dotdir/.claude/skills/using-bee/
 !/dotdir/.claude/skills/using-bee/**

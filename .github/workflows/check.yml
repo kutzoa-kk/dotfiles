@@ -13,3 +13,5 @@ jobs:
         run: make test-plugins-sync
       - name: Test worklog
         run: make test-worklog
+      - name: Test understand skill
+        run: make test-understand

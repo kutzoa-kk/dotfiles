@@ -49,7 +49,7 @@ run_one() {
   start=$(date +%s)
   case "$name" in
     codex) out=$(cd "$WORKDIR" && timeout -k 10 "$TIMEOUT" codex exec --sandbox read-only -- "$PROMPT" 2>"$LOG_DIR/$STAMP-codex.err") ;;
-    agy)   out=$(cd "$WORKDIR" && timeout -k 10 "$TIMEOUT" agy --print "$PROMPT" --model "Gemini 3.1 Pro (High)" 2>"$LOG_DIR/$STAMP-agy.err") ;;
+    agy)   out=$(cd "$WORKDIR" && timeout -k 10 "$TIMEOUT" agy --print "$PROMPT" --model "Gemini 4 Neon (High)" 2>"$LOG_DIR/$STAMP-agy.err") ;;
   esac
   rc=$?
   end=$(date +%s)
