@@ -101,6 +101,11 @@ dotdir/.codex/config.toml
 !/dotdir/.claude/skills/html-report-generator/**
 !/dotdir/.claude/skills/note-article-writer/
 !/dotdir/.claude/skills/note-article-writer/**
+# 公開スキルを元にしたもの（出どころと更新手順は各 UPSTREAM.md）
+!/dotdir/.claude/skills/tech-article-writer/
+!/dotdir/.claude/skills/tech-article-writer/**
+!/dotdir/.claude/skills/natural-japanese/
+!/dotdir/.claude/skills/natural-japanese/**
 # fkubota/understand-mode を写して手を加えたもの（出どころは understand/UPSTREAM.md）
 !/dotdir/.claude/skills/understand/
 !/dotdir/.claude/skills/understand/**
