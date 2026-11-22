@@ -10,6 +10,7 @@ const fs = require('fs');
 const path = require('path');
 const os = require('os');
 const { spawn, execFile } = require('child_process');
+const { CodexProvider } = require('./codex-provider');
 
 // ---------- 引数と設定 ----------
 const args = parseArgs(process.argv.slice(2));
@@ -17,6 +18,8 @@ const WORK_DIR = path.resolve(args.dir || fs.mkdtempSync(path.join(os.tmpdir(), 
 const PROJECT_CWD = path.resolve(args.cwd || process.cwd());
 const PUBLIC_DIR = path.join(__dirname, 'public');
 const CLAUDE_BIN = process.env.UNDERSTAND_CLAUDE_BIN || 'claude';
+const PROVIDER = args.provider || 'claude';
+if (!['claude', 'codex'].includes(PROVIDER)) throw new Error('--provider は claude または codex を指定してください');
 
 // このサーバーは誰でも叩ける場所（127.0.0.1）にいる。同じマシンの別のページや別のプロセスから
 // 勝手に操作されないよう、起動ごとに合言葉を作る。URLに載せてブラウザに渡し、APIでは毎回照合する。
@@ -36,13 +39,31 @@ const FORK_EFFORT = 'low';
 const ASK_DISALLOWED = ['Edit', 'Write', 'NotebookEdit', 'Bash'];
 // 承認して実行するときも、編集だけは禁じる。許可は足さない（その人の普段の許可に従う）
 const RUN_DISALLOWED = ['Edit', 'Write', 'NotebookEdit'];
-let mainSessionId = (args.session && !args.session.includes('${')) ? args.session : findLatestSession(PROJECT_CWD);
+const suppliedSession = (args.session && !args.session.includes('${')) ? args.session : null;
+let mainSessionId = PROVIDER === 'codex'
+  ? suppliedSession || process.env.CODEX_THREAD_ID
+  : suppliedSession || findLatestSession(PROJECT_CWD);
+if (PROVIDER === 'codex' && !mainSessionId) throw new Error('Codex の親会話 ID がありません。--session または CODEX_THREAD_ID を指定してください');
 // claude --resume は、実行時のカレントディレクトリでセッションを探す。
 // 渡された --cwd がずれていても動くように、セッションの記録から本当のcwdを拾う。
-const SPAWN_CWD = cwdOfSession(mainSessionId) || PROJECT_CWD;
-const MAIN_MODE = permissionModeOf(mainSessionId);
+const SPAWN_CWD = (PROVIDER === 'claude' && cwdOfSession(mainSessionId)) || PROJECT_CWD;
+const MAIN_MODE = PROVIDER === 'claude' ? permissionModeOf(mainSessionId) : 'read-only';
 // メインが確認なしで動いているなら、アプリも承認ボタンを挟まない
 const AUTO_RUN = MAIN_MODE === 'bypassPermissions';
+const codexProvider = PROVIDER === 'codex'
+  ? new CodexProvider({ mainSessionId, cwd: PROJECT_CWD, timeoutSec: TIMEOUT_SEC })
+  : null;
+
+function runAssistant(options) {
+  return codexProvider
+    ? codexProvider.run({ ...options, allowCommands: options.matchMainMode === true })
+    : runClaude(options);
+}
+
+async function cleanupSessions() {
+  if (codexProvider) await codexProvider.close();
+  else cleanupForkedSessions();
+}
 
 function parseArgs(argv) {
   const out = {};
@@ -127,7 +148,7 @@ function cleanupForkedSessions() {
 
 // ---------- Claude 呼び出し ----------
 const SYSTEM_APPEND = [
-  'あなたは今「understand-mode」の説明役です。ユーザーは、この会話でClaudeが出した内容（本筋）を理解しようとしています。',
+  'あなたは今「understand-mode」の説明役です。ユーザーは、この会話でアシスタントが出した内容（本筋）を理解しようとしています。',
   '目的は説明して理解を助けることです。ファイルの編集はしないでください。',
   'コマンドの実行は、ユーザーが承認したSQLを実行するときだけ行ってください。それ以外では実行しないでください。',
   '日本語で、短く、具体例を使って答えてください。見出しは使わず、段落と短い箇条書きだけにしてください。',
@@ -297,7 +318,7 @@ const server = http.createServer(async (req, res) => {
       if (!mainSessionId && !b.sessionId) return send(res, 200, { ok: false, error: 'メインのセッションが見つかりません。スキルからもう一度起動してください。' });
       const make = ACTION_PROMPTS[b.action] || ACTION_PROMPTS.question;
       const prompt = b.followUp ? b.followUp : make(b.anchor || '', b.question);
-      const result = await runClaude({
+      const result = await runAssistant({
         prompt,
         resume: b.sessionId || mainSessionId,
         // 付箋の最初の質問は親（本筋 or 親の付箋）から分岐する。続きの質問はその付箋のセッションに積む
@@ -310,6 +331,7 @@ const server = http.createServer(async (req, res) => {
 
     if (req.method === 'POST' && url.pathname === '/api/runsql') {
       const b = await readBody(req);
+      if (codexProvider && !b.sessionId) return send(res, 200, { ok: false, error: 'SQL を提案した付箋の会話がありません。先に付箋で質問してください。' });
       const checked = checkSql(b.sql);
       if (checked.error) return send(res, 200, { ok: false, error: checked.error });
       // どの道具で実行するかは指定しない。メインの文脈を引き継いだ分身が、この環境のやり方で取る
@@ -326,7 +348,7 @@ const server = http.createServer(async (req, res) => {
         checked.sql, // 検査したものをそのまま渡す
         '```',
       ].join('\n');
-      const result = await runClaude({
+      const result = await runAssistant({
         prompt,
         resume: b.sessionId,
         fork: false,
@@ -341,13 +363,13 @@ const server = http.createServer(async (req, res) => {
     if (req.method === 'POST' && url.pathname === '/api/draft') {
       const b = await readBody(req);
       const prompt = [
-        '以下は、ユーザーがClaudeの出力（本筋）を理解する過程で「本筋に影響あり」とした寄り道のメモです。',
-        'これをもとに、メインの作業セッションのClaudeに返す短いメッセージを、ユーザーの一人称で下書きしてください。',
+        '以下は、ユーザーがアシスタントの出力（本筋）を理解する過程で「本筋に影響あり」とした寄り道のメモです。',
+        'これをもとに、メインの作業セッションに返す短いメッセージを、ユーザーの一人称で下書きしてください。',
         '形式：1行目に理解できたことを一言、その後に本筋に反映してほしい点を番号付きで。各点は根拠を一文添える。全体で8行以内。前置きや説明は書かず、メッセージ本文だけを出力すること。',
         '',
         b.notes || '',
       ].join('\n');
-      const result = await runClaude({ prompt, disallowedTools: ASK_DISALLOWED });
+      const result = await runAssistant({ prompt, disallowedTools: ASK_DISALLOWED });
       return send(res, 200, result);
     }
 
@@ -356,7 +378,7 @@ const server = http.createServer(async (req, res) => {
       const text = (b.text || '').trim();
       fs.writeFileSync(path.join(WORK_DIR, 'return.md'), text ? text + '\n' : '(本筋に返すことはありません)\n');
       fs.writeFileSync(path.join(WORK_DIR, 'confusions.json'), JSON.stringify(sanitizeConfusions(b.confusions), null, 2) + '\n');
-      cleanupForkedSessions();
+      await cleanupSessions();
       send(res, 200, { ok: true });
       setTimeout(() => { server.close(); process.exit(0); }, 500);
       return;
@@ -379,12 +401,26 @@ server.listen(Number(args.port || 0), '127.0.0.1', () => {
   fs.writeFileSync(path.join(WORK_DIR, 'server.pid'), String(process.pid));
   console.log(`understand-mode: ${url}`);
   console.log(`作業フォルダ: ${WORK_DIR}`);
+  console.log(`回答するツール: ${PROVIDER}`);
   console.log(`メインのセッション: ${mainSessionId || '(見つかりません)'}`);
   console.log(`分身を動かす場所: ${SPAWN_CWD}`);
   console.log(`メインの権限モード: ${MAIN_MODE || '(分かりません)'}${AUTO_RUN ? ' → SQLは確認なしで実行します' : ''}`);
   console.log(`分身の思考量: ${FORK_EFFORT}`);
   if (!args['no-open']) openBrowser(url);
 });
+
+async function stopServer() {
+  try {
+    await cleanupSessions();
+    server.close();
+    process.exit(0);
+  } catch (error) {
+    console.error(`寄り道の終了処理に失敗しました: ${error.message}`);
+    process.exit(1);
+  }
+}
+process.once('SIGTERM', stopServer);
+process.once('SIGINT', stopServer);
 
 function openBrowser(url) {
   const cmd = process.platform === 'darwin' ? 'open' : process.platform === 'win32' ? 'cmd' : 'xdg-open';

@@ -307,12 +307,12 @@ function focusSticky(id) {
   renderAll();
 }
 
-// ---------------- Claude とのやりとり ----------------
+// ---------------- 分岐した会話とのやりとり ----------------
 function setPending(d) {
   pendingCount += d;
   const p = $('#pending');
   p.hidden = pendingCount <= 0;
-  p.textContent = pendingCount > 1 ? `Claudeが考えています…（${pendingCount}）` : 'Claudeが考えています…';
+  p.textContent = pendingCount > 1 ? `回答を考えています…（${pendingCount}）` : '回答を考えています…';
 }
 
 function anchorFor(st) {
@@ -439,7 +439,7 @@ function renderSticky(st, skipWires) {
     return finish();
   }
   st.messages.forEach((m) => body.append(renderMessage(st, m)));
-  if (st.busy) body.append(el('div', 'msg thinking', 'Claudeが考えています…'));
+  if (st.busy) body.append(el('div', 'msg thinking', '回答を考えています…'));
   box.append(body);
 
   // 入力欄
