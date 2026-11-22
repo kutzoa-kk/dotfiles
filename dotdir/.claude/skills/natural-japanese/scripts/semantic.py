@@ -2,6 +2,7 @@
 # requires-python = ">=3.10"
 # dependencies = [
 #     "sentence-transformers>=3.0.0",
+#     "huggingface-hub",
 #     "numpy",
 #     "sudachipy>=0.6.8",
 #     "sudachidict-core>=20240409",
@@ -63,6 +64,9 @@ from textcore import (
 )
 
 DEFAULT_MODEL = "cl-nagoya/ruri-v3-310m"
+# dotfiles での変更: 版と取得するファイルを固定し、モデル同梱のコードを実行しない（UPSTREAM.md）
+MODEL_REVISION = "18b60fb8c2b9df296fb4212bb7d23ef94e579cd3"
+MODEL_FILES = ["*.json", "*.safetensors", "tokenizer.model"]
 
 # 短文書ガード。統計的な起伏・反復の測定は文数が少ないと意味をなさない
 # （lint.py の低分散検出器などが短文書を除外するのと同じ哲学）。
@@ -148,6 +152,8 @@ _model_cache = {}
 
 def load_model(model_name: str):
     """初回ロード時だけ ~1GB ダウンロードの可能性を stderr に警告する。"""
+    if model_name != DEFAULT_MODEL:
+        raise ValueError(f"使えるモデルは {DEFAULT_MODEL} だけです: {model_name}")
     if model_name in _model_cache:
         return _model_cache[model_name]
 
@@ -158,10 +164,13 @@ def load_model(model_name: str):
         file=sys.stderr,
     )
     import torch
+    from huggingface_hub import snapshot_download
     from sentence_transformers import SentenceTransformer
 
     device = "mps" if torch.backends.mps.is_available() else ("cuda" if torch.cuda.is_available() else "cpu")
-    model = SentenceTransformer(model_name, device=device, trust_remote_code=True)
+    # 名前のまま渡すと、作業フォルダにある同名のフォルダが読み込まれる
+    model_path = snapshot_download(model_name, revision=MODEL_REVISION, allow_patterns=MODEL_FILES)
+    model = SentenceTransformer(model_path, device=device, trust_remote_code=False)
     _model_cache[model_name] = model
     return model
 
@@ -339,7 +348,6 @@ def main() -> int:
         default=None,
         help="ジャンル別に校正した閾値プロファイルを適用する（essay/tech/business）。未指定時は共通閾値",
     )
-    parser.add_argument("--model", default=DEFAULT_MODEL, help=f"埋め込みモデル名（既定: {DEFAULT_MODEL}）")
     args = parser.parse_args()
 
     text, err = read_source_file(args.file)
@@ -348,7 +356,7 @@ def main() -> int:
         return 1
 
     try:
-        findings, stats = run_semantic(text, genre=args.genre, model_name=args.model)
+        findings, stats = run_semantic(text, genre=args.genre)
     except Exception as exc:
         print(
             f"エラー: 意味モデルの読み込みまたは推論に失敗しました: {exc}",

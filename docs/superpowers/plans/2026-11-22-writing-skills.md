@@ -13,7 +13,7 @@
 ## Global Constraints
 
 - `description` と note への追記文は設計書の文をそのまま使う
-- natural-japanese の変更は `description`、実行環境の注意1節、`LICENSE`、`UPSTREAM.md` だけ
+- natural-japanese の変更は `description`、実行環境の注意1節、安全上の修正（スクリプト2本）、`LICENSE`、`UPSTREAM.md` だけ
 - gist の文面、例文、一覧を写さない
 - 着手前からある未コミットの変更を変えない
 - `make link`、`semantic.py`、push は実行しない。commit は依頼されてから行う

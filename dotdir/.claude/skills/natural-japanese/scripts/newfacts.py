@@ -28,6 +28,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import subprocess
 import sys
@@ -99,7 +100,15 @@ def main() -> int:
             print(err, file=sys.stderr)
             return 1
         path = a.files[0].resolve()
-        r = subprocess.run(["git", "show", f"HEAD:./{path.name}"], cwd=path.parent, capture_output=True, text=True)
+        # dotfiles での変更: 読む先のリポジトリの設定からコマンドや通信を起こさない（UPSTREAM.md）
+        r = subprocess.run(
+            ["git", "--no-pager", "-c", "safe.bareRepository=explicit", "-c", "core.fsmonitor=false",
+             "cat-file", "blob", f"HEAD:./{path.name}"],
+            cwd=path.parent,
+            env={**os.environ, "GIT_NO_LAZY_FETCH": "1", "GIT_ALLOW_PROTOCOL": ""},
+            capture_output=True,
+            text=True,
+        )
         if r.returncode != 0:
             print(f"エラー: git の直前のコミットに {a.files[0]} が見つかりません(git で管理していないか、まだコミットしていない)", file=sys.stderr)
             return 1

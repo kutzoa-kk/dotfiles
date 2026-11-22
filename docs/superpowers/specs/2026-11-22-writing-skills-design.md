@@ -7,6 +7,7 @@
   - 出典ファイル `SOURCES.md` の同梱
   - natural-japanese の `description` の除外を、note 原稿の改稿まで広げること
   - tech-article-writer の事実と確認事項の規則の追加
+- commit 後の安全性の点検を受けた変更：natural-japanese の `semantic.py` と `newfacts.py` を修正した
 
 ## 目的
 
@@ -78,9 +79,9 @@ tech-article-writer/
 ### natural-japanese（上流の複製）
 
 - `coji/natural-japanese` の `skills/natural-japanese/` と、リポジトリ直下の `LICENSE` を写し、`UPSTREAM.md` を足す
-- 変更は `SKILL.md` の `description` と、実行環境の注意1節だけとする。文末体を保ち、呼ばれたときは報告を足さない。RTK が検査結果を切り詰めるため `rtk proxy uv run` で実行し、`uv` が動かない隔離環境では手動の点検表を使う
+- 変更は `SKILL.md` の `description` と実行環境の注意1節、および `semantic.py` と `newfacts.py` の安全上の修正とする。文末体を保ち、呼ばれたときは報告を足さない。RTK が検査結果を切り詰めるため `rtk proxy uv run` で実行し、`uv` が動かない隔離環境では手動の点検表を使う
 - 作業領域で `description` を直してから `dotdir` へ移す。原本のまま置くと、その時点で他のセッションの「AI臭い」の依頼を横取りする
-- 更新するときは、新しい版を作業領域に写し、`description` と追記した1節を当て直し、差分を読んでから置き換える。この手順を `UPSTREAM.md` に書く
+- 更新するときは、新しい版を作業領域に写し、`description`、追記した1節、安全上の修正を当て直し、差分を読んでから置き換える。この手順を `UPSTREAM.md` に書く
 - `critical-thinking` は入れない。本文にある参照はそのまま残し、`UPSTREAM.md` に未導入と記す
 
 `description` の案：
@@ -141,7 +142,7 @@ dotfiles は公開リポジトリのため、次のとおり扱う。
 ## 完了条件
 
 - 2スキルの frontmatter が読め、`description` が1,536文字以内である（上限は公式文書の要約による）
-- natural-japanese の複製と固定したコミットの差が、`description`、実行環境の注意1節、`LICENSE`、`UPSTREAM.md` だけである
+- natural-japanese の複製と固定したコミットの差が、`description`、実行環境の注意1節、`semantic.py` と `newfacts.py` の安全上の修正、`LICENSE`、`UPSTREAM.md` だけである
 - 検査スクリプト（`lint.py`、`calques.py`、`newfacts.py`）が、別の作業ディレクトリから動く
 - tech-article-writer に gist の文面と一致する長い文字列がないことを機械で照合する
 - Claude Code と Codex の一覧に2スキルが出る。`check_sharing.py` で共有済みになる
