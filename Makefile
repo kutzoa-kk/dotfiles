@@ -96,4 +96,4 @@ test-worklog:
 # /understand skill (dotdir/.claude/skills/understand). Needs Node 18+
 .PHONY: test-understand
 test-understand:
-	@python3 -m unittest discover -s .bin/tests -p 'test_understand_skill.py' -v
+	@python3 -m unittest discover -s .bin/tests -p 'test_understand_*.py' -v
