@@ -5,7 +5,10 @@ import re
 import subprocess
 
 IDLE_RE = re.compile(rb'"HIDIdleTime" = (\d+)')
-LSAPPINFO_RE = re.compile(r'"(\w+)"="([^"]*)"')
+# lsappinfo prints `"Key"="value"` pairs up to macOS 26, and a record from macOS 27 on:
+# `bundleID="..."` for the bundle id, and the display name quoted at the start of the first line.
+BUNDLE_ID_RE = re.compile(r'(?:"CFBundleIdentifier"=|\bbundleID=)"([^"]*)"')
+APP_NAME_RE = re.compile(r'"LSDisplayName"="([^"]*)"|\A"([^"]*)" ASN:')
 NANOS_PER_SEC = 1_000_000_000
 # Claude Code starts its terminal title with this while waiting for input
 # (a spinner glyph while working). Orca's own state can stay "working" after the turn ends.
@@ -48,8 +51,14 @@ def parse_locked(root_plist):
     return any(user.get("CGSSessionScreenIsLocked") for user in users)
 
 
-def parse_lsappinfo(out):
-    return dict(LSAPPINFO_RE.findall(out.decode("utf-8")))
+def parse_bundle_id(out):
+    match = BUNDLE_ID_RE.search(out.decode("utf-8"))
+    return match.group(1) if match else None
+
+
+def parse_app_name(out):
+    match = APP_NAME_RE.search(out.decode("utf-8"))
+    return (match.group(1) or match.group(2)) if match else None
 
 
 def parse_pane_titles(out):
@@ -93,8 +102,8 @@ def collect_sample(now, runner=run):
     idle_sec = parse_idle_sec(_required(runner, ["ioreg", "-c", "IOHIDSystem"]))
     locked = parse_locked(_required(runner, ["ioreg", "-n", "Root", "-d1", "-a"]))
     asn = _required(runner, ["lsappinfo", "front"]).decode("utf-8").strip()
-    bundle = parse_lsappinfo(_required(runner, ["lsappinfo", "info", "-only", "bundleid", asn])).get("CFBundleIdentifier")
-    app = parse_lsappinfo(_required(runner, ["lsappinfo", "info", "-only", "name", asn])).get("LSDisplayName")
+    bundle = parse_bundle_id(_required(runner, ["lsappinfo", "info", "-only", "bundleid", asn]))
+    app = parse_app_name(_required(runner, ["lsappinfo", "info", "-only", "name", asn]))
     ps = runner(["orca", "worktree", "ps", "--json"])
     # Unreadable titles are no evidence of idleness: fall back to Orca's state alone.
     terminals = runner(["orca", "terminal", "list", "--json"]) if ps else None

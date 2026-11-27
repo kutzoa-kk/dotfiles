@@ -64,9 +64,23 @@ class ParseTest(unittest.TestCase):
         self.assertTrue(wl_probe.parse_locked(locked))
         self.assertFalse(wl_probe.parse_locked(unlocked))
 
-    def test_lsappinfo_pairs(self):
-        self.assertEqual(wl_probe.parse_lsappinfo(b'"LSDisplayName"="Google Chrome"\n'),
-                         {"LSDisplayName": "Google Chrome"})
+    def test_lsappinfo_old_format(self):
+        self.assertEqual(wl_probe.parse_bundle_id(b'"CFBundleIdentifier"="com.google.Chrome"\n'),
+                         "com.google.Chrome")
+        self.assertEqual(wl_probe.parse_app_name(b'"LSDisplayName"="Google Chrome"\n'), "Google Chrome")
+
+    def test_lsappinfo_macos27_format(self):
+        # macOS 27 prints a record instead of key=value pairs (observed 2026-11-27 on 27.0.1).
+        bundle_out = (b'[ NULL ]  ASN:0x0-0x7e39e32: (in front) \n'
+                      b'    bundleID="com.stablyai.orca"\n    bundle path=[ NULL ] \n')
+        name_out = (b'"Orca" ASN:0x0-0x7e39e32: (in front) \n'
+                    b'    bundleID=[ NULL ] \n    bundle path=[ NULL ] \n')
+        self.assertEqual(wl_probe.parse_bundle_id(bundle_out), "com.stablyai.orca")
+        self.assertEqual(wl_probe.parse_app_name(name_out), "Orca")
+
+    def test_lsappinfo_unknown_is_none(self):
+        self.assertIsNone(wl_probe.parse_bundle_id(b'[ NULL ]  ASN:0x0-0x1: \n    bundleID=[ NULL ] \n'))
+        self.assertIsNone(wl_probe.parse_app_name(b'[ NULL ]  ASN:0x0-0x1: \n'))
 
     def test_orca_ps_active_project_and_working_agents(self):
         project, agents = wl_probe.parse_orca_ps(json.dumps(ORCA_PS).encode())
