@@ -707,36 +707,10 @@ A `<series>/tests/test_specs.py` that asserts `feature_availability.yaml` parses
 
 ## ADR base — `docs/adr/` (repo root)
 
-`docs/adr/README.md`: one decision per file; `NNNN-kebab-title.md`; Status `PROPOSED -> ACCEPTED -> SUPERSEDED by NNNN`.
+The ADR format, status lifecycle, file naming, and authoring rules live in the `adr-authoring` skill (`~/.claude/skills/adr-authoring/`). Do not keep a separate copy here.
 
-`docs/adr/0000-template.md`:
-```markdown
-# ADR: <title>
+- `docs/adr/0000-template.md`: copy the template block from `adr-authoring/references/template.md`. Set `Scope` to `Repository-wide` or the experiment it applies to (e.g. `exp003`).
+- `docs/adr/README.md`: one decision per file; `NNNN-kebab-title.md`; an index table of number, title, and status (status values as in the template: `Proposed -> Accepted -> Superseded by ADR-NNNN / Deprecated`).
+- Before writing each ADR, read `adr-authoring/references/guideline.md` (no migration plans or task lists in the ADR, state what is not decided, etc.).
 
-**Status**: PROPOSED
-**Date**: YYYY-MM-DD
-**Scope**: <repo-wide | expNNN>
-
-## Context
-<background, constraints>
-
-## Decision
-<what was decided>
-
-## Consequences
-### Positive
--
-### Negative
--
-### Neutral
--
-
-## Alternatives Considered
-| Alternative | Why Rejected |
-|-------------|--------------|
-|  |  |
-
-## References
--
-```
 Record the setup decisions themselves as `0001..` (e.g. "adopt MLflow SQLite backend", "adopt DVC data/pipeline versioning", "leakage-proof split policy") — dogfooding the ADR base is the fastest way to seed it.

@@ -86,7 +86,7 @@ test -x .claude/scripts/hooks/lint-config-guard.sh 2>/dev/null
 **受け入れ基準**:
 - [ ] `docs/adr/` ディレクトリが存在する
 - [ ] ADR-0001 ファイルが存在する
-- [ ] Status, Date, Context, Decision, Consequences セクションが全てある
+- [ ] Status・Date の欄と、Context・Decision・Consequences の節がある（書式は adr-authoring スキルの雛形）
 - [ ] harness engineering の採用理由が Context に記載されている
 - [ ] 具体的な harness コンポーネント（CLAUDE.md, hooks, linter protection 等）が Decision にリストされている
 

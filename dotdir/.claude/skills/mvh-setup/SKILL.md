@@ -153,7 +153,7 @@ Which items would you like to set up? (e.g., "1-4" for all Week 1, or "2,3,6")
 
 #### Item 4: First ADR (ADR-0001)
 
-**直接生成する。** 以下の内容で ADR-0001 を作成:
+**直接生成する。** 書式と執筆規約は adr-authoring スキルに従い、以下の内容で ADR-0001 を作成する。対象のリポジトリに既存の ADR の書式があれば、そちらに合わせる:
 
 ```bash
 mkdir -p docs/adr
@@ -164,13 +164,9 @@ ADR-0001 の内容:
 ```markdown
 # ADR-0001: Adopt Harness Engineering Practices
 
-## Status
-
-Accepted
-
-## Date
-
-<today's date>
+- **Status**: Accepted
+- **Date**: <today's date>
+- **Scope**: Repository-wide
 
 ## Context
 

@@ -160,7 +160,7 @@ The connection pool is set to 20 connections max.
 
 #### 4b: Decision → ADR に変換
 
-意思決定の記録は ADR フォーマットに変換する。テンプレートは [references/adr-template.md](references/adr-template.md) を参照。
+意思決定の記録は ADR フォーマットに変換する。書くときは adr-authoring スキルの規約と雛形に従う。変換の例は [references/adr-template.md](references/adr-template.md) を参照。
 
 #### 4c: Specification → Test に変換
 
@@ -187,6 +187,6 @@ test("returns 429 with Retry-After header when rate limited", ...)
 
 - **定期実行を推奨**: 月1回程度このスキルを実行し、腐敗の蓄積を防ぐ
 - **CI 連携**: 壊れた内部リンクの検出は CI に組み込むと効果的
-- **ADR の導入**: 初めて ADR を導入する場合、`docs/adr/` ディレクトリを作成し、`0001-record-architecture-decisions.md` から始める
+- **ADR の導入**: 初めて ADR を導入する場合、adr-authoring スキルに従い、`docs/adr/` ディレクトリを作成して `0001-record-architecture-decisions.md` から始める
 - **Prose-to-executable ratio**: この比率が高いほど腐敗リスクが高い。目標は executable artifacts が prose docs を上回る状態
 - **CLAUDE.md の監査**: CLAUDE.md 自体も腐敗対象。コマンド例やディレクトリ構造の記述が実態と一致するか確認する

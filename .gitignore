@@ -93,6 +93,8 @@ dotdir/.codex/config.toml
 !/dotdir/.claude/skills/slack-dm-summary/**
 !/dotdir/.claude/skills/mvh-setup/
 !/dotdir/.claude/skills/mvh-setup/**
+!/dotdir/.claude/skills/adr-authoring/
+!/dotdir/.claude/skills/adr-authoring/**
 !/dotdir/.claude/skills/mclab-slide-design/
 !/dotdir/.claude/skills/mclab-slide-design/**
 !/dotdir/.claude/skills/marp-rector-slides/

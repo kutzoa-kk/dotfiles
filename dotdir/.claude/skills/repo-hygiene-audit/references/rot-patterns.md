@@ -26,14 +26,14 @@ ADR（Architecture Decision Records）は以下の構造を持つ場合に low r
 
 ```markdown
 # Required fields for "safe" ADR
-- Status: Accepted | Superseded by ADR-NNN | Deprecated
+- Status: Proposed | Accepted | Superseded by ADR-NNN | Deprecated
 - Date: YYYY-MM-DD
 ```
 
 **判定基準**:
 - `Status` フィールドが存在するか
 - `Date` フィールドが存在するか
-- Status が明確な lifecycle を持つか（Accepted → Superseded → Deprecated）
+- Status が明確な lifecycle を持つか（Proposed → Accepted → Superseded / Deprecated。adr-authoring スキルの雛形と同じ）
 
 **注意**: Status/Date がない「意思決定メモ」は ADR ではなく prose description として分類する。
 
